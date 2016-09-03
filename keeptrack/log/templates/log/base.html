@@ -1,0 +1,15 @@
+{% load staticfiles %}
+<head>
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Abel" />
+  <link rel="stylesheet" type="text/css", href="{% static 'log/css/index.css' %}" />
+</head>
+<div>
+  <p>
+    Keep Track - Hello World
+  </p>
+</div>
+  <div id="content_container">
+    {% block content %}
+    {% endblock %}
+  </div>
+</body>
