@@ -7,9 +7,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-@login_required(login_url='/log/login/')
+#@login_required(login_url='/log/login/')
 def index(request):
-    return render(request, "log/home.html", {})
+    return render(request, "log/team.html", {})
 
 def login_view(request):
     if request.method == 'POST':
@@ -28,3 +28,21 @@ def login_view(request):
         else:
             return HttpResponse("invalid login")
     return render(request, "log/login.html", {})
+
+def athlete(request):
+    return render(request, "log/athlete.html", {})
+
+def calendar(request):
+    return render(request, "log/calendar.html", {})
+
+def race_analysis(request):
+    return render(request, "log/race_analysis.html", {})
+
+def settings(request):
+    return render(request, "log/settings.html", {})
+
+def team_stats(request):
+    return render(request, "log/team_stats.html", {})
+
+def team(request):
+    return render(request, "log/team.html", {})

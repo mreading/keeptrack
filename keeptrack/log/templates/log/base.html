@@ -4,12 +4,20 @@
   <link rel="stylesheet" type="text/css", href="{% static 'log/css/index.css' %}" />
 </head>
 <div>
-  <p>
-    Keep Track - Hello World
-  </p>
+  <div id="jumbotron">
+    <p>
+      Keep Track Jumbotron
+    </p>
+    <div id="navbar">
+    </div>
+  </div>
 </div>
   <div id="content_container">
     {% block content %}
     {% endblock %}
+  </div>
+
+  <div id="footer">
+    This is the footer
   </div>
 </body>
