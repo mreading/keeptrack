@@ -11,6 +11,27 @@ from django.contrib.auth.models import User
 def index(request):
     return render(request, "log/team.html", {})
 
+def athlete(request):
+    return render(request, "log/athlete.html", {})
+
+def calendar(request):
+    return render(request, "log/calendar.html", {})
+
+def race_analysis(request):
+    return render(request, "log/race_analysis.html", {})
+
+def settings(request):
+    return render(request, "log/settings.html", {})
+
+def team_stats(request):
+    return render(request, "log/team_stats.html", {})
+
+def team(request):
+    return render(request, "log/team.html", {})
+
+def workout_templates(request):
+    return render(request, "log/workout_templates.html", {})
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -29,20 +50,6 @@ def login_view(request):
             return HttpResponse("invalid login")
     return render(request, "log/login.html", {})
 
-def athlete(request):
-    return render(request, "log/athlete.html", {})
-
-def calendar(request):
-    return render(request, "log/calendar.html", {})
-
-def race_analysis(request):
-    return render(request, "log/race_analysis.html", {})
-
-def settings(request):
-    return render(request, "log/settings.html", {})
-
-def team_stats(request):
-    return render(request, "log/team_stats.html", {})
-
-def team(request):
-    return render(request, "log/team.html", {})
+def logout_view(request):
+    logout(request)
+    return render(request, "log/logout.html", {})

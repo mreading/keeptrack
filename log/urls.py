@@ -13,4 +13,7 @@ urlpatterns = [
     url(r'^settings/$', views.settings, name='settings'),
     url(r'^team_stats/$', views.team_stats, name='team_stats'),
     url(r'^team/$', views.team, name='team'),
+    url(r'^login/$', views.login_view, name='login'),
+    url(r'^logout/$', views.logout_view, name='logout'),
+    url(r'^workout_templates/$', views.workout_templates, name='workout_templates'),
 ]
