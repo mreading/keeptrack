@@ -5,3 +5,12 @@
 #footer {
   background-color: grey;
 }
+
+#page {
+  border: 1px solid black;
+}
+
+.module_container {
+  border: 1px solid black;
+  margin: 5px;
+}

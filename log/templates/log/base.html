@@ -5,20 +5,22 @@
 </head>
 <div>
   <div id="jumbotron">
-    {% if user.is_authenticated %}
-      <p> Hi {{ user.first_name }}</p>
-      <a href="/log/logout/">Logout</a>
-    {% else %}
-      <a href="/log/login/">Login</a>
-      <a href="/log/signup/">Signup</a>
-    {% endif %}
-      Keep Track Jumbotron
+    <div id="user_stuff">
+      {% if user.is_authenticated %}
+        <a href="/log/athlete/"> Hi {{ user.first_name }}</p>
+        <a href="/log/logout/">Logout</a>
+      {% else %}
+        <a href="/log/login/">Login</a>
+        <a href="/log/signup/">Signup</a>
+      {% endif %}
+    </div>
     <div id="navbar">
       <a href="/log/team/">TEAM</a>
       <a href="/log/workout_templates/">WORKOUTS</a>
       <a href="/log/calendar/">CALENDAR</a>
       <a href="/log/team_stats/">STATS</a>
     </div>
+
   </div>
 </div>
   <div id="content_container">
