@@ -24,7 +24,11 @@ def settings(request):
     return render(request, "log/settings.html", {})
 
 def team_stats(request):
-    return render(request, "log/team_stats.html", {})
+    athletes = Athlete.objects.all()
+    context = {
+        'athletes': athletes
+    }
+    return render(request, "log/team_stats.html", context)
 
 def team(request):
     return render(request, "log/team.html", {})

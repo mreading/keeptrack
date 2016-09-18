@@ -5,20 +5,45 @@
 </head>
 <div>
   <div id="jumbotron">
-    <div id="user_stuff">
+
+    <div id="authentication">
       {% if user.is_authenticated %}
-        <a href="/log/athlete/"> Hi {{ user.first_name }}</p>
-        <a href="/log/logout/">Logout</a>
+        <a class="auth" href="/log/athlete/"> Hi {{ user.first_name }}</p>
+        <a  class="auth" href="/log/logout/">Logout</a>
       {% else %}
-        <a href="/log/login/">Login</a>
-        <a href="/log/signup/">Signup</a>
+        <a class="auth" href="/log/login/">Login</a>
+        <a  class="auth" href="/log/signup/">Signup</a>
       {% endif %}
     </div>
+
+    <div id="site_title">
+      <a href="/log">
+        <!-- <img src="http://i.imgur.com/uFqTuKx.png"> -->
+        <img src="http://i.imgur.com/JZLVCcl.png">
+      </a>
+    </div>
+
     <div id="navbar">
-      <a href="/log/team/">TEAM</a>
-      <a href="/log/workout_templates/">WORKOUTS</a>
-      <a href="/log/calendar/">CALENDAR</a>
-      <a href="/log/team_stats/">STATS</a>
+      <a class='navtab' href="/log/team/">
+        <div>
+          TEAM
+        </div>
+      </a>
+      <a class='navtab' href="/log/workout_templates/">
+        <div>
+          WORKOUTS
+        </div>
+      </a>
+      <a class='navtab' href="/log/calendar/">
+        <div>
+          CALENDAR
+        </div>
+      </a>
+      <a class='navtab' href="/log/team_stats/">
+        <div>
+          STATS
+        </div>
+      </a>
     </div>
 
   </div>
@@ -29,6 +54,6 @@
   </div>
 
   <div id="footer">
-    This is the footer
+    <a id="github_link" href="https://github.com/jhpierce/keeptrack">GITHUB</a>
   </div>
 </body>

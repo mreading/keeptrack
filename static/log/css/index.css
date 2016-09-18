@@ -1,9 +1,28 @@
 #jumbotron {
-  background-color: grey;
+  background-color: black;
+  height:80px;
 }
 
-#footer {
-  background-color: grey;
+#authentication {
+  float:right;
+}
+
+.auth {
+  color:grey;
+}
+
+#site_title {
+  text-align:center;
+}
+
+a {
+  text-decoration: none;
+  font-family: "Abel"
+}
+
+.navtab {
+  display:inline-block;
+  color:grey;
 }
 
 #page {
@@ -13,4 +32,12 @@
 .module_container {
   border: 1px solid black;
   margin: 5px;
+}
+
+#footer {
+  background-color: black;
+}
+
+#github_link {
+  color:grey;
 }
