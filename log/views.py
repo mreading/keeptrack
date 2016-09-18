@@ -53,3 +53,35 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return render(request, "log/logout.html", {})
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            user = User.objects.create_user(data['username'], data['email'], data['password'])
+            user.first_name = data['first_name']
+            user.last_name = data['last_name']
+
+            print data['is_coach']
+            if data['is_coach'] == True:
+                print "was coach"
+                coach = Coach.objects.create(user_id=user.id)
+                user.coach = coach
+            else:
+                print "was athlete"
+                athlete = Athlete.objects.create(
+                    user_id=user.id,
+                    graduation_year=data['graduation_year'],
+                    )
+                user.athlete = athlete
+
+            user.save()
+            user = authenticate(username=data['username'], password=data['password'])
+            login(request, user)
+            return redirect("/log", {})
+        else:
+            return render(request, "log/signup.html", {'form':form})
+    else:
+        form = SignupForm()
+        return render(request, "log/signup.html", {'form':form})

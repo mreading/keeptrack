@@ -1,0 +1,13 @@
+{% extends 'log/base.html' %}
+
+{% block content %}
+
+  <form action="/log/signup/" method="post" autocomplete="off">
+    {% csrf_token %}
+    {{ form.errors }}
+    {{ form.non_field_errors }}
+    {{ form.as_p }}
+    <input type="submit" value="Sign up" />
+  </form>
+
+{% endblock %}
