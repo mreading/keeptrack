@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 def index(request):
     return render(request, "log/team.html", {})
 
+# MIKEY TEST COMMENT
 def athlete(request):
     return render(request, "log/athlete.html", {})
 
@@ -30,6 +31,7 @@ def team_stats(request):
     }
     return render(request, "log/team_stats.html", context)
 
+#testing git hey mikeyyyyyyyy
 def team(request):
     return render(request, "log/team.html", {})
 
