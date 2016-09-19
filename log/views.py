@@ -30,6 +30,7 @@ def team_stats(request):
     }
     return render(request, "log/team_stats.html", context)
 
+#testing git hey mikeyyyyyyyy
 def team(request):
     return render(request, "log/team.html", {})
 

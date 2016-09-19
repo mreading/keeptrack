@@ -59,12 +59,11 @@ class CrossTrain(models.Model):
     def __str__(self):
         return self.sport + ' (Cross training)'
 
-
 class IntervalRun(models.Model):
     activity = models.ForeignKey(Activity)
     warmup = models.FloatField()
     cooldown = models.FloatField()
-    total_distance = models.FloatField()        
+    total_distance = models.FloatField()
 
 class Rep(models.Model):
     interval_run = models.ForeignKey(IntervalRun)
