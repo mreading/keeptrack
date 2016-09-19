@@ -1,0 +1,24 @@
+#jumbotron {
+  background-color: black;
+  height:80px;
+}
+
+#authentication {
+  float:right;
+}
+
+.auth {
+  color:grey;
+}
+
+#site_title {
+  text-align:center;
+}
+
+#footer {
+  background-color: black;
+}
+
+#github_link {
+  color:grey;
+}

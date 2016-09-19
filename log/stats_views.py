@@ -7,10 +7,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-#@login_required(login_url='/log/login/')
-def index(request):
-    return render(request, "log/team.html", {})
-
-
-def settings(request):
-    return render(request, "log/settings.html", {})
+def team_stats(request):
+    athletes = Athlete.objects.all()
+    context = {
+        'athletes': athletes
+    }
+    return render(request, "log/team_stats.html", context)

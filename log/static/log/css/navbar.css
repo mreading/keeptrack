@@ -2,3 +2,8 @@ a {
   text-decoration: none;
   font-family: "Abel"
 }
+
+.navtab {
+  display:inline-block;
+  color:grey;
+}
