@@ -31,6 +31,7 @@ def team_stats(request):
     }
     return render(request, "log/team_stats.html", context)
 
+#testing git hey mikeyyyyyyyy
 def team(request):
     return render(request, "log/team.html", {})
 
@@ -67,19 +68,20 @@ def signup(request):
             user = User.objects.create_user(data['username'], data['email'], data['password'])
             user.first_name = data['first_name']
             user.last_name = data['last_name']
+            team = Team.objects.get(id=int(data['team']))
 
             # Depending on whether the person signing up is a coach or an
             # athlete, different objects need to be created.
-            print data['is_coach']
             if data['is_coach'] == True:
                 print "was coach"
-                coach = Coach.objects.create(user_id=user.id)
+                coach = Coach.objects.create(user_id=user.id, team=team)
                 user.coach = coach
             else:
                 print "was athlete"
                 athlete = Athlete.objects.create(
                     user_id=user.id,
                     graduation_year=data['graduation_year'],
+                    team = team
                     #Probably other stuff here
                     )
                 user.athlete = athlete

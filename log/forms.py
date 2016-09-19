@@ -10,3 +10,8 @@ class SignupForm(forms.Form):
     email = forms.EmailField(max_length=100, label="Email")
     is_coach = forms.BooleanField(required=False, label="Are you a coach?")
     graduation_year = forms.IntegerField(label="Graduation Year")
+    team = forms.IntegerField(
+        widget=forms.Select(
+            choices=Team.objects.all().values_list('id', 'school_name')
+            )
+         )
