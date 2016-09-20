@@ -5,24 +5,26 @@ div.pagetitle {
 }
 
 #test {
+  text-align: left;
   font-size: 200%;
-  color: #5a5a5a;
+  color: black;
   padding-bottom: 5px;
   font-weight: normal;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 
 #page {
-  border: 1px solid #5a5a5a;
+  border: 1px solid black;
   padding: 10px;
   border-radius: 5px;
 
 }
 .module_container {
-  border: 1px solid #5a5a5a;
+  border: 1px solid black;
   border-radius: 5px;
   margin: 5px;
   padding: 20px;
-  color: #5a5a5a;
+  color: black;
 }
 
 #content_container {
