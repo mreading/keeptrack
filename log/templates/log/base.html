@@ -17,6 +17,24 @@
     <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"-->
   </head>
 
+  <!-- Navigation -->
+  <div class="nav">
+    <div class="container-fluid">
+      <ul class="pull-left nav nav-pills">
+        {% if user.is_athlete %}
+        <li><a href="#">Athlete option</a></li>
+        {% endif %}
+        <li><a href="#">Team</a></li>
+        <li><a href="#">Workouts</a></li>
+        <li><a href="#">Calendar</a></li>
+        <li><a href="#">Stats</a></li>
+        {% if user.is_coach %}
+        <li><a href="#">Coach option</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+
   <!-- BODY -->
   <body>
     <script src="jquery.min.js"></script>
@@ -34,18 +52,6 @@
            <a  class="auth" href="/log/signup/">Signup</a>
          {% endif %}
        </div>
-     </div>
-   </div>
-
-   <!-- Navigation -->
-   <div class="nav">
-     <div class="container-fluid">
-       <ul class="pull-left nav nav-pills">
-         <li><a href="#">Team</a></li>
-         <li><a href="#">Workouts</a></li>
-         <li><a href="#">Calendar</a></li>
-         <li><a href="#">Stats</a></li>
-       </ul>
      </div>
    </div>
 

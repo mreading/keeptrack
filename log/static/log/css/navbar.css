@@ -1,22 +1,20 @@
 .nav {
   background-color: white;
-  padding-top: 0px;
-  padding-bottom: 10px;
 }
 
 .nav .container-fluid {
-  padding-top: 0px;
+  text-align: center;
+  padding-top: 5px;
   padding-bottom: 5px;
 }
 
 .nav a {
   color: #5a5a5a;
-  font-size: 11px;
+  font-size: 15px;
   font-weight: bold;
   text-transform: uppercase;
 }
 
 .nav li {
   display: inline;
-  padding-top: 0px;
 }

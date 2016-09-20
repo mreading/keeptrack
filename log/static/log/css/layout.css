@@ -1,8 +1,31 @@
-#page {
-  border: 1px solid black;
+div.pagetitle {
+  padding-left: 5px;
+  text-transform: capitalize;
+  color: #5a5a5a;
 }
 
+#test {
+  font-size: 200%;
+  color: #5a5a5a;
+  padding-bottom: 5px;
+  font-weight: normal;
+}
+
+#page {
+  border: 1px solid #5a5a5a;
+  padding: 10px;
+  border-radius: 5px;
+
+}
 .module_container {
-  border: 1px solid black;
+  border: 1px solid #5a5a5a;
+  border-radius: 5px;
   margin: 5px;
+  padding: 20px;
+  color: #5a5a5a;
+}
+
+#content_container {
+  padding-left: 20px;
+  padding-right: 10px;
 }
