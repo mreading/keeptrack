@@ -1,9 +1,22 @@
-a {
-  text-decoration: none;
-  font-family: "Abel"
+.nav {
+  background-color: white;
+  padding-top: 0px;
+  padding-bottom: 10px;
 }
 
-.navtab {
-  display:inline-block;
-  color:grey;
+.nav .container-fluid {
+  padding-top: 0px;
+  padding-bottom: 5px;
+}
+
+.nav a {
+  color: #5a5a5a;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.nav li {
+  display: inline;
+  padding-top: 0px;
 }

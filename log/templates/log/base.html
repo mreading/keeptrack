@@ -1,62 +1,62 @@
-{% load staticfiles %}
-<head>
-  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Abel" />
-  <link rel="stylesheet" type="text/css", href="{% static 'log/css/index.css' %}" />
-  <link rel="stylesheet" type="text/css", href="{% static 'log/css/header_footer.css' %}" />
-  <link rel="stylesheet" type="text/css", href="{% static 'log/css/layout.css' %}" />
-  <link rel="stylesheet" type="text/css", href="{% static 'log/css/navbar.css' %}" />
-</head>
 <div>
-  <div id="jumbotron">
 
-    <div id="authentication">
-      {% if user.is_authenticated %}
-        <a class="auth" href="/log/athlete/"> Hi {{ user.first_name }}</p>
-        <a  class="auth" href="/log/logout/">Logout</a>
-      {% else %}
-        <a class="auth" href="/log/login/">Login</a>
-        <a  class="auth" href="/log/signup/">Signup</a>
-      {% endif %}
+  <!-- Core CSS -->
+  {% load staticfiles %}
+  <head>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Abel" />
+    <link rel="stylesheet" type="text/css", href="{% static 'log/css/index.css' %}" />
+    <link rel="stylesheet" type="text/css", href="{% static 'log/css/header_footer.css' %}" />
+    <link rel="stylesheet" type="text/css", href="{% static 'log/css/layout.css' %}" />
+    <link rel="stylesheet" type="text/css", href="{% static 'log/css/navbar.css' %}" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- Optional theme -->
+    <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"-->
+    <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"-->
+  </head>
+
+  <!-- BODY -->
+  <body>
+    <script src="jquery.min.js"></script>
+    <!--script src="???></script-->
+
+    <!-- Jumbotron -->
+    <div class="jumbotron">
+     <div class="container-fluid">
+       <div id="authentication">
+         {% if user.is_authenticated %}
+           <a class="auth" href="/log/athlete/"> Hi {{ user.first_name }}</a>
+           <a  class="auth" href="/log/logout/">Logout</a>
+         {% else %}
+           <a class="auth" href="/log/login/">Login</a>
+           <a  class="auth" href="/log/signup/">Signup</a>
+         {% endif %}
+       </div>
+     </div>
+   </div>
+
+   <!-- Navigation -->
+   <div class="nav">
+     <div class="container-fluid">
+       <ul class="pull-left nav nav-pills">
+         <li><a href="#">Team</a></li>
+         <li><a href="#">Workouts</a></li>
+         <li><a href="#">Calendar</a></li>
+         <li><a href="#">Stats</a></li>
+       </ul>
+     </div>
+   </div>
+
+   <div id="content_container">
+      {% block content %}
+      {% endblock %}
+   </div>
+
+    <div class="footer">
+      <a id="github_link" href="https://github.com/jhpierce/keeptrack">GITHUB</a>
     </div>
+  </body>
 
-    <div id="site_title">
-      <a href="/log">
-        <!-- <img src="http://i.imgur.com/uFqTuKx.png"> -->
-        <img src="http://i.imgur.com/JZLVCcl.png">
-      </a>
-    </div>
-
-    <div id="navbar">
-      <a class='navtab' href="/log/team/">
-        <div>
-          TEAM
-        </div>
-      </a>
-      <a class='navtab' href="/log/workout_templates/">
-        <div>
-          WORKOUTS
-        </div>
-      </a>
-      <a class='navtab' href="/log/calendar/">
-        <div>
-          CALENDAR
-        </div>
-      </a>
-      <a class='navtab' href="/log/team_stats/">
-        <div>
-          STATS
-        </div>
-      </a>
-    </div>
-
-  </div>
 </div>
-  <div id="content_container">
-    {% block content %}
-    {% endblock %}
-  </div>
-
-  <div id="footer">
-    <a id="github_link" href="https://github.com/jhpierce/keeptrack">GITHUB</a>
-  </div>
-</body>
