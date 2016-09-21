@@ -53,7 +53,6 @@ def create_run(run_type, activity, data):
         )
     run.save()
 
-
 def athlete(request):
     athlete = Athlete.objects.get(user=request.user)
     # print Coach.objects.get(user=request.user)
@@ -100,3 +99,14 @@ def add(request, run_type):
         'run_type':run_type
     }
     return render(request, "log/add_run.html", context)
+
+def activity_detail(request, activity_id):
+    activity = Activity.objects.get(id=activity_id)
+    workout = NormalRun.objects.get(activity=activity)
+
+
+    context = {
+        'workout':workout,
+        'type':activity_type
+    }
+    return render(request, "log/activity_detail.html", context)

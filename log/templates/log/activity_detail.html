@@ -1,0 +1,19 @@
+{% extends 'log/base.html' %}
+
+{% block content %}
+  {% ifequal type "NormalRun" %}
+    was normal run!
+  {% endif %}
+
+  {% ifequal type "IntervalRun" %}
+    was interval run!
+  {% endif %}
+
+  {% ifequal type "CrossTrain" %}
+    was cross train!
+  {% endif %}
+
+  {% ifequal type "Event" %}
+    was a meet!
+  {% endif %}
+{% endblock %}

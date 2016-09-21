@@ -13,7 +13,9 @@
     </div>
     <div class="module_container">
       {% for r in normal_runs %}
-        <p>{{ r }}</p>
+        <a href="/log/athlete/activity_detail/{{ r.activity_id }}">
+          <p>{{ r }}</p>
+        </a>
       {% endfor %}
     </div>
     <div class="module_container">
