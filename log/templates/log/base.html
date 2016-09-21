@@ -21,23 +21,24 @@
   <div class="nav">
     <div class="container-fluid">
       <ul class="pull-left nav nav-pills">
-        {% if user.is_athlete %}
-        <li><a href="#">Athlete option</a></li>
-        {% endif %}
-        <li><a href="#">Team</a></li>
-        <li><a href="#">Workouts</a></li>
-        <li><a href="#">Calendar</a></li>
-        <li><a href="#">Stats</a></li>
-        {% if user.is_coach %}
-        <li><a href="#">Coach option</a></li>
-        {% endif %}
+        <!-- Unfortunately, this method of determining whether the
+        user is a coach or an athlete doesn't work... not sure how to make
+        it work. What I did is set up a Coach and an Athlete relation,
+        foreignkeyed to the built in (regrettable un-extendable) User
+        model. -->
+          <li><a href="/log/athlete/">Athlete</a></li>
+          <li><a href="/log/workout_templates/">Workouts</a></li>
+          <li><a href="/log/team/">Team</a></li>
+          <li><a href="/log/calendar/">Calendar</a></li>
+          <li><a href="/log/team_stats/">Stats</a></li>
+
       </ul>
     </div>
   </div>
 
   <!-- BODY -->
   <body>
-    <script src="jquery.min.js"></script>
+    <!-- <script src="jquery.min.js"></script> -->
     <!--script src="???></script-->
 
     <!-- Jumbotron -->
