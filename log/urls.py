@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^logout/$', auth_views.logout_view, name='logout'),
     url(r'^signup/$', auth_views.signup, name='signup'),
     url(r'^workout_templates/$', workout_views.workout_templates, name='workout_templates'),
+    url(r'^athlete/add/(?P<run_type>[a-z]+)/$', athlete_views.add, name='add'),
 ]
