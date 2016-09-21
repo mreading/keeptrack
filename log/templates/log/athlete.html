@@ -2,17 +2,17 @@
 
 {% block content %}
   Athlete page
-  <a href="/log/athlete/add/normal/">Normal Run</a>
-  <a href="/log/athlete/add/intervals/">Interval Workout</a>
-  <a href="/log/athlete/add/xtrain/">Cross Train</a>
-  <a href="/log/athlete/add/race/">Meet</a>
+  <a href="/log/athlete/add/NormalRun/">Normal Run</a>
+  <a href="/log/athlete/add/IntervalRun/">Interval Workout</a>
+  <a href="/log/athlete/add/CrossTrain/">Cross Train</a>
+  <a href="/log/athlete/add/Event/">Meet</a>
   <div id="page">
     <div class="module_container">
       Mileage
       -graph here-
     </div>
     <div class="module_container">
-      {% for r in normal_runs %}
+      {% for r in all_runs %}
         <a href="/log/athlete/activity_detail/{{ r.activity_id }}">
           <p>{{ r }}</p>
         </a>

@@ -1,19 +1,43 @@
 {% extends 'log/base.html' %}
 
 {% block content %}
-  {% ifequal type "NormalRun" %}
-    was normal run!
-  {% endif %}
+  {{ activity.act_type }}
+  {% ifequal activity.act_type "NormalRun" %}
+    <div .class="activity_detail_container">
+      {{ workout.distance }}
+      {{ workout.duration }}
+    </div>
+  {% endifequal %}
 
-  {% ifequal type "IntervalRun" %}
-    was interval run!
-  {% endif %}
+  {% ifequal activity.act_type "IntervalRun" %}
+    <div .class="activity_detail_container">
+      {{ workout.warmup }}
+      {{ workout.cooldown }}
+      {{ workout.total_distance }}
 
-  {% ifequal type "CrossTrain" %}
-    was cross train!
-  {% endif %}
+      {% for rep in reps %}
+        {{ rep.distance }}
+        {{ rep.duration }}
+        {{ rep.goal_pace }}
+      {% endfor %}
+    </div>
+  {% endifequal %}
 
-  {% ifequal type "Event" %}
-    was a meet!
-  {% endif %}
+  {% ifequal activity.act_type "CrossTrain" %}
+    <div .class="activity_detail_container">
+      {{ workout.distance }}
+      {{ workout.duration }}
+      workout.sport
+    </div>
+  {% endifequal %}
+
+  {% ifequal activity.act_type "Event" %}
+    <div .class="activity_detail_container">
+      {{ workout.distance }}
+      {{ workout.duration }}
+      more stuff about the meet here
+    </div>
+  {% endifequal %}
+
+  {{ activity.comments }}
 {% endblock %}

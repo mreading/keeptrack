@@ -8,46 +8,46 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 def get_post_form(run_type, request):
-    if run_type == "normal":
+    if run_type == "NormalRun":
         return AddNormalForm(request)
-    elif run_type == "intervals":
+    elif run_type == "IntervalRun":
         return AddIntervalForm(request)
-    elif run_type == "xtrain":
+    elif run_type == "CrossTrain":
         return AddXtrainForm(request)
     else:
         return AddEventForm(request)
 
 def get_form(run_type):
-    if run_type == "normal":
+    if run_type == "NormalRun":
         return AddNormalForm()
-    elif run_type == "intervals":
+    elif run_type == "IntervalRun":
         return AddIntervalForm()
-    elif run_type == "xtrain":
+    elif run_type == "CrossTrain":
         return AddXtrainForm()
     else:
         return AddEventForm()
 
 def create_run(run_type, activity, data):
-    if run_type == "normal":
+    if run_type == "NormalRun":
         run = NormalRun.objects.create(
             activity=activity,
             distance=data['distance'],
             duration=data['duration']
         )
-    elif run_type == "intervals":
+    elif run_type == "IntervalRun":
         pass
-    elif run_type == "xtrain":
+    elif run_type == "CrossTrain":
         run = CrossTrain.objects.create(
             activity=activity,
             distance=data['distance'],
-            duration=data['time'],
+            duration=data['duration'],
             sport=data['sport']
         )
     else:
         run = Event.objects.create(
             activity=activity,
             distance=data['distance'],
-            duration=data['time'],
+            duration=data['duration'],
             location=data['location'],
             place=data['place']
         )
@@ -59,12 +59,16 @@ def athlete(request):
 
     activities = Activity.objects.filter(athlete=athlete).order_by('date')
 
-    normal_runs = []
+    all_runs = []
     for a in activities:
-        normal_runs += NormalRun.objects.filter(activity=a)
-    print normal_runs
+        all_runs += NormalRun.objects.filter(activity=a)
+        all_runs += CrossTrain.objects.filter(activity=a)
+        all_runs += IntervalRun.objects.filter(activity=a)
+        all_runs += Event.objects.filter(activity=a)
+
+    print all_runs
     context = {
-        'normal_runs':normal_runs
+        'all_runs':all_runs
     }
     #------------------ mileage graph -----------------------
 
@@ -74,14 +78,17 @@ def athlete(request):
     return render(request, "log/athlete.html", context)
 
 def add(request, run_type):
+    print "RUN TYPE: "
+    print run_type
     athlete = Athlete.objects.get(user=request.user)
     if request.method == 'POST':
-        form = get_post_form(run_type, request.POST)
+        form = get_post_form(str(run_type), request.POST)
         if form.is_valid():
             data = form.cleaned_data
             activity = Activity.objects.create(
                 athlete=athlete,
                 date=data['date'],
+                act_type=run_type
             )
             activity.save()
             create_run(run_type, activity, data)
@@ -102,11 +109,21 @@ def add(request, run_type):
 
 def activity_detail(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
-    workout = NormalRun.objects.get(activity=activity)
-
+    print activity.act_type
+    reps = None
+    if activity.act_type == 'NormalRun':
+        workout = NormalRun.objects.get(activity=activity)
+    elif activity.act_type == 'IntervalRun':
+        workout = IntervalRun.objects.get(activity=activity)
+        reps = Rep.objects.filter(IntervalRun=workout).order_by('position')
+    elif activity.act_type == 'CrossTrain':
+        workout = CrossTrain.objects.get(activity=activity)
+    elif activity.act_type == 'Event':
+        workout = Event.objects.get(activity=activity)
 
     context = {
         'workout':workout,
-        'type':activity_type
+        'activity':activity,
+        'reps':reps
     }
     return render(request, "log/activity_detail.html", context)
