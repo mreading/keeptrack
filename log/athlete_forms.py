@@ -1,9 +1,10 @@
 from django.forms import *
 from django import forms
 from .models import *
+from datetime import date
 
 class AddNormalForm(forms.Form):
-    date = forms.DateField()
+    date = forms.DateField(initial=date.today)
     distance = forms.FloatField()
     time = models.DurationField()
 
