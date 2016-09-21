@@ -6,7 +6,7 @@ from datetime import date
 class AddNormalForm(forms.Form):
     date = forms.DateField(initial=date.today)
     distance = forms.FloatField()
-    time = models.DurationField()
+    duration = forms.DurationField()
 
 class AddIntervalForm(forms.Form):
     pass
@@ -14,12 +14,12 @@ class AddIntervalForm(forms.Form):
 class AddXtrainForm(forms.Form):
     date = forms.DateField()
     distance = forms.FloatField()
-    time = forms.DurationField()
+    duration = forms.DurationField()
     sport = forms.CharField(max_length=20)
 
 class AddRaceForm(forms.Form):
     date = forms.DateField()
     distance = forms.FloatField()
-    time = forms.DurationField()
+    duration = forms.DurationField()
     location = forms.CharField(max_length=100)
     place = forms.IntegerField()

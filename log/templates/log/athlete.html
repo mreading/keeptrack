@@ -12,7 +12,9 @@
       -graph here-
     </div>
     <div class="module_container">
-      Recent Workouts
+      {% for r in normal_runs %}
+        <p>{{ r }}</p>
+      {% endfor %}
     </div>
     <div class="module_container">
       Statistics?

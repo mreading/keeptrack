@@ -27,23 +27,65 @@ def get_form(run_type):
     else:
         return AddRaceForm()
 
+def create_run(run_type, activity, data):
+    if run_type == "normal":
+        run = NormalRun.objects.create(
+            activity=activity,
+            distance=data['distance'],
+            duration=data['duration']
+        )
+    elif run_type == "intervals":
+        pass
+    elif run_type == "xtrain":
+        run = CrossTrain.objects.create(
+            activity=activity,
+            distance=data['distance'],
+            duration=data['time'],
+            sport=data['sport']
+        )
+    else:
+        run = Race.objects.create(
+            activity=activity,
+            distance=data['distance'],
+            duration=data['time'],
+            location=data['location'],
+            place=data['place']
+        )
+    run.save()
+
+
 def athlete(request):
     athlete = Athlete.objects.get(user=request.user)
     # print Coach.objects.get(user=request.user)
 
-    activities = Activity.objects.filter(athlete=athlete)
-    print activities
+    activities = Activity.objects.filter(athlete=athlete).order_by('date')
+
+    normal_runs = []
+    for a in activities:
+        normal_runs += NormalRun.objects.filter(activity=a)
+    print normal_runs
+    context = {
+        'normal_runs':normal_runs
+    }
     #------------------ mileage graph -----------------------
+
     #------------------ recent workouts ---------------------
 
-    return render(request, "log/athlete.html", {})
+
+    return render(request, "log/athlete.html", context)
 
 def add(request, run_type):
+    athlete = Athlete.objects.get(user=request.user)
     if request.method == 'POST':
-        form = get_form(run_type, request.POST)
+        form = get_post_form(run_type, request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            #save the data
+            activity = Activity.objects.create(
+                athlete=athlete,
+                date=data['date'],
+            )
+            activity.save()
+            create_run(run_type, activity, data)
             return redirect("/log/athlete", {})
         else:
             context = {

@@ -25,14 +25,14 @@ class Coach(models.Model):
 class Activity(models.Model):
     athlete = models.ForeignKey(Athlete)
     date = models.DateField()
-    #time
+    #duration
     #weather
     #gpx file
 
 class Race(models.Model):
     activity = models.ForeignKey(Activity)
     distance = models.FloatField()
-    time = models.DurationField()
+    duration = models.DurationField()
     location = models.CharField(max_length=100)
     place = models.PositiveIntegerField()
 
@@ -42,7 +42,7 @@ class Race(models.Model):
 class NormalRun(models.Model):
     activity = models.ForeignKey(Activity)
     distance = models.FloatField()
-    time = models.DurationField
+    duration = models.DurationField(null=True)
     #shoe
     #surface
     #route
@@ -53,7 +53,7 @@ class NormalRun(models.Model):
 class CrossTrain(models.Model):
     activity = models.ForeignKey(Activity)
     distance = models.FloatField()
-    time = models.DurationField()
+    duration = models.DurationField()
     sport = models.CharField(max_length = 20)
 
     def __str__(self):
@@ -68,7 +68,7 @@ class IntervalRun(models.Model):
 class Rep(models.Model):
     interval_run = models.ForeignKey(IntervalRun)
     distance = models.FloatField()
-    time = models.DurationField()
+    duration = models.DurationField()
     goal_pace = models.FloatField()
     position = models.PositiveIntegerField()
 
