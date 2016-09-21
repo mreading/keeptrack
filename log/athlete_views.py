@@ -88,7 +88,8 @@ def add(request, run_type):
             activity = Activity.objects.create(
                 athlete=athlete,
                 date=data['date'],
-                act_type=run_type
+                act_type=run_type,
+                comment=data['comments']
             )
             activity.save()
             create_run(run_type, activity, data)

@@ -10,6 +10,7 @@ class AddNormalForm(forms.Form):
         )
     distance = forms.FloatField()
     duration = forms.DurationField()
+    comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
 class AddIntervalForm(forms.Form):
     pass
@@ -22,6 +23,7 @@ class AddXtrainForm(forms.Form):
     distance = forms.FloatField()
     duration = forms.DurationField()
     sport = forms.CharField(max_length=20)
+    comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
 class AddEventForm(forms.Form):
     date = forms.DateField(
@@ -32,3 +34,4 @@ class AddEventForm(forms.Form):
     duration = forms.DurationField()
     location = forms.CharField(max_length=100)
     place = forms.IntegerField()
+    comments = forms.CharField(max_length=1500,widget=forms.Textarea)
