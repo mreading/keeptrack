@@ -7,5 +7,5 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-def race_analysis(request):
-    return render(request, "log/race_analysis.html", {})
+def event_analysis(request):
+    return render(request, "log/event_analysis.html", {})

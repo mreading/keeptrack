@@ -5,7 +5,7 @@ from . import views
 from . import athlete_views
 from . import auth_views
 from . import calendar_views
-from . import race_views
+from . import meet_views
 from . import stats_views
 from . import team_views
 from . import workout_views
@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^login/$', auth_views.login_view, name='login'),
     url(r'^athlete/$', athlete_views.athlete, name='athlete'),
     url(r'^calendar/$', calendar_views.calendar, name='calendar'),
-    url(r'^race_analysis/$', race_views.race_analysis, name='race_analysis'),
+    url(r'^event_analysis/$', meet_views.event_analysis, name='event_analysis'),
     url(r'^settings/$', views.settings, name='settings'),
     url(r'^team_stats/$', stats_views.team_stats, name='team_stats'),
     url(r'^team/$', team_views.team, name='team'),

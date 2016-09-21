@@ -29,15 +29,19 @@ class Activity(models.Model):
     #weather
     #gpx file
 
-class Race(models.Model):
+class Meet(models.Model):
+    location = models.CharField(max_length=100)
+
+class Event(models.Model):
     activity = models.ForeignKey(Activity)
+    meet = models.ForeignKey(Meet)
+    gender = models.CharField(max_length=1)
     distance = models.FloatField()
     duration = models.DurationField()
-    location = models.CharField(max_length=100)
     place = models.PositiveIntegerField()
 
     def __str__(self):
-        return 'Race at ' + self.location
+        return 'Event at ' + self.location
 
 class NormalRun(models.Model):
     activity = models.ForeignKey(Activity)

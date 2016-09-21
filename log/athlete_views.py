@@ -15,7 +15,7 @@ def get_post_form(run_type, request):
     elif run_type == "xtrain":
         return AddXtrainForm(request)
     else:
-        return AddRaceForm(request)
+        return AddEventForm(request)
 
 def get_form(run_type):
     if run_type == "normal":
@@ -25,7 +25,7 @@ def get_form(run_type):
     elif run_type == "xtrain":
         return AddXtrainForm()
     else:
-        return AddRaceForm()
+        return AddEventForm()
 
 def create_run(run_type, activity, data):
     if run_type == "normal":
@@ -44,7 +44,7 @@ def create_run(run_type, activity, data):
             sport=data['sport']
         )
     else:
-        run = Race.objects.create(
+        run = Event.objects.create(
             activity=activity,
             distance=data['distance'],
             duration=data['time'],
