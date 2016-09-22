@@ -62,7 +62,8 @@ class AddNormalForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     units = forms.ChoiceField(choices=unit_choices)
-    duration = MultiValueDurationField()
+    # duration = MultiValueDurationField()
+    duration = DurationField()    
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
 class AddXtrainForm(forms.Form):

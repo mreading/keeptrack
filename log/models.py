@@ -40,6 +40,12 @@ class Event(models.Model):
     meet = models.ForeignKey(Meet)
     gender = models.CharField(max_length=1)
     distance = models.FloatField()
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     duration = models.DurationField()
     place = models.PositiveIntegerField()
 
@@ -49,6 +55,12 @@ class Event(models.Model):
 class NormalRun(models.Model):
     activity = models.ForeignKey(Activity)
     distance = models.FloatField()
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     duration = models.DurationField(null=True)
     #shoe
     #surface
@@ -60,6 +72,12 @@ class NormalRun(models.Model):
 class CrossTrain(models.Model):
     activity = models.ForeignKey(Activity)
     distance = models.FloatField()
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     duration = models.DurationField()
     sport = models.CharField(max_length = 20)
 
@@ -75,6 +93,12 @@ class IntervalRun(models.Model):
 class Rep(models.Model):
     interval_run = models.ForeignKey(IntervalRun)
     distance = models.FloatField()
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    units = models.CharField(choices=unit_choices, default="Meters", max_length=12)
     duration = models.DurationField()
     goal_pace = models.FloatField(null=True)
     position = models.PositiveIntegerField()

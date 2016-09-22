@@ -124,13 +124,12 @@ def add(request, run_type):
 
 def activity_detail(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
-    print activity.act_type
     reps = None
     if activity.act_type == 'NormalRun':
         workout = NormalRun.objects.get(activity=activity)
     elif activity.act_type == 'IntervalRun':
         workout = IntervalRun.objects.get(activity=activity)
-        reps = Rep.objects.filter(IntervalRun=workout).order_by('position')
+        reps = Rep.objects.filter(interval_run=workout).order_by('position')
     elif activity.act_type == 'CrossTrain':
         workout = CrossTrain.objects.get(activity=activity)
     elif activity.act_type == 'Event':
