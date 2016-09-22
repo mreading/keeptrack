@@ -43,8 +43,8 @@ class AddRepForm(forms.Form):
     """
     Form for individual user links
     """
-    anchor = forms.FloatField(required=False)
-    url = forms.DurationField(required=False)
+    rep_duration = forms.FloatField(required=False)
+    rep_rest = forms.DurationField(required=False)
 
 class AddIntervalForm(forms.Form):
     """
@@ -61,31 +61,31 @@ class AddIntervalForm(forms.Form):
 class BaseAddRepFormSet(BaseFormSet):
     def clean(self):
         """
-        Adds validation to check that no two links have the same anchor or URL
-        and that all links have both an anchor and URL.
+        Adds validation to check that no two links have the same rep_duration or rep_rest
+        and that all links have both an rep_duration and rep_rest.
         """
         if any(self.errors):
             return
 
-        anchors = []
-        urls = []
+        rep_durations = []
+        rep_rests = []
         duplicates = False
 
         for form in self.forms:
             if form.cleaned_data:
-                anchor = form.cleaned_data['anchor']
-                url = form.cleaned_data['url']
+                rep_duration = form.cleaned_data['rep_duration']
+                rep_rest = form.cleaned_data['rep_rest']
 
 
 
-                # Check that all links have both an anchor and URL
-                if url and not anchor:
+                # Check that all links have both an rep_duration and rep_rest
+                if rep_rest and not rep_duration:
                     raise forms.ValidationError(
-                        'All links must have an anchor.',
-                        code='missing_anchor'
+                        'All links must have an rep_duration.',
+                        code='missing_rep_duration'
                     )
-                elif anchor and not url:
+                elif rep_duration and not rep_rest:
                     raise forms.ValidationError(
-                        'All links must have a URL.',
-                        code='missing_URL'
+                        'All links must have a rep_rest.',
+                        code='missing_rep_rest'
                     )

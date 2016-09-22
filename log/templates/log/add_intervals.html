@@ -20,21 +20,21 @@
               {{ error|escape }}
           {% endfor %}
       {% endif %}
-      
+
       {{ rep_formset.management_form }}
 
       {% for rep_form in rep_formset %}
           <div class="link-formset">
-              {{ rep_form.anchor }}
-              {% if rep_form.anchor.errors %}
-                  {% for error in rep_form.anchor.errors %}
+              {{ rep_form.rep_duration }}
+              {% if rep_form.rep_duration.errors %}
+                  {% for error in rep_form.rep_duration.errors %}
                       {{ error|escape }}
                   {% endfor %}
               {% endif %}
 
-              {{ rep_form.url }}
-              {% if rep_form.url.errors %}
-                  {% for error in rep_form.url.errors %}
+              {{ rep_form.rep_rest }}
+              {% if rep_form.rep_rest.errors %}
+                  {% for error in rep_form.rep_rest.errors %}
                       {{ error|escape }}
                   {% endfor %}
               {% endif %}
@@ -47,7 +47,7 @@
           {% endfor %}
       {% endif %}
 
-      <input type="submit" value="Update Profile" class="button"/>
+      <input type="submit" value="Save Workout" class="button"/>
   </form>
 
   <!-- Include formset plugin - including jQuery dependency -->
@@ -55,8 +55,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.js"></script>
   <script>
       $('.link-formset').formset({
-          addText: 'add link',
-          deleteText: 'remove'
+          addText: 'Add Repeat',
+          deleteText: 'Remove'
       });
   </script>
 

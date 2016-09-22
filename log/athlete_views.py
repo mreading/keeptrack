@@ -122,25 +122,6 @@ def add(request, run_type):
     }
     return render(request, "log/add_run.html", context)
 
-# def add_intervals(request):
-#     # extra_reps = get_reps(request)
-#     if request.method == 'POST':
-#         extras = request.POST.get('extra_field_count')
-#         print extras
-#         form = AddIntervalForm(request.POST, extra=extras)
-#         return render(request, "log/add_intervals.html", {'form':form})
-
-        # if form.is_valid():
-        #     for i in extras:
-        #         print "HUH"
-        #     return HttpResponse("Success!")
-        # else:
-        #     print "wasn't valid"
-        #     print form.errors
-    print "well here"
-    form = AddIntervalForm()
-    return render(request, "log/add_intervals.html", {'form':form})
-
 def activity_detail(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
     print activity.act_type
@@ -162,63 +143,30 @@ def activity_detail(request, activity_id):
     }
     return render(request, "log/activity_detail.html", context)
 
-
-
-
-
-
-
-
-
-
-
-
 def add_intervals(request):
-    """
-    Allows a user to update their own profile.
-    """
-    user = request.user
-
+    athlete = Athlete.objects.get(user=request.user)
+    
     # Create the formset, specifying the form and formset we want to use.
     AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet)
-
-    # Get our existing link data for this user.  This is used as initial data.
-    # user_links = UserLink.objects.filter(user=user).order_by('anchor')
-    # link_data = [{'anchor': l.anchor, 'url': l.url}
-    #                 for l in user_links]
 
     if request.method == 'POST':
         IntervalForm = AddIntervalForm(request.POST, user=user)
         rep_formset = AddRepFormSet(request.POST)
 
         if IntervalForm.is_valid() and rep_formset.is_valid():
-            # Save user info
-            user.first_name = IntervalForm.cleaned_data.get('first_name')
-            user.last_name = IntervalForm.cleaned_data.get('last_name')
-            user.save()
+            # Save Workout info
+            interval_data = IntervalForm.cleaned_data
+            rep_data = rep_formset.cleaned_data
 
-            # Now save the data for each form in the formset
-            new_links = []
-
+            print len(rep_formset)
             for rep_form in rep_formset:
-                anchor = rep_form.cleaned_data.get('anchor')
-                url = rep_form.cleaned_data.get('url')
+                rep_duration = rep_form.cleaned_data.get('rep_duration')
+                rep_rest = rep_form.cleaned_data.get('rep_rest')
 
-            #     if anchor and url:
-            #         new_links.append(UserLink(user=user, anchor=anchor, url=url))
-            #
-            # try:
-            #     with transaction.atomic():
-            #         #Replace the old with the new
-            #         UserLink.objects.filter(user=user).delete()
-            #         UserLink.objects.bulk_create(new_links)
+                print rep_duration
+                print rep_rest
 
-                    # And notify our users that it worked
-                    # messages.success(request, 'You have updated your profile.')
-
-            # except IntegrityError: #If the transaction failed
-            #     messages.error(request, 'There was an error saving your profile.')
-            #     return redirect(reverse('profile-settings'))
+            return redirect("/log/athlete", {})
 
     else:
         IntervalForm = AddIntervalForm(user=user)
