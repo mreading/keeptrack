@@ -145,31 +145,52 @@ def activity_detail(request, activity_id):
 
 def add_intervals(request):
     athlete = Athlete.objects.get(user=request.user)
-    
+
     # Create the formset, specifying the form and formset we want to use.
     AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet)
 
     if request.method == 'POST':
-        IntervalForm = AddIntervalForm(request.POST, user=user)
+        IntervalForm = AddIntervalForm(request.POST, user=request.user)
         rep_formset = AddRepFormSet(request.POST)
 
         if IntervalForm.is_valid() and rep_formset.is_valid():
             # Save Workout info
             interval_data = IntervalForm.cleaned_data
-            rep_data = rep_formset.cleaned_data
 
-            print len(rep_formset)
-            for rep_form in rep_formset:
-                rep_duration = rep_form.cleaned_data.get('rep_duration')
-                rep_rest = rep_form.cleaned_data.get('rep_rest')
+            #Create the Activity
+            activity = Activity.objects.create(
+                athlete=athlete,
+                date=interval_data['date'],
+                comment=interval_data['comments'],
+                act_type='IntervalRun'
+            )
+            activity.save()
 
-                print rep_duration
-                print rep_rest
+            #Create the interval object
+            interval_workout = IntervalRun.objects.create(
+                activity=activity,
+                warmup=interval_data['warmup'],
+                cooldown=interval_data['cooldown'],
+                total_distance=0.00
+            )
+            interval_workout.save()
+
+            #create a number of reps for the inverval workout
+            for i in range(len(rep_formset)):
+                rep = Rep.objects.create(
+                    interval_run=interval_workout,
+                    distance=rep_formset[i].cleaned_data.get('rep_distance'),
+                    duration=rep_formset[i].cleaned_data.get('rep_duration'),
+                    rest=rep_formset[i].cleaned_data.get('rep_rest'),
+                    position=i
+                )
+                rep.save()
+
 
             return redirect("/log/athlete", {})
 
     else:
-        IntervalForm = AddIntervalForm(user=user)
+        IntervalForm = AddIntervalForm(user=request.user)
         rep_formset = AddRepFormSet()
 
     context = {

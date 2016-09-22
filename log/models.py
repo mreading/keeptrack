@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.utils import timezone
+from datetime import timedelta
 
 class Team(models.Model):
     school_name = models.CharField(max_length=50)
@@ -75,8 +76,9 @@ class Rep(models.Model):
     interval_run = models.ForeignKey(IntervalRun)
     distance = models.FloatField()
     duration = models.DurationField()
-    goal_pace = models.FloatField()
+    goal_pace = models.FloatField(null=True)
     position = models.PositiveIntegerField()
+    rest = models.DurationField(default=timedelta(seconds=1234))
 
 class Thread(models.Model):
     activity = models.ForeignKey(Activity)

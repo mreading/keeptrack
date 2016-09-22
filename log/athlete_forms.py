@@ -13,10 +13,6 @@ class AddNormalForm(forms.Form):
     duration = forms.DurationField()
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
-class AddIntervalForm(forms.Form):
-    warm_up = forms.FloatField()
-    cool_down = forms.FloatField()
-
 class AddXtrainForm(forms.Form):
     date = forms.DateField(
         initial=date.today,
@@ -41,10 +37,11 @@ class AddEventForm(forms.Form):
 
 class AddRepForm(forms.Form):
     """
-    Form for individual user links
+    Form for individual repeats
     """
-    rep_duration = forms.FloatField(required=False)
-    rep_rest = forms.DurationField(required=False)
+    rep_distance = forms.FloatField()
+    rep_duration = forms.DurationField()
+    rep_rest = forms.DurationField()
 
 class AddIntervalForm(forms.Form):
     """
@@ -57,6 +54,11 @@ class AddIntervalForm(forms.Form):
 
         self.fields['warmup'] = forms.CharField()
         self.fields['cooldown'] = forms.CharField()
+        self.fields['comments'] = forms.CharField(max_length=1500,widget=forms.Textarea)
+        self.fields['date'] = forms.DateField(
+            initial=date.today,
+            widget=forms.widgets.DateInput(attrs={'type': 'date'})
+        )
 
 class BaseAddRepFormSet(BaseFormSet):
     def clean(self):

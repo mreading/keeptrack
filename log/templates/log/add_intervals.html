@@ -5,6 +5,9 @@
   <form method="post">
       {% csrf_token %}
 
+      <label>Date</label>
+      {{ IntervalForm.date }}
+
       <label>Warm up</label>
       {{ IntervalForm.warmup }}
       {% if IntervalForm.first_name.errors %}
@@ -13,18 +16,19 @@
           {% endfor %}
       {% endif %}
 
-      <label>Cool Down</label>
-      {{ IntervalForm.cooldown }}
-      {% if IntervalForm.last_name.errors %}
-          {% for error in IntervalForm.last_name.errors %}
-              {{ error|escape }}
-          {% endfor %}
-      {% endif %}
-
       {{ rep_formset.management_form }}
 
       {% for rep_form in rep_formset %}
           <div class="link-formset">
+            <label>Distance</label>
+              {{ rep_form.rep_distance }}
+              {% if rep_form.rep_distance.errors %}
+                  {% for error in rep_form.rep_distance.errors %}
+                      {{ error|escape }}
+                  {% endfor %}
+              {% endif %}
+              
+            <label>Time</label>
               {{ rep_form.rep_duration }}
               {% if rep_form.rep_duration.errors %}
                   {% for error in rep_form.rep_duration.errors %}
@@ -32,12 +36,14 @@
                   {% endfor %}
               {% endif %}
 
+            <label>Rest</label>
               {{ rep_form.rep_rest }}
               {% if rep_form.rep_rest.errors %}
                   {% for error in rep_form.rep_rest.errors %}
                       {{ error|escape }}
                   {% endfor %}
               {% endif %}
+
           </div>
       {% endfor %}
 
@@ -46,6 +52,19 @@
               {{ error|escape }}
           {% endfor %}
       {% endif %}
+
+      <div>
+        <label>Cool Down</label>
+        {{ IntervalForm.cooldown }}
+        {% if IntervalForm.last_name.errors %}
+            {% for error in IntervalForm.last_name.errors %}
+                {{ error|escape }}
+            {% endfor %}
+        {% endif %}
+      </div>
+
+      <label>Comments</label>
+      {{ IntervalForm.comments }}
 
       <input type="submit" value="Save Workout" class="button"/>
   </form>
