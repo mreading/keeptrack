@@ -27,7 +27,14 @@
                       {{ error|escape }}
                   {% endfor %}
               {% endif %}
-              
+
+              {{ rep_form.rep_units }}
+              {% if rep_form.rep_units.errors %}
+                  {% for error in rep_form.rep_units.errors %}
+                      {{ error|escape }}
+                  {% endfor %}
+              {% endif %}
+
             <label>Time</label>
               {{ rep_form.rep_duration }}
               {% if rep_form.rep_duration.errors %}

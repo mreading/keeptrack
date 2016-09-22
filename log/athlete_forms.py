@@ -4,13 +4,65 @@ from .models import *
 from datetime import date
 from django.forms.formsets import BaseFormSet
 
+class SplitDurationWidget(forms.MultiWidget):
+    """
+    A Widget that splits duration input into four number input boxes.
+    """
+    def __init__(self, attrs=None):
+        widgets = (forms.NumberInput(attrs=attrs),
+                   forms.NumberInput(attrs=attrs),
+                   forms.NumberInput(attrs=attrs),
+                   forms.NumberInput(attrs=attrs))
+        super(SplitDurationWidget, self).__init__(widgets, attrs)
+
+    def decompress(self, value):
+        if value:
+            d = value
+            if d:
+                hours = d.seconds // 3600
+                minutes = (d.seconds % 3600) // 60
+                seconds = d.seconds % 60
+                return [int(d.days), int(hours), int(minutes), int(seconds)]
+        return [0, 1, 0, 0]
+
+class MultiValueDurationField(forms.MultiValueField):
+    widget = SplitDurationWidget
+
+    def __init__(self, *args, **kwargs):
+        fields = (
+         forms.IntegerField(),
+         forms.IntegerField(),
+         forms.IntegerField(),
+         forms.IntegerField(),
+        )
+        super(MultiValueDurationField, self).__init__(
+            fields=fields,
+            require_all_fields=True, *args, **kwargs
+            )
+
+    def compress(self, data_list):
+        if len(data_list) == 4:
+            return timedelta(
+                days=int(data_list[0]),
+                hours=int(data_list[1]),
+                minutes=int(data_list[2]),
+                seconds=int(data_list[3]))
+        else:
+            return timedelta(0)
+
 class AddNormalForm(forms.Form):
     date = forms.DateField(
         initial=date.today,
         widget=forms.widgets.DateInput(attrs={'type': 'date'})
         )
     distance = forms.FloatField()
-    duration = forms.DurationField()
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    units = forms.ChoiceField(choices=unit_choices)
+    duration = MultiValueDurationField()
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
 class AddXtrainForm(forms.Form):
@@ -19,6 +71,13 @@ class AddXtrainForm(forms.Form):
         widget=forms.widgets.DateInput(attrs={'type': 'date'})
         )
     distance = forms.FloatField()
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers'),
+        ('Laps', 'Laps'),
+    ]
+    units = forms.ChoiceField(choices=unit_choices)
     duration = forms.DurationField()
     sport = forms.CharField(max_length=20)
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
@@ -29,6 +88,12 @@ class AddEventForm(forms.Form):
         widget=forms.widgets.DateInput(attrs={'type': 'date'})
     )
     distance = forms.FloatField()
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    units = forms.ChoiceField(choices=unit_choices)
     duration = forms.DurationField()
     location = forms.CharField(max_length=100)
     place = forms.IntegerField()
@@ -40,6 +105,12 @@ class AddRepForm(forms.Form):
     Form for individual repeats
     """
     rep_distance = forms.FloatField()
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    rep_units = forms.ChoiceField(choices=unit_choices, initial='Meters')
     rep_duration = forms.DurationField()
     rep_rest = forms.DurationField()
 
@@ -52,8 +123,8 @@ class AddIntervalForm(forms.Form):
         self.user = kwargs.pop('user', None)
         super(AddIntervalForm, self).__init__(*args, **kwargs)
 
-        self.fields['warmup'] = forms.CharField()
-        self.fields['cooldown'] = forms.CharField()
+        self.fields['warmup'] = forms.CharField()   #assumed to be in miles
+        self.fields['cooldown'] = forms.CharField() #assumed to be in miles
         self.fields['comments'] = forms.CharField(max_length=1500,widget=forms.Textarea)
         self.fields['date'] = forms.DateField(
             initial=date.today,
