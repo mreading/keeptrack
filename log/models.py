@@ -88,6 +88,13 @@ class IntervalRun(models.Model):
     activity = models.ForeignKey(Activity)
     warmup = models.FloatField()
     cooldown = models.FloatField()
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    wu_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
+    cd_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     total_distance = models.FloatField()
 
 class Rep(models.Model):

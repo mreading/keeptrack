@@ -8,66 +8,34 @@
       <label>Date</label>
       {{ IntervalForm.date }}
 
+      <div>
       <label>Warm up</label>
       {{ IntervalForm.warmup }}
-      {% if IntervalForm.first_name.errors %}
-          {% for error in IntervalForm.first_name.errors %}
-              {{ error|escape }}
-          {% endfor %}
-      {% endif %}
-
+      {{ IntervalForm.wu_units }}
+      </div>
+      <div>
       {{ rep_formset.management_form }}
-
+      <label>Add Repeats</label>
       {% for rep_form in rep_formset %}
           <div class="link-formset">
             <label>Distance</label>
               {{ rep_form.rep_distance }}
-              {% if rep_form.rep_distance.errors %}
-                  {% for error in rep_form.rep_distance.errors %}
-                      {{ error|escape }}
-                  {% endfor %}
-              {% endif %}
-
               {{ rep_form.rep_units }}
-              {% if rep_form.rep_units.errors %}
-                  {% for error in rep_form.rep_units.errors %}
-                      {{ error|escape }}
-                  {% endfor %}
-              {% endif %}
 
             <label>Time</label>
               {{ rep_form.rep_duration }}
-              {% if rep_form.rep_duration.errors %}
-                  {% for error in rep_form.rep_duration.errors %}
-                      {{ error|escape }}
-                  {% endfor %}
-              {% endif %}
 
             <label>Rest</label>
               {{ rep_form.rep_rest }}
-              {% if rep_form.rep_rest.errors %}
-                  {% for error in rep_form.rep_rest.errors %}
-                      {{ error|escape }}
-                  {% endfor %}
-              {% endif %}
 
           </div>
       {% endfor %}
-
-      {% if rep_formset.non_form_errors %}
-          {% for error in rep_formset.non_form_errors %}
-              {{ error|escape }}
-          {% endfor %}
-      {% endif %}
+      </div>
 
       <div>
         <label>Cool Down</label>
         {{ IntervalForm.cooldown }}
-        {% if IntervalForm.last_name.errors %}
-            {% for error in IntervalForm.last_name.errors %}
-                {{ error|escape }}
-            {% endfor %}
-        {% endif %}
+        {{ IntervalForm.cd_units }}
       </div>
 
       <label>Comments</label>

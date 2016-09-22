@@ -42,7 +42,8 @@ def create_run(run_type, activity, data):
         run = NormalRun.objects.create(
             activity=activity,
             distance=data['distance'],
-            duration=data['duration']
+            duration=data['duration'],
+            units=data['units'],
         )
     elif run_type == "IntervalRun":
         pass
@@ -51,7 +52,8 @@ def create_run(run_type, activity, data):
             activity=activity,
             distance=data['distance'],
             duration=data['duration'],
-            sport=data['sport']
+            sport=data['sport'],
+            units=data['units'],
         )
     else:
         run = Event.objects.create(
@@ -59,9 +61,34 @@ def create_run(run_type, activity, data):
             distance=data['distance'],
             duration=data['duration'],
             location=data['location'],
-            place=data['place']
+            place=data['place'],
+            units=data['units'],
         )
     run.save()
+
+def set_total_distance(interval_run):
+    reps = Rep.objects.filter(interval_run=interval_run)
+    total = 0
+    for r in reps:
+        total += get_miles(r)
+
+    if interval_run.wu_units == 'Miles':
+        total += interval_run.warmup
+    elif interval_run.wu_units == 'Kilometers':
+        total += kilometers_to_miles(interval_run.warmup)
+    elif interval_run.wu_units == 'Meters':
+        total += meters_to_miles(interval_run.warmup)
+
+    if interval_run.cd_units == 'Miles':
+        total += interval_run.cooldown
+    elif interval_run.cd_units == 'Kilometers':
+        total += kilometers_to_miles(interval_run.cooldown)
+    elif interval_run.cd_units == 'Meters':
+        total += meters_to_miles(interval_run.cooldown)
+
+    interval_run.total_distance = total
+    interval_run.save()
+
 
 def athlete(request):
     athlete = Athlete.objects.get(user=request.user)
@@ -125,6 +152,7 @@ def add(request, run_type):
 def activity_detail(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
     reps = None
+    print activity.act_type
     if activity.act_type == 'NormalRun':
         workout = NormalRun.objects.get(activity=activity)
     elif activity.act_type == 'IntervalRun':
@@ -169,7 +197,9 @@ def add_intervals(request):
             interval_workout = IntervalRun.objects.create(
                 activity=activity,
                 warmup=interval_data['warmup'],
+                wu_units=interval_data['wu_units'],
                 cooldown=interval_data['cooldown'],
+                cd_units=interval_data['cd_units'],
                 total_distance=0.00
             )
             interval_workout.save()
@@ -179,13 +209,15 @@ def add_intervals(request):
                 rep = Rep.objects.create(
                     interval_run=interval_workout,
                     distance=rep_formset[i].cleaned_data.get('rep_distance'),
+                    units=rep_formset[i].cleaned_data.get('rep_units'),
                     duration=rep_formset[i].cleaned_data.get('rep_duration'),
                     rest=rep_formset[i].cleaned_data.get('rep_rest'),
                     position=i
                 )
                 rep.save()
 
-
+            #Always assumed to be in miles
+            set_total_distance(interval_workout)
             return redirect("/log/athlete", {})
 
     else:

@@ -63,7 +63,7 @@ class AddNormalForm(forms.Form):
     ]
     units = forms.ChoiceField(choices=unit_choices)
     # duration = MultiValueDurationField()
-    duration = DurationField()    
+    duration = DurationField()
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
 class AddXtrainForm(forms.Form):
@@ -126,6 +126,21 @@ class AddIntervalForm(forms.Form):
 
         self.fields['warmup'] = forms.CharField()   #assumed to be in miles
         self.fields['cooldown'] = forms.CharField() #assumed to be in miles
+
+        unit_choices = [
+            ('Miles','Miles'),
+            ('Meters','Meters'),
+            ('Kilometers','Kilometers')
+        ]
+        self.fields['wu_units'] = forms.ChoiceField(
+            choices=unit_choices,
+            initial="Miles",
+            )
+        self.fields['cd_units'] = forms.ChoiceField(
+            choices=unit_choices,
+            initial="Miles",
+            )
+
         self.fields['comments'] = forms.CharField(max_length=1500,widget=forms.Textarea)
         self.fields['date'] = forms.DateField(
             initial=date.today,
