@@ -1,0 +1,70 @@
+{% extends 'log/base.html' %}
+
+{% block content %}
+
+  <form method="post">
+      {% csrf_token %}
+
+      <label>Warm up</label>
+      {{ IntervalForm.warmup }}
+      {% if IntervalForm.first_name.errors %}
+          {% for error in IntervalForm.first_name.errors %}
+              {{ error|escape }}
+          {% endfor %}
+      {% endif %}
+
+      <label>Cool Down</label>
+      {{ IntervalForm.cooldown }}
+      {% if IntervalForm.last_name.errors %}
+          {% for error in IntervalForm.last_name.errors %}
+              {{ error|escape }}
+          {% endfor %}
+      {% endif %}
+      
+      {{ rep_formset.management_form }}
+
+      {% for rep_form in rep_formset %}
+          <div class="link-formset">
+              {{ rep_form.anchor }}
+              {% if rep_form.anchor.errors %}
+                  {% for error in rep_form.anchor.errors %}
+                      {{ error|escape }}
+                  {% endfor %}
+              {% endif %}
+
+              {{ rep_form.url }}
+              {% if rep_form.url.errors %}
+                  {% for error in rep_form.url.errors %}
+                      {{ error|escape }}
+                  {% endfor %}
+              {% endif %}
+          </div>
+      {% endfor %}
+
+      {% if rep_formset.non_form_errors %}
+          {% for error in rep_formset.non_form_errors %}
+              {{ error|escape }}
+          {% endfor %}
+      {% endif %}
+
+      <input type="submit" value="Update Profile" class="button"/>
+  </form>
+
+  <!-- Include formset plugin - including jQuery dependency -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.formset/1.2.2/jquery.formset.js"></script>
+  <script>
+      $('.link-formset').formset({
+          addText: 'add link',
+          deleteText: 'remove'
+      });
+  </script>
+
+
+
+
+
+
+
+
+{% endblock %}
