@@ -140,12 +140,22 @@
                     row = options.formTemplate.clone(true).removeClass('formset-custom-template'),
                     buttonRow = $(this).parents('tr.' + options.formCssClass + '-add').get(0) || this;
                 applyExtraClasses(row, formCount);
+
+                // this is how you get the data before the form has been submitted.
+                // console.log(document.intervalform['form-0-rep_distance'].value)
+                console.log(document.intervalform);
                 row.insertBefore($(buttonRow)).show();
                 row.find('input,select,textarea,label').each(function() {
+                    console.log(options.prefix)
                     updateElementIndex($(this), options.prefix, formCount);
                 });
                 $('#id_' + options.prefix + '-TOTAL_FORMS').val(formCount + 1);
                 // If a post-add callback was supplied, call it with the added form:
+                console.log(formCount)
+                document.intervalform['form-'+(formCount).toString()+'-rep_distance'].value = document.intervalform['form-'+(formCount-1)+'-rep_distance'].value;
+                document.intervalform['form-'+(formCount).toString()+'-rep_duration'].value = document.intervalform['form-'+(formCount-1)+'-rep_duration'].value;
+                document.intervalform['form-'+(formCount).toString()+'-rep_rest'].value = document.intervalform['form-'+(formCount-1)+'-rep_rest'].value;
+                document.intervalform['form-'+(formCount).toString()+'-rep_units'].value = document.intervalform['form-'+(formCount-1)+'-rep_units'].value;
                 if (options.added) options.added(row);
                 return false;
             });
