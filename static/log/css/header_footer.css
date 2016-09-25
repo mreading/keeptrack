@@ -1,22 +1,27 @@
-#jumbotron {
-  background-color: black;
-  height:80px;
+.jumbotron {
+  height: 15%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url(http://i.imgur.com/JZLVCcl.png);
 }
 
-#authentication {
-  float:right;
+.jumbotron .container-fluid #authentication {
+  position: absolute;
+  right: 20px;
 }
 
 .auth {
-  color:grey;
+  color: grey;
 }
 
-#site_title {
-  text-align:center;
-}
-
-#footer {
-  background-color: black;
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  background-color: #efefef;
+  text-align: center;
 }
 
 #github_link {

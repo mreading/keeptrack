@@ -116,11 +116,8 @@ class AddRepForm(forms.Form):
     rep_rest = forms.DurationField()
 
 class AddIntervalForm(forms.Form):
-    """
-    Form for user to update their own profile details
-    (excluding links which are handled by a separate formset)
-    """
     def __init__(self, *args, **kwargs):
+        print "initializing interval form..."
         self.user = kwargs.pop('user', None)
         super(AddIntervalForm, self).__init__(*args, **kwargs)
 
@@ -153,9 +150,10 @@ class BaseAddRepFormSet(BaseFormSet):
         Adds validation to check that no two links have the same rep_duration or rep_rest
         and that all links have both an rep_duration and rep_rest.
         """
+        print "cleaning..."
         if any(self.errors):
             return
-
+        print "here"
         rep_durations = []
         rep_rests = []
         duplicates = False
@@ -164,8 +162,6 @@ class BaseAddRepFormSet(BaseFormSet):
             if form.cleaned_data:
                 rep_duration = form.cleaned_data['rep_duration']
                 rep_rest = form.cleaned_data['rep_rest']
-
-
 
                 # Check that all links have both an rep_duration and rep_rest
                 if rep_rest and not rep_duration:
