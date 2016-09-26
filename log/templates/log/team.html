@@ -8,10 +8,20 @@
       Current Week
     </div>
     <div class="module_container">
-      {% for athlete in athletes %}
-        <p>athlete</p>
-      {% endfor %}
-      Athletes
+      <h2>Athletes</h2>
+        <table>
+            <tr style="border: 1px solid black">
+                <!--NOTE: create hover-over that says username -->
+                <th>Username</th>
+                <th>Graduation Year</th>    
+            </tr>
+            <tr>
+            {% for athlete in athletes %}
+                <td>{{athlete.user}}</td>
+                <td>{{athlete.graduation_year}}</td>
+            {% endfor %}
+            </tr>
+        </table>
     </div>
     <div class="module_container">
       Races

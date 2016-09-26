@@ -14,6 +14,7 @@ class Team(models.Model):
         return self.school_name + ' (' + self.gender + ')'
 
 class Athlete(models.Model):
+    #QUESTION: should we bulk this class up? Name,Status, etc? OR do we modularize?
     #using a foreign key is a little dangerous, but there isn't another option
     team = models.ForeignKey(Team)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
