@@ -13,8 +13,8 @@ from . import workout_views
 import os
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^login/$', auth_views.login_view, name='login'),
+    url(r'^$', auth_views.login_view, name='login'),
+    url(r'^index/$', views.index, name='index'),
     url(r'^athlete/$', athlete_views.athlete, name='athlete'),
     url(r'^calendar/$', calendar_views.calendar, name='calendar'),
     url(r'^event_analysis/$', meet_views.event_analysis, name='event_analysis'),
@@ -27,5 +27,4 @@ urlpatterns = [
     url(r'^athlete/add/(?P<run_type>[a-zA-Z]+)/$', athlete_views.add, name='add'),
     url(r'^athlete/add_intervals/$', athlete_views.add_intervals, name='add'),
     url(r'^athlete/activity_detail/(?P<activity_id>[0-9]+)/$', athlete_views.activity_detail, name='activity_detail'),
-
 ]
