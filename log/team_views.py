@@ -10,10 +10,5 @@ from django.contrib.auth.models import User
 
 def team(request):
     athletes = Athlete.objects.all()
-    print athletes
-    print "hello"
-    return render(request, "log/team.html", {'athletes':athletes})
-
-def MyView(request):
-    athletes=Athlete.objects.all()
-    return render(request, "log/team.html", {'athletes':athletes})
+    meets = Event.objects.all()
+    return render(request, "log/team.html", {'athletes':athletes, 'meets':meets})
