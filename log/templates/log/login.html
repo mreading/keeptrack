@@ -1,25 +1,34 @@
-{% extends 'log/base.html' %}
-
-{% block content %}
+<body>
 
   {% if form.errors %}
     <p class="error">Sorry, that's not a valid username or password. Note that username and password are case sensitive</p>
   {% endif %}
 
-    <form action="/log/index/" method="post">
+  <!--{% if next %}
+    {% if user.is_authenticated %}
+        <p>Your account doesn't have access to this page. To proceed,
+          please login with an account that has access.</p>
+    {% else %}
+        <p>Please login to see this page.</p>
+    {% endif %}
+  {% endif %}-->
+
+    <form action="/log/index" method="post">
       {% csrf_token %}
       <div id="entry_container">
         <p>
-        <label for="username">User Name: </label>
-        <input type="text" name="username" value="" id="username">
-      </br>
-        <label for="password">Password: </label>
-        <input type="password" name="password" value="" id="password">
-      </br>
-        <input type="submit" value="login">
-        <input type="hidden" name="next" value="{{ request.GET.next }}" />
-      </p>
+          <label for="username">User Name: </label>
+          <input type="text" name="username" value="" id="username">
+        </br>
+        </br>
+          <label for="password">Password: </label>
+          <input type="password" name="password" value="" id="password">
+          </br>
+          <input type="submit" value="login">
+          <input type="hidden" name = "next" value="{{ request.GET.next }}" />
+        </p>
       </div>
     </form>
 
-{% endblock %}
+    <a  class="auth" href="/log/signup/">Signup</a>
+</body>

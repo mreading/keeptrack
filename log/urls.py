@@ -13,8 +13,10 @@ from . import workout_views
 import os
 
 urlpatterns = [
-    url(r'^$', auth_views.login_view, name='login'),
-    url(r'^index/$', views.index, name='index'),
+    #url(r'^$', auth_views.login_view, name='login'),
+    #url(r'^index/$', views.index, name='index'),
+    url(r'^$', views.index, name='index'),
+    url(r'^login/$', auth_views.login_view, name='login'),
     url(r'^athlete/$', athlete_views.athlete, name='athlete'),
     url(r'^calendar/$', calendar_views.calendar, name='calendar'),
     url(r'^event_analysis/$', meet_views.event_analysis, name='event_analysis'),
