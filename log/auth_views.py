@@ -15,7 +15,9 @@ def login_view(request):
         if user:
             if user.is_authenticated:
                 if user.is_active:
+                    print "logging in!!!"
                     login(request, user)
+                    return redirect("/log/")
                     if not request.POST.get('next'):
                         return redirect("/")
                     return redirect(request.POST.get('next'))
@@ -23,11 +25,13 @@ def login_view(request):
                     return HttpResponse("user not active")
             else:
                 return HttpResponse("invalid login")
+    else:
+        print "request method was not post"
     return render(request, "log/login.html", {})
 
 def logout_view(request):
     logout(request)
-    return render(request, "log/login.html", {})
+    return render(request, "log/logout.html", {})
 
 def signup(request):
     if request.method == 'POST':
