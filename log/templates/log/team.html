@@ -8,23 +8,58 @@
       Current Week
     </div>
     <div class="module_container">
-      <h2>Athletes</h2>
-        <table>
-            <tr style="border: 1px solid black">
-                <!--NOTE: create hover-over that says username -->
-                <th>Username</th>
-                <th>Graduation Year</th>    
-            </tr>
-            <tr>
+        <h2>Athletes</h2>
+        <hr>
+        <table id="athletes" width="100%">
+            <thead>
+                <tr>
+                    <!--NOTE: create hover-over that says username -->
+                    <!--Table should collapse on mobile version (or scroll) -->
+                    <th>First</th>
+                    <th>Last</th>
+                    <th>Grad Year</th>
+                    <th>Rank* </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
             {% for athlete in athletes %}
+            <tr>
                 <td>{{athlete.user}}</td>
                 <td>{{athlete.graduation_year}}</td>
-            {% endfor %}
             </tr>
+            {% endfor %}
+            </tbody>
         </table>
+        <hr>
+        <p>*Rank based on previous race results.</p>
     </div>
     <div class="module_container">
-      Races
+        <h2>Races</h2>
+        <hr>
+        <table id="races" width="100%">
+            <thead>
+                <tr>
+                    <!--NOTE: create hover-over that says username -->
+                    <!--Table should collapse on mobile version (or scroll) -->
+                    <th>Race</th>
+                    <th>Date</th>
+                    <th>Distance</th>
+                    <th>Rank</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for meet in meets %}
+            <tr>
+                <td>{{meet.meet}}</td>
+                <td>date</td>
+                <td>{{meet.distance}}</td>
+                <td>{{meet.place}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <hr>
     </div>
   </div>
 </div>
