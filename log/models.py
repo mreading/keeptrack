@@ -5,6 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 class Team(models.Model):
+    """ ex: Hamilton Men XC """
     school_name = models.CharField(max_length=50)
     gender = models.CharField(max_length=1)
     #conference
@@ -13,15 +14,19 @@ class Team(models.Model):
     def __str__(self):
         return self.school_name + ' (' + self.gender + ')'
 
+class Season(models.Model):
+    """ ex: Fall 2017 (athletes participate in seasons)"""
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+
 class Athlete(models.Model):
-    #QUESTION: should we bulk this class up? Name,Status, etc? OR do we modularize?
-    #using a foreign key is a little dangerous, but there isn't another option
-    team = models.ForeignKey(Team)
+    """ ex: Henry Whipple """
+    season = models.ManyToManyField(Season)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     graduation_year = models.PositiveIntegerField()
 
 class Coach(models.Model):
-    team = models.ForeignKey(Team)
+    """ Brett Hull """
+    team = models.ManyToManyField(Team)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Activity(models.Model):
