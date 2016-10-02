@@ -1,15 +1,21 @@
 {% extends 'log/base.html' %}
 
 {% block content %}
-  Athlete page
-  <a href="/log/athlete/add/NormalRun/">Normal Run</a>
-  <a href="/log/athlete/add_intervals/">Interval Workout</a>
-  <a href="/log/athlete/add/CrossTrain/">Cross Train</a>
-  <a href="/log/athlete/add/Event/">Meet</a>
+  <script type='text/javascript'>
+
+  </script>
+  <div>
+    <h2>{{ athlete_user.first_name }}</h2>
+    <div class='add_workout' z-index: 1;>
+      <a class='w_type' href="/log/athlete/add/NormalRun/">Normal Run</a>
+      <a class='w_type' href="/log/athlete/add_intervals/">Interval Workout</a>
+      <a class='w_type' href="/log/athlete/add/CrossTrain/">Cross Train</a>
+      <a class='w_type' href="/log/athlete/add/Event/">Meet</a>
+    </div>
+  </div>
   <div id="page">
     <div class="module_container">
-      Mileage
-      -graph here-
+      Mileage-graph here-
     </div>
     <div class="module_container">
       {% for r in all_runs %}

@@ -15,9 +15,11 @@ from django.shortcuts import redirect, render
 from .athlete_forms import AddRepForm, BaseAddRepFormSet, AddIntervalForm
 # from myapp.models import UserLink
 
-def athlete(request):
-    athlete = Athlete.objects.get(user=request.user)
+def athlete(request, user_id):
+    # athlete = Athlete.objects.get(user=request.user)
     # print Coach.objects.get(user=request.user)
+    user = User.objects.get(id=user_id)
+    athlete = Athlete.objects.get(user=user)
 
     activities = Activity.objects.filter(athlete=athlete).order_by('date')
 
@@ -30,7 +32,9 @@ def athlete(request):
 
     print all_runs
     context = {
-        'all_runs':all_runs
+        'all_runs':all_runs,
+        'athlete':athlete,
+        'athlete_user':user
     }
     #------------------ mileage graph -----------------------
 

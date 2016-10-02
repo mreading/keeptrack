@@ -24,10 +24,10 @@
             </thead>
             <tbody>
             {% for athlete in athletes %}
-            <tr>
-                <td>{{athlete.user}}</td>
-                <td>{{athlete.graduation_year}}</td>
-            </tr>
+              <tr>
+                <td><a href="/log/athlete/{{ athlete.user.id }}/">{{ athlete.user }}</a></td>
+                <td>{{ athlete.graduation_year }}</td>
+              </tr>
             {% endfor %}
             </tbody>
         </table>
