@@ -29,7 +29,7 @@ def generate_interval_workout(athlete, date):
     )
     activity.save()
 
-    units = ["Miles, Kilometers"]
+    units = ['Miles','Kilometers']
 
     interval_run = IntervalRun.objects.create(
         activity=activity,

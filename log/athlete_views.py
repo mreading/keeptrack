@@ -88,6 +88,7 @@ def activity_detail(request, activity_id):
     elif activity.act_type == 'Event':
         workout = Event.objects.get(activity=activity)
 
+
     context = {
         'workout':workout,
         'activity':activity,

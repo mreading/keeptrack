@@ -57,6 +57,7 @@ def set_total_distance(interval_run):
     for r in reps:
         total += get_miles(r)
 
+    #Calculate warm up distance
     if interval_run.wu_units == 'Miles':
         total += interval_run.warmup
     elif interval_run.wu_units == 'Kilometers':
@@ -64,6 +65,7 @@ def set_total_distance(interval_run):
     elif interval_run.wu_units == 'Meters':
         total += meters_to_miles(interval_run.warmup)
 
+    #Calculate cool down distance
     if interval_run.cd_units == 'Miles':
         total += interval_run.cooldown
     elif interval_run.cd_units == 'Kilometers':
