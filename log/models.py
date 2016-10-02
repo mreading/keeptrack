@@ -132,3 +132,4 @@ class Comment(models.Model):
     text = models.CharField(max_length=1500)
     position = models.IntegerField()
     private = models.BooleanField()
+    poster = models.ForeignKey(User)

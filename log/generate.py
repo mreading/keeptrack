@@ -28,6 +28,8 @@ def generate_interval_workout(athlete, date):
         act_type='IntervalRun'
     )
     activity.save()
+    thread = Thread.objects.create(activity=activity)
+    thread.save()
 
     units = ['Miles','Kilometers']
 
@@ -57,6 +59,8 @@ def generate_normal_workout(athlete, date):
         act_type='NormalRun'
     )
     activity.save()
+    thread = Thread.objects.create(activity=activity)
+    thread.save()
 
     distance = round(uniform(3.5, 13.8), 2)
     minutes = distance * uniform(.7, 1.3) * 7
@@ -79,6 +83,8 @@ def generate_xtrain_workout(athlete, date):
         act_type='CrossTrain'
     )
     activity.save()
+    thread = Thread.objects.create(activity=activity)
+    thread.save()
 
     distance = round(uniform(3.5, 13.8), 2)
     minutes = distance * uniform(.7, 1.3) * 7

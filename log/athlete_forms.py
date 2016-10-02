@@ -174,3 +174,6 @@ class BaseAddRepFormSet(BaseFormSet):
                         'All links must have a rep_rest.',
                         code='missing_rep_rest'
                     )
+
+class CommentForm(forms.Form):
+    text = forms.CharField(max_length=1500, widget=forms.Textarea)

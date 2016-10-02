@@ -62,6 +62,8 @@ def add(request, run_type):
                 comment=data['comments']
             )
             activity.save()
+            thread = Thread.objects.create(activity=activity)
+            thread.save()
             create_run(run_type, activity, data)
             return redirect("/log/athlete", {})
         else:
@@ -80,8 +82,9 @@ def add(request, run_type):
 
 def activity_detail(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
+    thread = Thread.objects.get(activity=activity)
+    comments = Comment.objects.filter(thread=thread).order_by('position')
     reps = None
-    print activity.act_type
     if activity.act_type == 'NormalRun':
         workout = NormalRun.objects.get(activity=activity)
     elif activity.act_type == 'IntervalRun':
@@ -93,10 +96,26 @@ def activity_detail(request, activity_id):
         workout = Event.objects.get(activity=activity)
 
 
+    if request.method == 'POST':
+        commentform = CommentForm(request.POST)
+        if commentform.is_valid():
+            data = commentform.cleaned_data
+            comment = Comment.objects.create(
+                thread=thread,
+                text=data['text'],
+                private=False,
+                position=len(Comment.objects.filter(thread=thread)),
+                poster=request.user
+                )
+            comment.save()
+
+    commentform = CommentForm()
     context = {
         'workout':workout,
         'activity':activity,
-        'reps':reps
+        'reps':reps,
+        'commentform':commentform,
+        'comments':comments
     }
     return render(request, "log/activity_detail.html", context)
 
@@ -122,6 +141,8 @@ def add_intervals(request):
                 act_type='IntervalRun'
             )
             activity.save()
+            thread = Thread.objects.create(activity=activity)
+            thread.save()
 
             #Create the interval object
             interval_workout = IntervalRun.objects.create(
