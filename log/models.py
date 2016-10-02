@@ -5,7 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 class Team(models.Model):
-    """ ex: Hamilton Men XC """
+    """ ex: Hamilton Men """
     school_name = models.CharField(max_length=50)
     gender = models.CharField(max_length=1)
     #conference
@@ -15,8 +15,15 @@ class Team(models.Model):
         return self.school_name + ' (' + self.gender + ')'
 
 class Season(models.Model):
-    """ ex: Fall 2017 (athletes participate in seasons)"""
+    """ ex: XC 2017 (athletes participate in seasons)"""
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    year = models.PositiveIntegerField()
+    sport_choices = [
+        ('Indoor Track and Field','ITF'),
+        ('Outdoor Track and Field','OTF'),
+        ('Cross Country','XC')
+    ]
+    sport = models.CharField(choices=sport_choices, max_length=3)
 
 class Athlete(models.Model):
     """ ex: Henry Whipple """
@@ -101,7 +108,7 @@ class IntervalRun(models.Model):
     ]
     wu_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     cd_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
-    total_distance = models.FloatField()
+    total_distance = models.FloatField(null=True)
 
 class Rep(models.Model):
     interval_run = models.ForeignKey(IntervalRun)

@@ -152,6 +152,7 @@
                 $('#id_' + options.prefix + '-TOTAL_FORMS').val(formCount + 1);
                 // If a post-add callback was supplied, call it with the added form:
                 console.log(formCount)
+                // When adding a rep, let the initial values be those of the previous rep
                 document.intervalform['form-'+(formCount).toString()+'-rep_distance'].value = document.intervalform['form-'+(formCount-1)+'-rep_distance'].value;
                 document.intervalform['form-'+(formCount).toString()+'-rep_duration'].value = document.intervalform['form-'+(formCount-1)+'-rep_duration'].value;
                 document.intervalform['form-'+(formCount).toString()+'-rep_rest'].value = document.intervalform['form-'+(formCount-1)+'-rep_rest'].value;
