@@ -1,3 +1,7 @@
+$(function(){
+  $("#athletes").tablesorter();
+});
+
 $("tr.athletes").hover(function() {
     $(this).css({"cursor": "pointer"})
 });
