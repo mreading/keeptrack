@@ -1,6 +1,9 @@
 {% extends 'log/base.html' %}
 {% load staticfiles %}
 {% block content %}
+
+
+
 <div>
   <h1 id="test"> Team Home Page </h1>
   <div id="page">
@@ -10,7 +13,7 @@
     <div class="module_container">
         <h2>Athletes</h2>
         <hr>
-        <table id="athletes" width="100%">
+        <table class="table table-hover" id="athletes">
             <thead>
                 <tr>
                     <!--NOTE: create hover-over that says username -->
@@ -24,9 +27,11 @@
             </thead>
             <tbody>
             {% for athlete in athletes %}
-              <tr>
-                <td><a href="/log/athlete/{{ athlete.user.id }}/">{{ athlete.user }}</a></td>
+              <tr class="athletes" id="{{athlete.user.id}}">
+                <td>{{ athlete.user.first_name }}</td>
+                <td>{{ athlete.user.last_name }}</td>
                 <td>{{ athlete.graduation_year }}</td>
+                <td></td>
               </tr>
             {% endfor %}
             </tbody>
@@ -63,4 +68,8 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript" src="/static/log/js/team.js"></script>
+
+
 {% endblock %}
