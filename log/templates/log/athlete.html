@@ -5,13 +5,15 @@
 
   </script>
   <div>
-    <h2>{{ athlete_user.first_name }}</h2>
-    <div class='add_workout'>
-      <a class='w_type' href="/log/athlete/add/NormalRun/">Add Normal Run</a>
-      <a class='w_type' href="/log/athlete/add_intervals/">Add Interval Workout</a>
-      <a class='w_type' href="/log/athlete/add/CrossTrain/">Add Cross Train</a>
-      <a class='w_type' href="/log/athlete/add/Event/">Add Meet</a>
-    </div>
+    <h2 id='test'>{{ athlete_user.first_name }} {{ athlete_user.last_name}}</h2>
+    {% ifequal athlete_user.id user.id %}
+      <div class='add_workout'>
+        <a class='w_type' href="/log/athlete/add/NormalRun/">Add Normal Run</a>
+        <a class='w_type' href="/log/athlete/add_intervals/">Add Interval Workout</a>
+        <a class='w_type' href="/log/athlete/add/CrossTrain/">Add Cross Train</a>
+        <a class='w_type' href="/log/athlete/add/Event/">Add Meet</a>
+      </div>
+    {% endifequal %}
   </div>
   <div id="page">
     <div class="module_container">

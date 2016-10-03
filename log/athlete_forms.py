@@ -176,4 +176,4 @@ class BaseAddRepFormSet(BaseFormSet):
                     )
 
 class CommentForm(forms.Form):
-    text = forms.CharField(max_length=1500, widget=forms.Textarea)
+    text = forms.CharField(max_length=1500, widget=forms.Textarea(attrs={'style':'height: 30px; width: 100\%'}))
