@@ -1,4 +1,5 @@
 {% extends 'log/base.html' %}
+{% load staticfiles %}
 
 {% block content %}
   <script type='text/javascript'>
@@ -17,7 +18,28 @@
   </div>
   <div id="page">
     <div class="module_container">
-      Mileage-graph here-
+
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.bundle.js"></script>
+
+      <script>
+        // set up variables for line chart
+        var lineChart;
+        var CHART;
+        Chart.defaults.global.defaultColor = '#ffffff'
+      </script>
+
+
+      <div id="graph_container">
+        <canvas id="mileage_canvas" height="300" width="500">
+          <script>
+            var g = {{ graph|safe }}
+          </script>
+        </canvas>
+        <script src="{% static 'log/js/mileage.js' %}"></script>
+      </div>
+
+
     </div>
     <div class="module_container">
       {% for r in all_runs %}
