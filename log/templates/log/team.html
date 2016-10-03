@@ -5,19 +5,30 @@
 
 
 <div>
-  <h1 id="test"> Team Home Page </h1>
+  <h1> Team Home Page </h1>
   <div id="page">
+    
+    <!----------------------------------------------------------------------->
+    <!--Schedule for the upcoming week -->
+    <!----------------------------------------------------------------------->  
     <div class="module_container">
       Current Week
     </div>
+      
+    <!----------------------------------------------------------------------->
+    <!--Schedule for the upcoming week -->
+    <!-----------------------------------------------------------------------> 
     <div class="module_container">
         <h2>Athletes</h2>
         <hr>
+        
+        <!------------------------------------------------------------------->
+        <!-- Athlete Table -->
+        <!------------------------------------------------------------------->
         <table class="table table-hover" id="athletes">
             <thead>
                 <tr>
-                    <!--NOTE: create hover-over that says username -->
-                    <!--Table should collapse on mobile version (or scroll) -->
+                    <!--NOTE: Table should collapse on mobile version (or scroll) -->
                     <th>First</th>
                     <th>Last</th>
                     <th>Grad Year</th>
@@ -36,13 +47,25 @@
             {% endfor %}
             </tbody>
         </table>
+        
+        <!------------------------------------------------------------------->
+        <!-- Table Notes -->
+        <!------------------------------------------------------------------->
         <hr>
         <p>*Rank based on previous race results.</p>
     </div>
+      
+    <!----------------------------------------------------------------------->
+    <!--Schedule for upcoming meets -->
+    <!----------------------------------------------------------------------->
     <div class="module_container">
-        <h2>Races</h2>
+        <h2>Meets</h2>
         <hr>
-        <table id="races" width="100%">
+        
+        <!------------------------------------------------------------------->
+        <!-- Athlete Table -->
+        <!------------------------------------------------------------------->
+        <table id="meets" width="100%">
             <thead>
                 <tr>
                     <!--NOTE: create hover-over that says username -->
