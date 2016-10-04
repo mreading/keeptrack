@@ -182,6 +182,17 @@ def generate():
 
     generate_athletes(season)
 
+    #Generate four superusers, one for each of us
+    names_passes = [
+        ('jack', 'iamjack'),
+        ('lexie', 'iamlexie'),
+        ('mikey', 'iammikey'),
+        ('emily', 'iamemily')
+    ]
+
+    for name, password in names_passes:
+        user = User.objects.create_user(name, name+'@hamilton.edu', 'iam'+name, is_staff=True, is_superuser=True)
+
 def clean_database():
     Team.objects.all().delete()
     Season.objects.all().delete()
