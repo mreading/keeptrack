@@ -31,41 +31,12 @@ def athlete(request, user_id):
         all_runs += Event.objects.filter(activity=a)
 
     #------------------ mileage graph -----------------------
-    lst = [10, 20, 15, 14, 13, 18, 9]
-    graph = {
-        'labels': ['one', 'two', 'three', 'four', 'five', 'six', 'seven'],
-        'datasets': [
-            {
-                'label': athlete.user.first_name,
-                'fill': True,
-                'lineTension': .3,
-                'backgroundColor': "#96afe9",
-                'borderColor': "#2a58c3", #line color
-                'borderCapStyle': 'butt',
-                'borderDash': [],
-                'borderDashOffset': 0.0,
-                'borderJoinStyle': 'miter',
-                'pointBorderColor': "#2a58c3",
-                'pointBackgroundColor': "#fff",
-                'pointBorderWidth': 1,
-                'pointHoverRadius': 5,
-                'pointHoverBackgroundColor': "#99ff99",
-                'pointHoverBorderColor': "r#2a58c3",
-                'pointHoverBorderWidth': 2,
-                'pointRadius': 1,
-                'pointHitRadius': 10,
-                'data': lst,
-                'spanGaps': True,
-            }
-        ]
-    }
     #------------------ recent workouts ---------------------
 
     context = {
         'all_runs':all_runs,
         'athlete':athlete,
         'athlete_user':user,
-        'graph':json.dumps(graph)
     }
 
     return render(request, "log/athlete.html", context)
