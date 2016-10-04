@@ -22,12 +22,12 @@
       <div id="graph_container">
         <!--Load the AJAX API-->
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <!--Load the script with the actual mileage graph in it -->
         <script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
           <!--Div that will hold the pie chart-->
           <div id="chart_div"></div>
       </div>
-
-
+      
     </div>
     <div class="module_container">
       {% for r in all_runs %}

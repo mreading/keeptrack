@@ -12,8 +12,8 @@ function drawChart() {
 
   // Create the data table.
   var data = new google.visualization.DataTable();
-  data.addColumn('string', 'Topping');
-  data.addColumn('number', 'Slices');
+  data.addColumn('string', 'Day');
+  data.addColumn('number', 'Miles');
   data.addRows([
     ['Monday', 13],
     ['Tuesday', 7],
@@ -26,7 +26,7 @@ function drawChart() {
 
   // Set chart options
   var options = {'title':'Mileage',
-                 'width':500,
+                 'width':600,
                  'height':300};
 
   // Instantiate and draw our chart, passing in some options.

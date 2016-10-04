@@ -73,5 +73,5 @@ def set_total_distance(interval_run):
     elif interval_run.cd_units == 'Meters':
         total += meters_to_miles(interval_run.cooldown)
 
-    interval_run.total_distance = total
+    interval_run.distance = total
     interval_run.save()
