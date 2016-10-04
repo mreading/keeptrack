@@ -100,7 +100,7 @@ def generate_xtrain_workout(athlete, date):
 def generate_workout_data(athlete):
     #get dates for last 7 days
     dates = []
-    for i in range(7):
+    for i in range(50):
         dates.append(datetime.date.today() - datetime.timedelta(i))
 
     #set the type of workouts to generate
@@ -114,12 +114,12 @@ def generate_workout_data(athlete):
         'Normal'
     ]
     #for each day, generate a workout
-    for i in range(len(types)):
-        if types[i] == 'Interval':
+    for i in range(len(dates)):
+        if types[i%7] == 'Interval':
             generate_interval_workout(athlete, dates[i])
-        elif types[i] == 'Normal':
+        elif types[i%7] == 'Normal':
             generate_normal_workout(athlete, dates[i])
-        elif types[i] == 'CrossTrain':
+        elif types[i%7] == 'CrossTrain':
             generate_xtrain_workout(athlete, dates[i])
 
 

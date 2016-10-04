@@ -14,20 +14,15 @@ function drawChart() {
   var data = new google.visualization.DataTable();
   data.addColumn('string', 'Day');
   data.addColumn('number', 'Miles');
-  data.addRows([
-    ['Monday', 13],
-    ['Tuesday', 7],
-    ['Wednesday', 7],
-    ['Thursday', 9],
-    ['Friday', 5],
-    ['Saturday', 8],
-    ['Sunday', 0]
-  ]);
+  data.addRows(mileage_data);
 
   // Set chart options
   var options = {'title':'Mileage',
-                 'width':600,
-                 'height':300};
+                 'width':'100%',
+                 'height':300
+               };
+
+
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));

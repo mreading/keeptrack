@@ -30,13 +30,36 @@ def athlete(request, user_id):
         all_runs += IntervalRun.objects.filter(activity=a)
         all_runs += Event.objects.filter(activity=a)
 
-    #------------------ mileage graph -----------------------
+    #------------------ mileage graph ----------------------
+    runs = []
+    for a in activities:
+        runs += NormalRun.objects.filter(activity=a)
+        runs += IntervalRun.objects.filter(activity=a)
+        runs += Event.objects.filter(activity=a)
+
+    # FIXME have to add colors for meets.
+    colors = {
+        'NormalRun':'#FFFFFF',
+        'IntervalRun':'#CCCCCC',
+    }
+
+    mileage = []
+    for run in runs:
+        mileage.append([
+            str(run.activity.date),
+            run.distance,
+            # colors[run.activity.act_type]
+            # 'color: green'
+            ])
+    print mileage
+
     #------------------ recent workouts ---------------------
 
     context = {
         'all_runs':all_runs,
         'athlete':athlete,
         'athlete_user':user,
+        'mileage':json.dumps(mileage)
     }
 
     return render(request, "log/athlete.html", context)
