@@ -100,7 +100,7 @@ def generate_xtrain_workout(athlete, date):
 def generate_workout_data(athlete):
     #get dates for last 7 days
     dates = []
-    for i in range(7):
+    for i in range(50):
         dates.append(datetime.date.today() - datetime.timedelta(i))
 
     #set the type of workouts to generate
@@ -114,12 +114,12 @@ def generate_workout_data(athlete):
         'Normal'
     ]
     #for each day, generate a workout
-    for i in range(len(types)):
-        if types[i] == 'Interval':
+    for i in range(len(dates)):
+        if types[i%7] == 'Interval':
             generate_interval_workout(athlete, dates[i])
-        elif types[i] == 'Normal':
+        elif types[i%7] == 'Normal':
             generate_normal_workout(athlete, dates[i])
-        elif types[i] == 'CrossTrain':
+        elif types[i%7] == 'CrossTrain':
             generate_xtrain_workout(athlete, dates[i])
 
 
@@ -181,6 +181,17 @@ def generate():
     season.save()
 
     generate_athletes(season)
+
+    #Generate four superusers, one for each of us
+    names_passes = [
+        ('jack', 'iamjack'),
+        ('lexie', 'iamlexie'),
+        ('mikey', 'iammikey'),
+        ('emily', 'iamemily')
+    ]
+
+    for name, password in names_passes:
+        user = User.objects.create_user(name, name+'@hamilton.edu', 'iam'+name, is_staff=True, is_superuser=True)
 
 def clean_database():
     Team.objects.all().delete()

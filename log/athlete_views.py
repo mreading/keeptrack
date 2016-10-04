@@ -31,42 +31,36 @@ def athlete(request, user_id):
         all_runs += IntervalRun.objects.filter(activity=a)
         all_runs += Event.objects.filter(activity=a)
 
-    #------------------ mileage graph -----------------------
-    lst = [10, 20, 15, 14, 13, 18, 9]
-    graph = {
-        'labels': ['one', 'two', 'three', 'four', 'five', 'six', 'seven'],
-        'datasets': [
-            {
-                'label': athlete.user.first_name,
-                'fill': True,
-                'lineTension': .3,
-                'backgroundColor': "#96afe9",
-                'borderColor': "#2a58c3", #line color
-                'borderCapStyle': 'butt',
-                'borderDash': [],
-                'borderDashOffset': 0.0,
-                'borderJoinStyle': 'miter',
-                'pointBorderColor': "#2a58c3",
-                'pointBackgroundColor': "#fff",
-                'pointBorderWidth': 1,
-                'pointHoverRadius': 5,
-                'pointHoverBackgroundColor': "#99ff99",
-                'pointHoverBorderColor': "r#2a58c3",
-                'pointHoverBorderWidth': 2,
-                'pointRadius': 1,
-                'pointHitRadius': 10,
-                'data': lst,
-                'spanGaps': True,
-            }
-        ]
+    #------------------ mileage graph ----------------------
+    runs = []
+    for a in activities:
+        runs += NormalRun.objects.filter(activity=a)
+        runs += IntervalRun.objects.filter(activity=a)
+        runs += Event.objects.filter(activity=a)
+
+    # FIXME have to add colors for meets.
+    colors = {
+        'NormalRun':'#FFFFFF',
+        'IntervalRun':'#CCCCCC',
     }
+
+    mileage = []
+    for run in runs:
+        mileage.append([
+            str(run.activity.date),
+            run.distance,
+            # colors[run.activity.act_type]
+            # 'color: green'
+            ])
+    print mileage
+
     #------------------ recent workouts ---------------------
 
     context = {
         'all_runs':all_runs,
         'athlete':athlete,
         'athlete_user':user,
-        'graph':json.dumps(graph)
+        'mileage':json.dumps(mileage)
     }
 
     return render(request, "log/athlete.html", context)

@@ -108,7 +108,7 @@ class IntervalRun(models.Model):
     ]
     wu_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     cd_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
-    total_distance = models.FloatField(null=True)
+    distance = models.FloatField(null=True)
 
 class Rep(models.Model):
     interval_run = models.ForeignKey(IntervalRun)

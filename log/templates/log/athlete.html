@@ -19,27 +19,19 @@
   <div id="page">
     <div class="module_container">
 
-
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.bundle.js"></script>
-
-      <script>
-        // set up variables for line chart
-        var lineChart;
-        var CHART;
-        Chart.defaults.global.defaultColor = '#ffffff'
-      </script>
-
-
       <div id="graph_container">
-        <canvas id="mileage_canvas" height="300" width="500">
-          <script>
-            var g = {{ graph|safe }}
-          </script>
-        </canvas>
-        <script src="{% static 'log/js/mileage.js' %}"></script>
+        <!--Load the AJAX API-->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <!--Load the script with the actual mileage graph in it -->
+        <script type="text/javascript">
+          var mileage_data = {{ mileage|safe }}
+        </script>
+        <script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
+          <!--Div that will hold the pie chart-->
+          <div id="chart_div"></div>
       </div>
     </div>
-    
+
     <div class="module_container">
       {% for r in all_runs %}
         <a href="/log/athlete/activity_detail/{{ r.activity_id }}">
