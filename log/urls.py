@@ -9,12 +9,12 @@ from . import meet_views
 from . import stats_views
 from . import team_views
 from . import workout_views
+from . import coach_views
+
 
 import os
 
 urlpatterns = [
-    #url(r'^$', auth_views.login_view, name='login'),
-    #url(r'^index/$', views.index, name='index'),
     url(r'^$', views.index, name='index'),
     url(r'^login/$', auth_views.login_view, name='login'),
     url(r'^athlete/(?P<user_id>[0-9]+)/$', athlete_views.athlete, name='athlete'),
@@ -29,4 +29,5 @@ urlpatterns = [
     url(r'^athlete/add/(?P<run_type>[a-zA-Z]+)/$', athlete_views.add, name='add'),
     url(r'^athlete/add_intervals/$', athlete_views.add_intervals, name='add'),
     url(r'^athlete/activity_detail/(?P<activity_id>[0-9]+)/$', athlete_views.activity_detail, name='activity_detail'),
+    url(r'^create_team/(?P<user_id>[0-9]+)/$', coach_views.create_team, name='create_team'),
 ]

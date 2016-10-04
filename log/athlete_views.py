@@ -15,6 +15,7 @@ from django.shortcuts import redirect, render
 from .athlete_forms import AddRepForm, BaseAddRepFormSet, AddIntervalForm
 import json
 
+@login_required(login_url='/log/login/')
 def athlete(request, user_id):
     # athlete = Athlete.objects.get(user=request.user)
     # print Coach.objects.get(user=request.user)

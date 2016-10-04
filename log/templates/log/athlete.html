@@ -38,9 +38,8 @@
         </canvas>
         <script src="{% static 'log/js/mileage.js' %}"></script>
       </div>
-
-
     </div>
+    
     <div class="module_container">
       {% for r in all_runs %}
         <a href="/log/athlete/activity_detail/{{ r.activity_id }}">

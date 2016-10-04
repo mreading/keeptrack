@@ -46,17 +46,18 @@ def signup(request):
             # Depending on whether the person signing up is a coach or an
             # athlete, different objects need to be created.
             if data['is_coach'] == True:
-                print "was coach"
-                coach = Coach.objects.create(user_id=user.id, team=team)
+                coach = Coach.objects.create(user_id = user.id)
+                coach.save()
                 user.coach = coach
+                coach.team = team
             else:
                 print "was athlete"
                 athlete = Athlete.objects.create(
                     user_id=user.id,
                     graduation_year=data['graduation_year'],
-                    team = team
                     #Probably other stuff here
                     )
+                athlete.save()
                 user.athlete = athlete
 
             user.save()
