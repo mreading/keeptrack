@@ -80,7 +80,7 @@ class NormalRun(models.Model):
     #route
 
     def __str__(self):
-        return str(self.distance) + ' mile run'
+        return str(self.distance) + ' Mile Normal Run'
 
 class CrossTrain(models.Model):
     activity = models.ForeignKey(Activity)
@@ -95,7 +95,7 @@ class CrossTrain(models.Model):
     sport = models.CharField(max_length = 20)
 
     def __str__(self):
-        return self.sport + ' (Cross training)'
+        return self.sport + ' (Cross training)' + ' for ' + str(self.duration)
 
 class IntervalRun(models.Model):
     activity = models.ForeignKey(Activity)
@@ -109,6 +109,9 @@ class IntervalRun(models.Model):
     wu_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     cd_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     distance = models.FloatField(null=True)
+
+    def __str__(self):
+        return str(round(self.distance, 2)) + ' Mile Interval Run'
 
 class Rep(models.Model):
     interval_run = models.ForeignKey(IntervalRun)
