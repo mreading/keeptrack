@@ -2,32 +2,42 @@
 {% load staticfiles %}
 
 {% block content %}
-  <script type='text/javascript'>
-
-  </script>
-  <form action="/log/create_team/{{user_id}}/", method="post">
+    <form action="/log/create_team/{{user.id}}/", method="POST">
     {% csrf_token %}
     <div id="entry_container">
-      <p>
-        <label for="school">School: </label>
-        <input type="text" name="school" value="" id="school">
+      {{form.school.label}}
       </br>
-        <label for="team">Team: </label>
-        <input type="text" name="team" value="" id="team">
+      {{ form.school }}
+      </br></br>
+
+      {{form.gender.label}}
       </br>
-        <label for="season">Season: </label>
-        <input type="text" name="season" value="" id="season">
+      {{ form.gender }}
+      </br></br>
+
+      {{form.sport.label}}
       </br>
+      {{ form.sport }}
+      </br></br>
+
+      {{form.year.label}}
       </br>
-        <label for="start_date">Start Date: </label>
-        <input type="datetime" name="start_date" value="" id="start_date">
+      {{ form.year }}
+      </br></br>
+
+      {{form.start_date.label}}
       </br>
-        <label for="end_date">End Date: </label>
-        <input type="datetime" name="end_date" value="" id="end_date">
+      {{ form.start_date }}
+      </br></br>
+
+      {{form.end_date.label}}
       </br>
-        <input type="submit" value="Submit">
-        <input type="hidden" name = "next" value="{{ request.GET.next }}" />
-      </p>
+      {{ form.end_date }}
+      </br></br>
+
+      <input type="submit" value="Submit">
+      <input type="hidden" name = "next" value="{{ request.GET.next }}">
+
     </div>
   </form>
 
