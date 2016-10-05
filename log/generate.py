@@ -182,16 +182,20 @@ def generate():
 
     generate_athletes(season)
 
-    #Generate four superusers, one for each of us
-    names_passes = [
-        ('jack', 'iamjack'),
-        ('lexie', 'iamlexie'),
-        ('mikey', 'iammikey'),
-        ('emily', 'iamemily')
-    ]
-
-    for name, password in names_passes:
-        user = User.objects.create_user(name, name+'@hamilton.edu', 'iam'+name, is_staff=True, is_superuser=True)
+    #Generate four superusers, one for each of us.
+    # I commented this out because it doesn't really make
+    # sense for us to develop as anything other than a coach or
+    # an athlete. I gave athletes the ability to be superusers though,
+    # so that if you are logged in as an athlete you can access the admin page
+    # names_passes = [
+    #     ('jack', 'iamjack'),
+    #     ('lexie', 'iamlexie'),
+    #     ('mikey', 'iammikey'),
+    #     ('emily', 'iamemily')
+    # ]
+    #
+    # for name, password in names_passes:
+    #     user = User.objects.create_user(name, name+'@hamilton.edu', 'iam'+name, is_staff=True, is_superuser=True)
 
 def clean_database():
     Team.objects.all().delete()
