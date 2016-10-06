@@ -14,14 +14,13 @@ from django.forms.formsets import formset_factory
 from django.shortcuts import redirect, render
 from .athlete_forms import AddRepForm, BaseAddRepFormSet, AddIntervalForm
 import json
+import datetime
 
 @login_required(login_url='/log/login/')
 def athlete(request, user_id):
-    # athlete = Athlete.objects.get(user=request.user)
-    # print Coach.objects.get(user=request.user)
+
     user = User.objects.get(id=user_id)
     athlete = Athlete.objects.get(user=user)
-
     activities = Activity.objects.filter(athlete=athlete).order_by('date')
 
     all_runs = []
@@ -38,30 +37,40 @@ def athlete(request, user_id):
         runs += IntervalRun.objects.filter(activity=a)
         runs += Event.objects.filter(activity=a)
 
-    # FIXME have to add colors for meets.
-    colors = {
-        'NormalRun':'#FFFFFF',
-        'IntervalRun':'#CCCCCC',
-    }
-
-    mileage = []
+    total_mileage = []
     for run in runs:
-        mileage.append([
+        total_mileage.append([
             str(run.activity.date),
             run.distance,
-            # colors[run.activity.act_type]
-            # 'color: green'
             ])
-    print mileage
 
+    last_7 = total_mileage[:7]
     #------------------ recent workouts ---------------------
-
     context = {
         'all_runs':all_runs,
         'athlete':athlete,
         'athlete_user':user,
-        'mileage':json.dumps(mileage)
+        'last_7':json.dumps(last_7),
+        'total_mileage':json.dumps(total_mileage),
     }
+    if request.method == 'POST':
+        date_range_form = DateRangeForm(request.POST)
+        if date_range_form.is_valid():
+            #gett all dates between
+            data = date_range_form.cleaned_data
+            start_date = data['start_date']
+            end_date = data['end_date']
+            date_range = []
+            for r in runs:
+                if r.activity.date >= start_date and r.activity.date <= end_date:
+                    date_range.append([
+                        str(r.activity.date),
+                        r.distance
+                    ])
+            context['date_range_mileage'] = date_range
+    else:
+        date_range_form = DateRangeForm()
+        context['form'] = date_range_form
 
     return render(request, "log/athlete.html", context)
 

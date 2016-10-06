@@ -4,6 +4,16 @@ from .models import *
 from datetime import date
 from django.forms.formsets import BaseFormSet
 
+class DateRangeForm(forms.Form):
+        start_date = forms.DateField(
+            initial=date.today,
+            widget=forms.widgets.DateInput(attrs={'type': 'date'})
+            )
+        end_date = forms.DateField(
+            initial=date.today,
+            widget=forms.widgets.DateInput(attrs={'type': 'date'})
+            )
+
 class SplitDurationWidget(forms.MultiWidget):
     """
     A Widget that splits duration input into four number input boxes.

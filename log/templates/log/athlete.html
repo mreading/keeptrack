@@ -18,20 +18,32 @@
   </div>
   <div id="page">
     <div class="module_container">
+      <div id="one">last 7</div>
+      <div id="two">all mileage</div>
+      <div id="three">date range</div>
 
-      <div id="graph_container">
-        <!--Load the AJAX API-->
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        <!--Load the script with the actual mileage graph in it -->
-        <script type="text/javascript">
-          var mileage_data = {{ mileage|safe }}
-        </script>
-        <script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
-          <!--Div that will hold the pie chart-->
-          <div id="chart_div"></div>
-      </div>
+
+          <!--Load the AJAX API-->
+          <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+          <!--Load the script with the actual mileage graph in it -->
+          <script type="text/javascript"> var mileage_data = {{ total_mileage|safe }}</script>
+          <script type="text/javascript"> var last_7 = {{ last_7|safe }}</script>
+          <script type="text/javascript"> var dr_data = {{ date_range_mileage|safe }}</script>
+          <script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
+
+          <!--Div that will hold the bar chart-->
+        <div id="all_mileage_graph"></div>
+        <div id="7_mileage"></div>
+        <div id="date_ranges">
+          <form action="/log/athlete/{{ user.id }}/" method='post'>
+            {% csrf_token %}
+            {{ form.errors }}
+            {{ form }}
+            <input type="submit" value="Show Mileage" />
+          </form>
+        </div>
+        <div id="date_range"></div>
     </div>
-
     <div class="module_container">
       {% for r in all_runs %}
         <a href="/log/athlete/activity_detail/{{ r.activity_id }}">
