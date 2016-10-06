@@ -30,7 +30,4 @@ urlpatterns = [
     url(r'^athlete/add_intervals/$', athlete_views.add_intervals, name='add'),
     url(r'^athlete/activity_detail/(?P<activity_id>[0-9]+)/$', athlete_views.activity_detail, name='activity_detail'),
     url(r'^create_team/(?P<user_id>[0-9]+)/$', coach_views.create_team, name='create_team'),
-    #url(r'^new_team/(?P<user_id>[0-9]+)/$', coach_views.new_team, name='new_team'),
-    #url(r'^new_team/$', coach_views.new_team, name='new_team'),
-
 ]
