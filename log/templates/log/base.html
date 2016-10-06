@@ -50,7 +50,11 @@
      <div class="container-fluid">
        <div id="authentication">
          {% if user.is_authenticated %}
-           <a class="auth" href="/log/athlete/"> Hi {{ user.first_name }}</a>
+            {% if user.coach_set %}
+              <a class="auth" href="/log/settings/"> Hi Coach {{ user.first_name }}</a>
+            {% elif user.athlete_set %}
+              <a class="auth" href="/log/athlete/{user.id}"> Hi {{ user.first_name }}</a>
+            {% endif %}
            <a  class="auth" href="/log/logout/"> Logout </a>
          {% endif %}
        </div>
