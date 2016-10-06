@@ -4,6 +4,9 @@ from .models import *
 from datetime import date
 from django.forms.formsets import BaseFormSet
 
+class R2WImportForm(forms.Form):
+    log = forms.FileField()
+
 class DateRangeForm(forms.Form):
         start_date = forms.DateField(
             initial=date.today,

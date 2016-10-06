@@ -4,7 +4,7 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
-  $("#one").click(function(){
+  $("#two").click(function(){
     $("#all_mileage_graph").show('slow');
     $("#7_mileage").hide('slow');
     $("#date_range").hide('slow');
@@ -12,7 +12,7 @@ $(document).ready(function() {
 });
 
 $(document).ready(function() {
-  $("#two").click(function(){
+  $("#one").click(function(){
     $("#7_mileage").show('slow');
     $("#all_mileage_graph").hide('slow');
     $("#date_range").hide('slow');

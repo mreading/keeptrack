@@ -1,0 +1,15 @@
+{% extends 'log/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <div id="page">
+    <div class="module_container">
+      <form enctype="multipart/form-data" action="/log/athlete/r2w_import/" method='post'>
+        {% csrf_token %}
+        {{ form.errors }}
+        {{ form }}
+        <input type="submit" value="Import" />
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -15,6 +15,7 @@ from django.shortcuts import redirect, render
 from .athlete_forms import AddRepForm, BaseAddRepFormSet, AddIntervalForm
 import json
 import datetime
+from r2win_import import *
 
 @login_required(login_url='/log/login/')
 def athlete(request, user_id):
@@ -212,3 +213,21 @@ def add_intervals(request):
     }
 
     return render(request, 'log/add_intervals.html', context)
+
+def r2w_import(request):
+    user = request.user
+    athlete = Athlete.objects.get(user=user)
+    if request.method == 'POST':
+        form = R2WImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            if len(request.FILES) != 0:
+                f = request.FILES['log']
+                import_from_file(f, athlete)
+            else:
+                print "no files"
+            return redirect("/log", {})
+        else:
+            return render(request, "log/r2w_import.html", {'form':form})
+    else:
+        form = R2WImportForm()
+        return render(request, "log/r2w_import.html", {'form':form})
