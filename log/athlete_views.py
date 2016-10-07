@@ -17,6 +17,13 @@ import json
 import datetime
 from r2win_import import *
 
+@login_required(login_url='/log/login/')
+def delete_activity(request, activity_id):
+    #make sure athlete is the one deleting the workout
+    Activity.objects.get(id=activity_id).delete()
+    return redirect("/log/athlete/"+str(request.user.id), {})
+
+@login_required(login_url='/log/login/')
 def edit_interval_run(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
     i_run = IntervalRun.objects.get(activity=activity)
@@ -88,12 +95,13 @@ def edit_interval_run(request, activity_id):
 
     return render(request, "log/edit_run.html", context)
 
+@login_required(login_url='/log/login/')
 def edit_xtrain(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
     xtrain = CrossTrain.objects.get(activity=activity)
 
     if request.method == 'POST':
-        form = get_post_form(activity.act_type, request.POST)
+        form = AddXTrainForm(request.POST)
         if form.is_valid():
             # save the new data
             data = form.cleaned_data
@@ -106,7 +114,7 @@ def edit_xtrain(request, activity_id):
             activity.save()
             xtrain.save()
             return redirect("/log", {})
-    form = get_form(activity.act_type)
+    form = AddXTrainForm()
     form.fields['date'].initial=activity.date
     form.fields['distance'].initial=xtrain.distance
     form.fields['units'].initial=xtrain.units
@@ -115,34 +123,40 @@ def edit_xtrain(request, activity_id):
     form.fields['comments'].initial=activity.comment
     return render(request, "log/edit_run.html", {'form':form, 'activity':activity})
 
+@login_required(login_url='/log/login/')
 def edit_race(request, activity_id):
-    # activity = Activity.objects.get(id=activity_id)
-    # event = CrossTrain.objects.get(activity=activity)
-    #
-    # if request.method == 'POST':
-    #     form = get_post_form(activity.act_type, request.POST)
-    #     if form.is_valid():
-    #         # save the new data
-    #         data = form.cleaned_data
-    #         event.distance=data['distance']
-    #         event.duration=data['duration']
-    #         event.units=data['units']
-    #         event.sport=data['sport']
-    #         activity.comment=data['comments']
-    #         activity.date=data['date']
-    #         activity.save()
-    #         event.save()
-    #         return redirect("/log", {})
-    # form = get_form(activity.act_type)
-    # form.fields['date'].initial=activity.date
-    # form.fields['distance'].initial=event.distance
-    # form.fields['units'].initial=event.units
-    # form.fields['sport'].initial=event.sport
-    # form.fields['duration'].initial=event.duration
-    # form.fields['comments'].initial=activity.comment
-    # return render(request, "log/edit_run.html", {'form':form, 'activity':activity})
+    activity = Activity.objects.get(id=activity_id)
+    event = Event.objects.get(activity=activity)
+    if request.method == 'POST':
+        form = AddEventForm(request.POST)
+        if form.is_valid():
+            # save the new data
+            data = form.cleaned_data
+            event.distance=data['distance']
+            event.duration=data['duration']
+            event.units=data['units']
+            event.gender=data['gender']
+            event.meet.location=data['location']
+            event.meet.save()
+            activity.date=data['date']
+            activity.comment=data['comments']
+            activity.save()
+            event.save()
+
+            return redirect("/log/athlete/"+str(request.user.id), {})
+    form = AddEventForm()
+    form.fields['date'].initial=activity.date
+    form.fields['distance'].initial=event.distance
+    form.fields['units'].initial=event.units
+    form.fields['duration'].initial=event.duration
+    form.fields['gender'].initial=event.gender
+    form.fields['comments'].initial=activity.comment
+    form.fields['location'].initial=event.meet.location
+    form.fields['place'].initial=event.place
+    return render(request, "log/edit_run.html", {'form':form, 'activity':activity})
     pass
 
+@login_required(login_url='/log/login/')
 def edit_normal(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
     normal_run = NormalRun.objects.get(activity=activity)
@@ -169,6 +183,7 @@ def edit_normal(request, activity_id):
     return render(request, "log/edit_run.html", {'form':form, 'activity':activity})
 
 #Redirects to aby of the five functions above depending on the type of activity
+@login_required(login_url='/log/login/')
 def edit_activity(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
     if activity.act_type == 'NormalRun':
@@ -177,7 +192,7 @@ def edit_activity(request, activity_id):
         return edit_interval_run(request, activity_id)
     elif activity.act_type == 'CrossTrain':
         return edit_xtrain(request, activity_id)
-    else:
+    elif activity.act_type == 'Event':
         return edit_race(request, activity_id)
 
 @login_required(login_url='/log/login/')
@@ -238,6 +253,7 @@ def athlete(request, user_id):
 
     return render(request, "log/athlete.html", context)
 
+@login_required(login_url='/log/login/')
 def add(request, run_type):
     if run_type == 'IntervalRun':
         add_intervals(request)
@@ -258,7 +274,7 @@ def add(request, run_type):
             thread = Thread.objects.create(activity=activity)
             thread.save()
             create_run(run_type, activity, data)
-            return redirect("/log/athlete", {})
+            return redirect("/log/athlete/"+str(request.user.id), {})
         else:
             context = {
                 'form':form,
@@ -273,6 +289,7 @@ def add(request, run_type):
     }
     return render(request, "log/add_run.html", context)
 
+@login_required(login_url='/log/login/')
 def activity_detail(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
     thread = Thread.objects.get(activity=activity)
@@ -312,6 +329,7 @@ def activity_detail(request, activity_id):
     }
     return render(request, "log/activity_detail.html", context)
 
+@login_required(login_url='/log/login/')
 def add_intervals(request):
     athlete = Athlete.objects.get(user=request.user)
 
@@ -375,6 +393,7 @@ def add_intervals(request):
 
     return render(request, 'log/add_intervals.html', context)
 
+@login_required(login_url='/log/login/')
 def r2w_import(request):
     user = request.user
     athlete = Athlete.objects.get(user=user)

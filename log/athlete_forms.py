@@ -111,6 +111,11 @@ class AddEventForm(forms.Form):
     duration = forms.DurationField()
     location = forms.CharField(max_length=100)
     place = forms.IntegerField()
+    gender_choices = [
+        ('Men', 'M'),
+        ('Women', 'W')
+    ]
+    gender = forms.ChoiceField(choices=gender_choices)
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
 

@@ -25,8 +25,9 @@ urlpatterns = [
     url(r'^workout_templates/$', workout_views.workout_templates, name='workout_templates'),
     url(r'^athlete/add/(?P<run_type>[a-zA-Z]+)/$', athlete_views.add, name='add'),
     url(r'^athlete/add_intervals/$', athlete_views.add_intervals, name='add'),
-    url(r'^athlete/edit_activity/(?P<activity_id>[0-9]+)/$', athlete_views.edit_activity, name='edit_activity'),    
+    url(r'^athlete/edit_activity/(?P<activity_id>[0-9]+)/$', athlete_views.edit_activity, name='edit_activity'),
     url(r'^athlete/activity_detail/(?P<activity_id>[0-9]+)/$', athlete_views.activity_detail, name='activity_detail'),
+    url(r'^athlete/delete_activity/(?P<activity_id>[0-9]+)/$', athlete_views.delete_activity, name='delete_activity'),    
     url(r'^athlete/r2w_import/$', athlete_views.r2w_import, name='r2w_import'),
     url(r'^create_team/(?P<user_id>[0-9]+)/$', coach_views.create_team, name='create_team'),
 ]

@@ -52,14 +52,20 @@ def create_run(run_type, activity, data):
             sport=data['sport'],
             units=data['units'],
         )
-    else:
+    elif run_type == "Event":
+        #Need ability to locoate existing meet. 
+        meet = Meet.objects.create(
+            location=data['location'],
+        )
+        meet.save()
         run = Event.objects.create(
             activity=activity,
+            meet=meet,
             distance=data['distance'],
             duration=data['duration'],
-            location=data['location'],
             place=data['place'],
             units=data['units'],
+            gender=data['gender']
         )
     run.save()
 

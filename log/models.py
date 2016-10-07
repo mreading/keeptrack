@@ -63,7 +63,11 @@ class Event(models.Model):
     place = models.PositiveIntegerField()
 
     def __str__(self):
-        return 'Event at ' + self.location
+        return "{0} {1} race at {2}".format(
+            str(self.distance),
+            self.units[:-1],
+            self.meet.location
+        )
 
 class NormalRun(models.Model):
     activity = models.ForeignKey(Activity)
