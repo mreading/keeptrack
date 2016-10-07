@@ -29,10 +29,9 @@ def edit_interval_run(request, activity_id):
     i_run = IntervalRun.objects.get(activity=activity)
     reps = Rep.objects.filter(interval_run=i_run).order_by('position')
 
-    AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet)
-
     if request.method == 'POST':
         IntervalForm = AddIntervalForm(request.POST)
+        AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet)
         rep_formset = AddRepFormSet(request.POST)
 
         if IntervalForm.is_valid() and rep_formset.is_valid():
@@ -66,7 +65,16 @@ def edit_interval_run(request, activity_id):
             i_run.save()
             return redirect("/log/athlete/"+str(request.user.id), {})
 
-    #set interval form data
+        else:
+            print "invalid"
+            context = {
+                'IntervalForm':IntervalForm,
+                'rep_formset':rep_formset,
+                'activity':activity,
+            }
+            return render(request, "log/edit_run.html", context)
+
+    #set initial interval form data
     IntervalForm = AddIntervalForm()
     IntervalForm.fields['warmup'].initial=i_run.warmup
     IntervalForm.fields['wu_units'].initial=i_run.wu_units
@@ -76,16 +84,18 @@ def edit_interval_run(request, activity_id):
     IntervalForm.fields['comments'].initial=activity.comment
 
     #set formset data
+    AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet, min_num=0, extra=len(reps))
     rep_formset = AddRepFormSet()
-    for r in reps:
-        r_form = AddRepForm()
-        print r_form.fields
-        r_form.fields['rep_distance'].initial=r.distance
-        r_form.fields['rep_units'].initial=r.units
-        r_form.fields['rep_duration'].initial=r.duration
-        # r_form.fields['goal_pace'].initial=r.goal_pace
-        r_form.fields['rep_rest'].initial=r.rest
-        rep_formset.forms.append(r_form)
+
+    for i in range(len(reps)):
+        rep_formset.forms[i].fields['rep_distance'].initial=reps[i].distance
+        rep_formset.forms[i].fields['rep_units'].initial=reps[i].units
+        rep_formset.forms[i].fields['rep_duration'].initial=reps[i].duration
+        if reps[i].goal_pace != None:
+            rep_formset.forms[i].fields['goal_pace'].initial=reps[i].goal_pace
+        rep_formset.forms[i].fields['rep_rest'].initial=reps[i].rest
+
+    print rep_formset.total_form_count()
 
     context = {
         'IntervalForm':IntervalForm,
@@ -113,7 +123,7 @@ def edit_xtrain(request, activity_id):
             activity.date=data['date']
             activity.save()
             xtrain.save()
-            return redirect("/log", {})
+            return redirect("/log/athlete"+str(request.user.id), {})
     form = AddXTrainForm()
     form.fields['date'].initial=activity.date
     form.fields['distance'].initial=xtrain.distance

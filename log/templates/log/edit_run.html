@@ -5,6 +5,9 @@
     <form method="post", name='intervalform' action="/log/athlete/edit_activity/{{ activity.id }}/">
         {% csrf_token %}
 
+        {{ IntervalForm.errors }}
+        {{ rep_formset.errors }}
+
         <label>Date</label>
         {{ IntervalForm.date }}
 
@@ -19,6 +22,7 @@
         {% for rep_form in rep_formset %}
             <div class="link-formset">
               <label>Distance</label>
+                {{ rep_form.errors }}
                 {{ rep_form.rep_distance }}
                 {{ rep_form.rep_units }}
 
@@ -41,7 +45,7 @@
         <label>Comments</label>
         {{ IntervalForm.comments }}
 
-        <input type="submit" value="Save Workout" class="button"/>
+        <input type="submit" value="Update Run" class="button"/>
     </form>
 
     <!-- Include formset plugin - including jQuery dependency -->
