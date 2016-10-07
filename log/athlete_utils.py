@@ -1,15 +1,28 @@
 from .utils import *
 from .models import *
 from .athlete_forms import *
-def get_post_form(run_type, request):
+
+def update_activity(activity, cleaned_data):
+    run = None
+    if activity.act_type == "NormalRun":
+        run = NormalRun.objects.get(activity=activity)
+    elif activity.act_type == "IntervalRun":
+        run = IntervalRun.objects.get(activity=activity)
+    elif activity.act_type == "CrossTrain":
+        run = CrossTrail.objects.get(activity=activity)
+    # elif activity.act_type == "Meet":
+    #     run = Event.objects.get(activity=activity)
+
+
+def get_post_form(run_type, post):
     if run_type == "NormalRun":
-        return AddNormalForm(request)
+        return AddNormalForm(post)
     elif run_type == "IntervalRun":
-        return AddIntervalForm(request)
+        return AddIntervalForm(post)
     elif run_type == "CrossTrain":
-        return AddXtrainForm(request)
+        return AddXtrainForm(post)
     else:
-        return AddEventForm(request)
+        return AddEventForm(post)
 
 def get_form(run_type):
     if run_type == "NormalRun":
@@ -59,7 +72,7 @@ def set_total_distance(interval_run):
 
     #Calculate warm up distance
     if interval_run.wu_units == 'Miles':
-        total += interval_run.warmup
+        total += float(interval_run.warmup)
     elif interval_run.wu_units == 'Kilometers':
         total += kilometers_to_miles(interval_run.warmup)
     elif interval_run.wu_units == 'Meters':
@@ -67,7 +80,7 @@ def set_total_distance(interval_run):
 
     #Calculate cool down distance
     if interval_run.cd_units == 'Miles':
-        total += interval_run.cooldown
+        total += float(interval_run.cooldown)
     elif interval_run.cd_units == 'Kilometers':
         total += kilometers_to_miles(interval_run.cooldown)
     elif interval_run.cd_units == 'Meters':

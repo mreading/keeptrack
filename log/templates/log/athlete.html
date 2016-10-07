@@ -47,9 +47,14 @@
     </div>
     <div class="module_container">
       {% for r in all_runs %}
-        <a href="/log/athlete/activity_detail/{{ r.activity_id }}">
-          <p>{{ r }}</p>
-        </a>
+        <div>
+          <a href="/log/athlete/activity_detail/{{ r.activity_id }}">
+          {{ r }}
+          </a>
+          <a href="/log/athlete/edit_activity/{{ r.activity_id }}">
+            EDIT
+          </a>
+        </div>
       {% endfor %}
     </div>
     <div class="module_container">

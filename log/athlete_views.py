@@ -17,6 +17,169 @@ import json
 import datetime
 from r2win_import import *
 
+def edit_interval_run(request, activity_id):
+    activity = Activity.objects.get(id=activity_id)
+    i_run = IntervalRun.objects.get(activity=activity)
+    reps = Rep.objects.filter(interval_run=i_run).order_by('position')
+
+    AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet)
+
+    if request.method == 'POST':
+        IntervalForm = AddIntervalForm(request.POST)
+        rep_formset = AddRepFormSet(request.POST)
+
+        if IntervalForm.is_valid() and rep_formset.is_valid():
+            # save the new data
+            data = IntervalForm.cleaned_data
+            i_run.warmup = data['warmup']
+            i_run.cooldown = data['cooldown']
+            i_run.cd_units = data['cd_units']
+            i_run.save()
+
+            activity.coment = data['comments']
+            activity.date = data['date']
+            activity.save()
+
+            #the ordering of reps is probably messed up, so delete them all
+            # and then create new rep objects
+            Rep.objects.filter(interval_run=i_run).delete()
+            for i in range(len(rep_formset)):
+                rep = Rep.objects.create(
+                    interval_run=i_run,
+                    distance=rep_formset[i].cleaned_data.get('rep_distance'),
+                    units=rep_formset[i].cleaned_data.get('rep_units'),
+                    duration=rep_formset[i].cleaned_data.get('rep_duration'),
+                    rest=rep_formset[i].cleaned_data.get('rep_rest'),
+                    position=i
+                )
+                rep.save()
+
+            # recalculate total distance of interval workout
+            set_total_distance(i_run)
+            i_run.save()
+            return redirect("/log/athlete/"+str(request.user.id), {})
+
+    #set interval form data
+    IntervalForm = AddIntervalForm()
+    IntervalForm.fields['warmup'].initial=i_run.warmup
+    IntervalForm.fields['wu_units'].initial=i_run.wu_units
+    IntervalForm.fields['cooldown'].initial=i_run.warmup
+    IntervalForm.fields['cd_units'].initial=i_run.cd_units
+    IntervalForm.fields['date'].initial=activity.date
+    IntervalForm.fields['comments'].initial=activity.comment
+
+    #set formset data
+    rep_formset = AddRepFormSet()
+    for r in reps:
+        r_form = AddRepForm()
+        print r_form.fields
+        r_form.fields['rep_distance'].initial=r.distance
+        r_form.fields['rep_units'].initial=r.units
+        r_form.fields['rep_duration'].initial=r.duration
+        # r_form.fields['goal_pace'].initial=r.goal_pace
+        r_form.fields['rep_rest'].initial=r.rest
+        rep_formset.forms.append(r_form)
+
+    context = {
+        'IntervalForm':IntervalForm,
+        'rep_formset':rep_formset,
+        'activity':activity,
+    }
+
+    return render(request, "log/edit_run.html", context)
+
+def edit_xtrain(request, activity_id):
+    activity = Activity.objects.get(id=activity_id)
+    xtrain = CrossTrain.objects.get(activity=activity)
+
+    if request.method == 'POST':
+        form = get_post_form(activity.act_type, request.POST)
+        if form.is_valid():
+            # save the new data
+            data = form.cleaned_data
+            xtrain.distance=data['distance']
+            xtrain.duration=data['duration']
+            xtrain.units=data['units']
+            xtrain.sport=data['sport']
+            activity.comment=data['comments']
+            activity.date=data['date']
+            activity.save()
+            xtrain.save()
+            return redirect("/log", {})
+    form = get_form(activity.act_type)
+    form.fields['date'].initial=activity.date
+    form.fields['distance'].initial=xtrain.distance
+    form.fields['units'].initial=xtrain.units
+    form.fields['sport'].initial=xtrain.sport
+    form.fields['duration'].initial=xtrain.duration
+    form.fields['comments'].initial=activity.comment
+    return render(request, "log/edit_run.html", {'form':form, 'activity':activity})
+
+def edit_race(request, activity_id):
+    # activity = Activity.objects.get(id=activity_id)
+    # event = CrossTrain.objects.get(activity=activity)
+    #
+    # if request.method == 'POST':
+    #     form = get_post_form(activity.act_type, request.POST)
+    #     if form.is_valid():
+    #         # save the new data
+    #         data = form.cleaned_data
+    #         event.distance=data['distance']
+    #         event.duration=data['duration']
+    #         event.units=data['units']
+    #         event.sport=data['sport']
+    #         activity.comment=data['comments']
+    #         activity.date=data['date']
+    #         activity.save()
+    #         event.save()
+    #         return redirect("/log", {})
+    # form = get_form(activity.act_type)
+    # form.fields['date'].initial=activity.date
+    # form.fields['distance'].initial=event.distance
+    # form.fields['units'].initial=event.units
+    # form.fields['sport'].initial=event.sport
+    # form.fields['duration'].initial=event.duration
+    # form.fields['comments'].initial=activity.comment
+    # return render(request, "log/edit_run.html", {'form':form, 'activity':activity})
+    pass
+
+def edit_normal(request, activity_id):
+    activity = Activity.objects.get(id=activity_id)
+    normal_run = NormalRun.objects.get(activity=activity)
+
+    if request.method == 'POST':
+        form = get_post_form(activity.act_type, request.POST)
+        if form.is_valid():
+            # save the new data
+            data = form.cleaned_data
+            normal_run.distance=data['distance']
+            normal_run.duration=data['duration']
+            normal_run.units=data['units']
+            activity.comment=data['comments']
+            activity.date=data['date']
+            activity.save()
+            normal_run.save()
+            return redirect("/log", {})
+    form = get_form(activity.act_type)
+    form.fields['date'].initial=activity.date
+    form.fields['distance'].initial=normal_run.distance
+    form.fields['units'].initial=normal_run.units
+    form.fields['duration'].initial=normal_run.duration
+    form.fields['comments'].initial=activity.comment
+    return render(request, "log/edit_run.html", {'form':form, 'activity':activity})
+
+#Redirects to aby of the five functions above depending on the type of activity
+def edit_activity(request, activity_id):
+    activity = Activity.objects.get(id=activity_id)
+    if activity.act_type == 'NormalRun':
+        return edit_normal(request, activity_id)
+    elif activity.act_type == 'IntervalRun':
+        return edit_interval_run(request, activity_id)
+    elif activity.act_type == 'CrossTrain':
+        return edit_xtrain(request, activity_id)
+    else:
+        return edit_race(request, activity_id)
+
 @login_required(login_url='/log/login/')
 def athlete(request, user_id):
 
@@ -80,8 +243,6 @@ def add(request, run_type):
         add_intervals(request)
         return redirect("/log/athlete", {})
 
-    print "RUN TYPE: "
-    print run_type
     athlete = Athlete.objects.get(user=request.user)
     if request.method == 'POST':
         form = get_post_form(str(run_type), request.POST)
@@ -183,7 +344,7 @@ def add_intervals(request):
                 wu_units=interval_data['wu_units'],
                 cooldown=float(interval_data['cooldown']),
                 cd_units=interval_data['cd_units'],
-                total_distance=0.00
+                distance=0.00
             )
             interval_workout.save()
 
@@ -201,7 +362,7 @@ def add_intervals(request):
 
             #Always assumed to be in miles
             set_total_distance(interval_workout)
-            return redirect("/log/athlete", {})
+            return redirect("/log/athlete/"+str(request.user.id), {})
 
     else:
         IntervalForm = AddIntervalForm(user=request.user)
@@ -223,8 +384,6 @@ def r2w_import(request):
             if len(request.FILES) != 0:
                 f = request.FILES['log']
                 import_from_file(f, athlete)
-            else:
-                print "no files"
             return redirect("/log", {})
         else:
             return render(request, "log/r2w_import.html", {'form':form})

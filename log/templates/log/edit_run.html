@@ -1,0 +1,65 @@
+{% extends 'log/base.html' %}
+
+{% block content %}
+  {% if rep_formset %}
+    <form method="post", name='intervalform' action="/log/athlete/edit_activity/{{ activity.id }}/">
+        {% csrf_token %}
+
+        <label>Date</label>
+        {{ IntervalForm.date }}
+
+        <div>
+        <label>Warm up</label>
+        {{ IntervalForm.warmup }}
+        {{ IntervalForm.wu_units }}
+        </div>
+        <div>
+        {{ rep_formset.management_form }}
+        <label>Add Repeats</label>
+        {% for rep_form in rep_formset %}
+            <div class="link-formset">
+              <label>Distance</label>
+                {{ rep_form.rep_distance }}
+                {{ rep_form.rep_units }}
+
+              <label>Time</label>
+                {{ rep_form.rep_duration }}
+
+              <label>Rest</label>
+                {{ rep_form.rep_rest }}
+
+            </div>
+        {% endfor %}
+        </div>
+
+        <div>
+          <label>Cool Down</label>
+          {{ IntervalForm.cooldown }}
+          {{ IntervalForm.cd_units }}
+        </div>
+
+        <label>Comments</label>
+        {{ IntervalForm.comments }}
+
+        <input type="submit" value="Save Workout" class="button"/>
+    </form>
+
+    <!-- Include formset plugin - including jQuery dependency -->
+    <script type="text/javascript" src="/static/log/js/dynamic_reps.js"></script>
+    <script>
+        $('.link-formset').formset({
+            addText: 'Add Repeat',
+            deleteText: 'Remove'
+        });
+
+    </script>
+  {% else %}
+    <form action="/log/athlete/edit_activity/{{ activity.id }}/" method="post" autocomplete="off">
+      {% csrf_token %}
+      {{ form.errors }}
+      {{ form.non_field_errors }}
+      {{ form.as_p }}
+      <input type="submit" value="Update Run" />
+    </form>
+  {% endif %}
+{% endblock %}

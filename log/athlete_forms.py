@@ -126,6 +126,7 @@ class AddRepForm(forms.Form):
     ]
     rep_units = forms.ChoiceField(choices=unit_choices, initial='Meters')
     rep_duration = forms.DurationField()
+    # goal_pace = forms.DurationField(optional=True)
     rep_rest = forms.DurationField()
 
 class AddIntervalForm(forms.Form):
