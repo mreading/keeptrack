@@ -52,7 +52,7 @@ def edit_interval_run(request, activity_id):
             for i in range(len(rep_formset)):
                 rep = Rep.objects.create(
                     interval_run=i_run,
-                    distance=rep_formset[i].cleaned_data.get('rep_distance'),
+                    distance=float(rep_formset[i].cleaned_data.get('rep_distance')),
                     units=rep_formset[i].cleaned_data.get('rep_units'),
                     duration=rep_formset[i].cleaned_data.get('rep_duration'),
                     rest=rep_formset[i].cleaned_data.get('rep_rest'),
@@ -115,7 +115,7 @@ def edit_xtrain(request, activity_id):
         if form.is_valid():
             # save the new data
             data = form.cleaned_data
-            xtrain.distance=data['distance']
+            xtrain.distance=float(data['distance'])
             xtrain.duration=data['duration']
             xtrain.units=data['units']
             xtrain.sport=data['sport']
@@ -126,7 +126,7 @@ def edit_xtrain(request, activity_id):
             return redirect("/log/athlete"+str(request.user.id), {})
     form = AddXTrainForm()
     form.fields['date'].initial=activity.date
-    form.fields['distance'].initial=xtrain.distance
+    form.fields['distance'].initial=float(xtrain.distance)
     form.fields['units'].initial=xtrain.units
     form.fields['sport'].initial=xtrain.sport
     form.fields['duration'].initial=xtrain.duration
@@ -142,7 +142,7 @@ def edit_race(request, activity_id):
         if form.is_valid():
             # save the new data
             data = form.cleaned_data
-            event.distance=data['distance']
+            event.distance=float(data['distance'])
             event.duration=data['duration']
             event.units=data['units']
             event.gender=data['gender']
@@ -156,7 +156,7 @@ def edit_race(request, activity_id):
             return redirect("/log/athlete/"+str(request.user.id), {})
     form = AddEventForm()
     form.fields['date'].initial=activity.date
-    form.fields['distance'].initial=event.distance
+    form.fields['distance'].initial=float(event.distance)
     form.fields['units'].initial=event.units
     form.fields['duration'].initial=event.duration
     form.fields['gender'].initial=event.gender
@@ -176,7 +176,7 @@ def edit_normal(request, activity_id):
         if form.is_valid():
             # save the new data
             data = form.cleaned_data
-            normal_run.distance=data['distance']
+            normal_run.distance=float(data['distance'])
             normal_run.duration=data['duration']
             normal_run.units=data['units']
             activity.comment=data['comments']
@@ -380,7 +380,7 @@ def add_intervals(request):
             for i in range(len(rep_formset)):
                 rep = Rep.objects.create(
                     interval_run=interval_workout,
-                    distance=rep_formset[i].cleaned_data.get('rep_distance'),
+                    distance=float(rep_formset[i].cleaned_data.get('rep_distance')),
                     units=rep_formset[i].cleaned_data.get('rep_units'),
                     duration=rep_formset[i].cleaned_data.get('rep_duration'),
                     rest=rep_formset[i].cleaned_data.get('rep_rest'),

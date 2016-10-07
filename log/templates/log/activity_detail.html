@@ -2,6 +2,14 @@
 
 {% block content %}
 
+  <a href="/log/athlete/edit_activity/{{ activity.id }}">
+    EDIT
+  </a>
+  <a href="/log/athlete/delete_activity/{{ activity.id }}">
+    DELETE
+  </a>
+  </div>
+
   {% ifequal activity.act_type "NormalRun" %}
     <div .class="activity_detail_container">
       <h2 id='test'> {{ workout.distance }} {{ workout.units }} in {{ workout.duration }} </h2>

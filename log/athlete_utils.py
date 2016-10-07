@@ -38,7 +38,7 @@ def create_run(run_type, activity, data):
     if run_type == "NormalRun":
         run = NormalRun.objects.create(
             activity=activity,
-            distance=data['distance'],
+            distance=float(data['distance']),
             duration=data['duration'],
             units=data['units'],
         )
@@ -47,13 +47,13 @@ def create_run(run_type, activity, data):
     elif run_type == "CrossTrain":
         run = CrossTrain.objects.create(
             activity=activity,
-            distance=data['distance'],
+            distance=float(data['distance']),
             duration=data['duration'],
             sport=data['sport'],
             units=data['units'],
         )
     elif run_type == "Event":
-        #Need ability to locoate existing meet. 
+        #Need ability to locoate existing meet.
         meet = Meet.objects.create(
             location=data['location'],
         )
@@ -61,7 +61,7 @@ def create_run(run_type, activity, data):
         run = Event.objects.create(
             activity=activity,
             meet=meet,
-            distance=data['distance'],
+            distance=float(data['distance']),
             duration=data['duration'],
             place=data['place'],
             units=data['units'],
