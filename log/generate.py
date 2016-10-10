@@ -100,7 +100,7 @@ def generate_xtrain_workout(athlete, date):
 def generate_workout_data(athlete):
     #get dates for last 7 days
     dates = []
-    for i in range(50):
+    for i in range(100):
         dates.append(datetime.date.today() - datetime.timedelta(i))
 
     #set the type of workouts to generate

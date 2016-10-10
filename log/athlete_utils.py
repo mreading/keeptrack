@@ -2,6 +2,34 @@ from .utils import *
 from .models import *
 from .athlete_forms import *
 
+
+def get_workout_from_activity(activity):
+    if activity.act_type == "NormalRun":
+        return NormalRun.objects.get(activity=activity)
+    if activity.act_type == "IntervalRun":
+        return IntervalRun.objects.get(activity=activity)
+    if activity.act_type == "CrossTrain":
+        return CrossTrain.objects.get(activity=activity)
+    if activity.act_type == "Event":
+        return Event.objects.get(activity=activity)
+    else:
+        print "Unknown type of workout"
+
+def build_graph_data(dates, activities):
+    graph_data = []
+    p = 0
+    for i in range(len(dates)):
+        if p < len(activities) and dates[i] == activities[p].date:
+            graph_data.append(
+            [str(activities[p].date), get_workout_from_activity(activities[p]).distance]
+            )
+            p += 1
+        else:
+            graph_data.append(
+            [str(dates[i]), 0.00]
+            )
+    return graph_data
+
 def update_activity(activity, cleaned_data):
     run = None
     if activity.act_type == "NormalRun":

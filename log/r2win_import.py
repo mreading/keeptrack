@@ -85,14 +85,19 @@ def django_ify(workout, athlete):
         run_type = "CrossTrain"
     elif workout.run_type == "Interval Workout":
         run_type = "IntervalRun"
+    elif workout.run_type == "Race":
+        run_type = "Event"
 
     activity = Activity.objects.create(
         athlete=athlete,
         date=workout.date,
         comment = workout.comments,
-        act_type = 'NormalRun', #temporarily hardcoded
+        act_type = run_type
     )
     activity.save()
+
+    thread = Thread.objects.create(activity=activity)
+    thread.save()
 
     if run_type == "NormalRun":
         NormalRun.objects.create(

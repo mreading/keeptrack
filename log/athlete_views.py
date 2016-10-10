@@ -37,8 +37,8 @@ def edit_interval_run(request, activity_id):
         if IntervalForm.is_valid() and rep_formset.is_valid():
             # save the new data
             data = IntervalForm.cleaned_data
-            i_run.warmup = data['warmup']
-            i_run.cooldown = data['cooldown']
+            i_run.warmup = float(data['warmup'])
+            i_run.cooldown = float(data['cooldown'])
             i_run.cd_units = data['cd_units']
             i_run.save()
 
@@ -212,6 +212,7 @@ def athlete(request, user_id):
     athlete = Athlete.objects.get(user=user)
     activities = Activity.objects.filter(athlete=athlete).order_by('date')
 
+    #used for the list of recent activities
     all_runs = []
     for a in activities:
         all_runs += NormalRun.objects.filter(activity=a)
@@ -220,28 +221,72 @@ def athlete(request, user_id):
         all_runs += Event.objects.filter(activity=a)
 
     #------------------ mileage graph ----------------------
+    #should also include days with no run...
+    #Should have Year, Month, Week, Last 7 days, and Range
+
+    #get run data
     runs = []
     for a in activities:
         runs += NormalRun.objects.filter(activity=a)
         runs += IntervalRun.objects.filter(activity=a)
         runs += Event.objects.filter(activity=a)
 
-    total_mileage = []
-    for run in runs:
-        total_mileage.append([
-            str(run.activity.date),
-            run.distance,
-            ])
+    year_activities = Activity.objects.filter(
+        date__year=datetime.date.today().year,
+        athlete=athlete
+        ).order_by('date')
+    year_activities = list(year_activities)
 
-    last_7 = total_mileage[:7]
+    month_activities = Activity.objects.filter(
+        date__year=datetime.date.today().year,
+        date__month=datetime.date.today().month,
+        athlete=athlete
+        ).order_by('date')
+    month_activities = list(month_activities)
+
+    # week_activities = Activity.objects.filter(
+    #     date__year=datetime.date.today().year,
+    #     date__month=datetime.date.today().month,
+    #     date__week=datetime.date.today().week,
+    #     athlete=athlete
+    #     ).order_by('date')
+    # week_activities = list(week_activities)
+
+    # ------------------------- get dates -------------------------------------
+    curr_year = []
+    curr_month = []
+    # curr_week = []
+
+    jan_1st = datetime.date(year=datetime.date.today().year, month=1, day=1)
+    dec_31st = datetime.date(year=datetime.date.today().year, month=12, day=31)
+
+    #Get the dates for the current year
+    iter_date = jan_1st
+    while iter_date <= dec_31st:
+        curr_year.append(iter_date)
+        iter_date = iter_date + datetime.timedelta(1)
+
+    #get the dates for the current month
+    for day in curr_year:
+        if day.month == datetime.date.today().month:
+            curr_month.append(day)
+
+    #get the dates for the current week
+    # for i in range(7):
+    #     curr_week.append(datetime.date.today() - datetime.timedelta(i))
+
+    #--------------- generate graph data, including days off -------------------
+    year_graph_data = build_graph_data(curr_year, year_activities)
+    month_graph_data = build_graph_data(curr_month, month_activities)
+    # week_graph_data = build_graph_data(curr_week, week_activities)
     #------------------ recent workouts ---------------------
     context = {
         'all_runs':all_runs,
-        'athlete':athlete,
+        # 'year_graph_data':json.dumps(year_graph_data),
+        # 'month_graph_data':json.dumps(month_graph_data),
         'athlete_user':user,
-        'last_7':json.dumps(last_7),
-        'total_mileage':json.dumps(total_mileage),
     }
+
     if request.method == 'POST':
         date_range_form = DateRangeForm(request.POST)
         if date_range_form.is_valid():
@@ -257,6 +302,8 @@ def athlete(request, user_id):
                         r.distance
                     ])
             context['date_range_mileage'] = date_range
+            context['form'] = DateRangeForm()
+            return render(request, "log/athlete.html", context)
     else:
         date_range_form = DateRangeForm()
         context['form'] = date_range_form
