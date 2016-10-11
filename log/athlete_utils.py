@@ -4,6 +4,9 @@ from .athlete_forms import *
 
 
 def get_workout_from_activity(activity):
+    """---------------------------------------------------------
+	  Given an activity, return the corrosponding run
+	---------------------------------------------------------"""
     if activity.act_type == "NormalRun":
         return NormalRun.objects.get(activity=activity)
     if activity.act_type == "IntervalRun":
@@ -16,6 +19,14 @@ def get_workout_from_activity(activity):
         print "Unknown type of workout"
 
 def build_graph_data(dates, activities):
+    """---------------------------------------------------------
+	Build the data array for google charts mileage on the athlete
+    page given a bunch of dates and activites.
+    Dates are datetime objects.
+	---------------------------------------------------------"""
+
+    #graph data is expected to be of the form [[x-axis data, y-axis data], ...]
+    # where x axis is a date string and y axis is floating point number representing distance
     graph_data = []
     p = 0
     for i in range(len(dates)):
@@ -38,11 +49,12 @@ def update_activity(activity, cleaned_data):
         run = IntervalRun.objects.get(activity=activity)
     elif activity.act_type == "CrossTrain":
         run = CrossTrail.objects.get(activity=activity)
-    # elif activity.act_type == "Meet":
+    # FIXME ??????? elif activity.act_type == "Meet":
     #     run = Event.objects.get(activity=activity)
 
 
 def get_post_form(run_type, post):
+    """ Simply locates a form based on the type of run """
     if run_type == "NormalRun":
         return AddNormalForm(post)
     elif run_type == "IntervalRun":
@@ -53,6 +65,7 @@ def get_post_form(run_type, post):
         return AddEventForm(post)
 
 def get_form(run_type):
+    """ Very similar to the function above """
     if run_type == "NormalRun":
         return AddNormalForm()
     elif run_type == "IntervalRun":
@@ -63,6 +76,7 @@ def get_form(run_type):
         return AddEventForm()
 
 def create_run(run_type, activity, data):
+    """ """
     if run_type == "NormalRun":
         run = NormalRun.objects.create(
             activity=activity,
@@ -71,6 +85,7 @@ def create_run(run_type, activity, data):
             units=data['units'],
         )
     elif run_type == "IntervalRun":
+        # Not implemented because it is handled in a seperate view
         pass
     elif run_type == "CrossTrain":
         run = CrossTrain.objects.create(
