@@ -33,7 +33,7 @@ class Athlete(models.Model):
 
 class Coach(models.Model):
     """ Brett Hull """
-    team = models.ManyToManyField(Team)
+    teams = models.ManyToManyField(Team)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Activity(models.Model):

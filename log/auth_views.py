@@ -49,7 +49,7 @@ def signup(request):
                 coach = Coach.objects.create(user_id = user.id)
                 coach.save()
                 user.coach = coach
-                coach.team = team
+                coach.teams.add(team)
             else:
                 print "was athlete"
                 athlete = Athlete.objects.create(

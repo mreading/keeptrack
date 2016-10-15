@@ -51,7 +51,7 @@
        <div id="authentication">
          {% if user.is_authenticated %}
             {% if user.coach_set %}
-              <a class="auth" href="/log/settings/"> Hi Coach {{ user.first_name }}</a>
+              <a class="auth" href="/log/settings/"> Hi Coach {{ user.last_name }}</a>
             {% elif user.athlete_set %}
               <a class="auth" href="/log/athlete/{user.id}"> Hi {{ user.first_name }}</a>
             {% endif %}
