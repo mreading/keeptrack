@@ -2,7 +2,7 @@
 $(document).ready(function() {
   $(".graph_option").hover(function(){
     console.log("hey there");
-    // $("#sideBar").css("background-color","blue");
+    // $("#current_year_selector").css("background-color","blue");
   });
 });
 
@@ -84,7 +84,7 @@ function drawMonthChart() {
   // Set chart options
   var options = {'title':'Current Month Mileage',
                  'height':300,
-                 'width':850,
+                 'width':'100%',
                 //  'trendlines': { 0: {} }
                };
 
