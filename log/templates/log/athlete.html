@@ -2,9 +2,6 @@
 {% load staticfiles %}
 
 {% block content %}
-  <script type='text/javascript'>
-
-  </script>
   <div>
     <h2 id='test'>{{ athlete_user.first_name }} {{ athlete_user.last_name}}</h2>
     {% ifequal athlete_user.id user.id %}
@@ -19,10 +16,11 @@
   </div>
   <div id="page">
     <div class="module_container">
-      <div id="one">last 7</div>
-      <div id="two">all mileage</div>
-      <div id="three">date range</div>
-
+      <div id= "mileage_options">
+        <div class="graph_option" id="current_year_selector">Current Year</div>
+        <div class="graph_option" id="current_month_selector">Current Month</div>
+        <div class="graph_option" id="current_week_selector">Current Week</div>
+      </div>
 
           <!--Load the AJAX API-->
           <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -34,14 +32,14 @@
             var month_graph_data = {{ month_graph_data|safe }}
           </script>
           <script type="text/javascript">
-            var week_graph_data = {{ date_range_mileage|safe }}
+            var week_graph_data = {{ week_graph_data|safe }}
           </script>
           <script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
 
           <!--Div that will hold the bar chart-->
-        <div id="all_mileage_graph"></div>
-        <div id="7_mileage"></div>
-        <div id="date_ranges">
+        <div id="year_mileage_graph"></div>
+        <div id="month_mileage_graph"></div>
+        <div id="week_mileage_graph">
           <form action="/log/athlete/{{ user.id }}/" method='post'>
             {% csrf_token %}
             {{ form.errors }}

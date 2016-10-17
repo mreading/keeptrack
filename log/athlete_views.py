@@ -301,18 +301,22 @@ def athlete(request, user_id):
         ).order_by('date')
     month_activities = list(month_activities)
 
-    # week_activities = Activity.objects.filter(
-    #     date__year=datetime.date.today().year,
-    #     date__month=datetime.date.today().month,
-    #     date__week=datetime.date.today().week,
-    #     athlete=athlete
-    #     ).order_by('date')
-    # week_activities = list(week_activities)
+    week_activities = Activity.objects.filter(
+        date__year=datetime.date.today().year,
+        date__month=datetime.date.today().month,
+        athlete=athlete
+        ).order_by('date')
+    week_activities = list(week_activities)
+
+    today = datetime.date.today()
+    start_week = today - datetime.timedelta(today.weekday())
+    end_week = start_week + datetime.timedelta(7)
+    week_activities = Activity.objects.filter(date__range=[start_week, end_week])
 
     # ------------------------- get dates -------------------------------------
     curr_year = []
     curr_month = []
-    # curr_week = []
+    curr_week = []
 
     jan_1st = datetime.date(year=datetime.date.today().year, month=1, day=1)
     dec_31st = datetime.date(year=datetime.date.today().year, month=12, day=31)
@@ -328,19 +332,21 @@ def athlete(request, user_id):
         if day.month == datetime.date.today().month:
             curr_month.append(day)
 
-    #get the dates for the current week
-    # for i in range(7):
-    #     curr_week.append(datetime.date.today() - datetime.timedelta(i))
+    # get the dates for the current week
+    for i in range(7):
+        curr_week.append(datetime.date.today() - datetime.timedelta(i))
 
     #--------------- generate graph data, including days off -------------------
     year_graph_data = build_graph_data(curr_year, year_activities)
     month_graph_data = build_graph_data(curr_month, month_activities)
-    # week_graph_data = build_graph_data(curr_week, week_activities)
+    week_graph_data = build_graph_data(curr_week, week_activities)
+
     #------------------ recent workouts ---------------------
     context = {
         'all_runs':all_runs,
-        # 'year_graph_data':json.dumps(year_graph_data),
-        # 'month_graph_data':json.dumps(month_graph_data),
+        'year_graph_data':json.dumps(year_graph_data),
+        'month_graph_data':json.dumps(month_graph_data),
+        'week_graph_data':json.dumps(week_graph_data),
         'athlete_user':user,
     }
 

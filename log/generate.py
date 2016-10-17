@@ -1,3 +1,9 @@
+#------------------------------------------------------------------------------
+# PURPOSE: generation of fake data for the developer testing purposes.
+# USAGE: python manage.py shell -> from log.generate import * ->
+#        clean_database()       -> generate()
+# FILES: Pretty much standalone
+#------------------------------------------------------------------------------
 from models import *
 from athlete_utils import *
 import datetime

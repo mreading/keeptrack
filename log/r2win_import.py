@@ -1,10 +1,13 @@
 import datetime
-import timeit
 import re
 import xml.etree.ElementTree as ET
 
 from .models import *
 
+# This is an interim class to ease the transition from the xml import file
+# to django. That way, if the format of the xml files ever changes,
+# the change to django won't be as complicated, it will just involve changing
+# this object
 class Workout:
     def __init__(self, xml_workout):
         attributes = list(xml_workout)
@@ -129,7 +132,8 @@ def import_from_file(f, athlete):
     tree = ET.parse(f)
     root = tree.getroot()
     all_data = list(root)
-    #first three elements are 'member', 'to' and 'from' dates of workouts
+    # first three elements are 'member', 'to' and 'from' dates of workouts,
+    # so ignore them using a slice. 
     workouts = all_data[3:]
     py_workouts = [Workout(w) for w in workouts]
     print py_workouts

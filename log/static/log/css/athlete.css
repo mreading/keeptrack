@@ -1,0 +1,10 @@
+#milage_options {
+}
+
+.graph_option {
+  display:inline-block;
+  border: 1px solid black;
+  height: 40px;
+  width: 70px;
+  margin: 10px;
+}

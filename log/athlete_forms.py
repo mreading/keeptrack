@@ -1,3 +1,7 @@
+#------------------------------------------------------------------------------
+# PURPOSE: Form definitions used in athlete_views.py
+# FILES: ./athlete_views.py
+#------------------------------------------------------------------------------
 from django.forms import *
 from django import forms
 from .models import *
@@ -8,19 +12,22 @@ class R2WImportForm(forms.Form):
     log = forms.FileField()
 
 class DateRangeForm(forms.Form):
-        start_date = forms.DateField(
-            initial=date.today,
-            widget=forms.widgets.DateInput(attrs={'type': 'date'})
-            )
-        end_date = forms.DateField(
-            initial=date.today,
-            widget=forms.widgets.DateInput(attrs={'type': 'date'})
-            )
+    """--------------------------------------------------------------------
+    A form for getting a range of dates for mileage graphs
+    --------------------------------------------------------------------"""
+    start_date = forms.DateField(
+        initial=date.today,
+        widget=forms.widgets.DateInput(attrs={'type': 'date'})
+        )
+    end_date = forms.DateField(
+        initial=date.today,
+        widget=forms.widgets.DateInput(attrs={'type': 'date'})
+        )
 
 class SplitDurationWidget(forms.MultiWidget):
-    """
+    """--------------------------------------------------------------------
     A Widget that splits duration input into four number input boxes.
-    """
+    --------------------------------------------------------------------"""
     def __init__(self, attrs=None):
         widgets = (forms.NumberInput(attrs=attrs),
                    forms.NumberInput(attrs=attrs),
@@ -39,6 +46,10 @@ class SplitDurationWidget(forms.MultiWidget):
         return [0, 1, 0, 0]
 
 class MultiValueDurationField(forms.MultiValueField):
+    """--------------------------------------------------------------------
+    Not currently in use. But If we can't find a widget for entering durations
+    this could be more useful.
+    --------------------------------------------------------------------"""
     widget = SplitDurationWidget
 
     def __init__(self, *args, **kwargs):
@@ -64,6 +75,9 @@ class MultiValueDurationField(forms.MultiValueField):
             return timedelta(0)
 
 class AddNormalForm(forms.Form):
+    """--------------------------------------------------------------------
+    Form for adding normal runs
+    --------------------------------------------------------------------"""
     date = forms.DateField(
         initial=date.today,
         widget=forms.widgets.DateInput(attrs={'type': 'date'})
@@ -80,6 +94,9 @@ class AddNormalForm(forms.Form):
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
 class AddXtrainForm(forms.Form):
+    """--------------------------------------------------------------------
+    Form for adding CrossTrain workouts.
+    --------------------------------------------------------------------"""
     date = forms.DateField(
         initial=date.today,
         widget=forms.widgets.DateInput(attrs={'type': 'date'})
@@ -97,6 +114,9 @@ class AddXtrainForm(forms.Form):
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
 class AddEventForm(forms.Form):
+    """--------------------------------------------------------------------
+    Form for adding events
+    --------------------------------------------------------------------"""
     date = forms.DateField(
         initial=date.today,
         widget=forms.widgets.DateInput(attrs={'type': 'date'})
@@ -120,9 +140,9 @@ class AddEventForm(forms.Form):
 
 
 class AddRepForm(forms.Form):
-    """
+    """--------------------------------------------------------------------
     Form for individual repeats
-    """
+    --------------------------------------------------------------------"""
     rep_distance = forms.FloatField()
     unit_choices = [
         ('Miles','Miles'),
@@ -135,6 +155,9 @@ class AddRepForm(forms.Form):
     rep_rest = forms.DurationField()
 
 class AddIntervalForm(forms.Form):
+    """--------------------------------------------------------------------
+    Form for adding or editing interval workouts
+    --------------------------------------------------------------------"""
     def __init__(self, *args, **kwargs):
         print "initializing interval form..."
         self.user = kwargs.pop('user', None)
@@ -165,10 +188,10 @@ class AddIntervalForm(forms.Form):
 
 class BaseAddRepFormSet(BaseFormSet):
     def clean(self):
-        """
+        """--------------------------------------------------------------------
         Adds validation to check that no two links have the same rep_duration or rep_rest
         and that all links have both an rep_duration and rep_rest.
-        """
+        --------------------------------------------------------------------"""
         print "cleaning..."
         if any(self.errors):
             return
@@ -195,4 +218,7 @@ class BaseAddRepFormSet(BaseFormSet):
                     )
 
 class CommentForm(forms.Form):
+    """--------------------------------------------------------------------
+    Doesn't even need explaining
+    --------------------------------------------------------------------"""
     text = forms.CharField(max_length=1500, widget=forms.Textarea(attrs={'style':'height: 30px; width: 100\%'}))

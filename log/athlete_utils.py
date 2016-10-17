@@ -1,7 +1,10 @@
+#------------------------------------------------------------------------------
+# PURPOSE: Helper functions from athlete_views.py
+# FILES: ./athlete_views.py
+#------------------------------------------------------------------------------
 from .utils import *
 from .models import *
 from .athlete_forms import *
-
 
 def get_workout_from_activity(activity):
     """---------------------------------------------------------
@@ -76,7 +79,9 @@ def get_form(run_type):
         return AddEventForm()
 
 def create_run(run_type, activity, data):
-    """ """
+    """ ---------------------------------------------------------------
+    Helper function for the athlete_views.add function to create a run
+    -------------------------------------------------------------------"""
     if run_type == "NormalRun":
         run = NormalRun.objects.create(
             activity=activity,
@@ -96,7 +101,7 @@ def create_run(run_type, activity, data):
             units=data['units'],
         )
     elif run_type == "Event":
-        #Need ability to locoate existing meet.
+        # FIXME Need ability to locoate existing meet.
         meet = Meet.objects.create(
             location=data['location'],
         )
@@ -113,7 +118,9 @@ def create_run(run_type, activity, data):
     run.save()
 
 def set_total_distance(interval_run):
-    #used to set the total distance attribute of inerval runs.
+    """---------------------------------------------------------
+    used to set the total distance attribute of inerval runs.
+	---------------------------------------------------------"""
     reps = Rep.objects.filter(interval_run=interval_run)
     total = 0
     for r in reps:

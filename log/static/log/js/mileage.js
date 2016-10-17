@@ -1,31 +1,43 @@
-// $(document).ready(function() {
-//     $("#7_mileage").hide();
-//     $("#date_range").hide();
-// });
-//
-// $(document).ready(function() {
-//   $("#two").click(function(){
-//     $("#all_mileage_graph").show('slow');
-//     $("#7_mileage").hide('slow');
-//     $("#date_ranges").hide('slow');
-//   });
-// });
-//
-// $(document).ready(function() {
-//   $("#one").click(function(){
-//     $("#7_mileage").show('slow');
-//     $("#all_mileage_graph").hide('slow');
-//     $("#date_ranges").hide('slow');
-//   });
-// });
-//
-// $(document).ready(function() {
-//   $("#three").click(function(){
-//     $("#date_ranges").show('slow');
-//     $("#7_mileage").hide('slow');
-//     $("#all_mileage_graph").hide('slow');
-//   });
-// });
+// Show Year graph, hide others
+$(document).ready(function() {
+  $(".graph_option").hover(function(){
+    console.log("hey there");
+    // $("#sideBar").css("background-color","blue");
+  });
+});
+
+// -------------------- Mileage graph divs -----------------------
+$(document).ready(function() {
+    $("#week_mileage_graph").hide();
+    $("#year_mileage_graph").hide();
+});
+
+// Show Year graph, hide others
+$(document).ready(function() {
+  $("#current_year_selector").click(function(){
+    $("#year_mileage_graph").show('slow');
+    $("#month_mileage_graph").hide('slow');
+    $("#week_mileage_graph").hide('slow');
+  });
+});
+
+// Show Month Graph, hide others
+$(document).ready(function() {
+  $("#current_month_selector").click(function(){
+    $("#year_mileage_graph").hide('slow');
+    $("#month_mileage_graph").show('slow');
+    $("#week_mileage_graph").hide('slow');
+  });
+});
+
+// Show Week Graph, hide others
+$(document).ready(function() {
+  $("#current_week_selector").click(function(){
+    $("#year_mileage_graph").hide('slow');
+    $("#month_mileage_graph").hide('slow');
+    $("#week_mileage_graph").show('slow');
+  });
+});
 
 
 // Load the Visualization API and the corechart package.
@@ -47,14 +59,14 @@ function drawYearChart() {
   data.addRows(year_graph_data);
 
   // Set chart options
-  var options = {'title':'Mileage',
+  var options = {'title':'Current Year Mileage',
                  'height':300,
-                 'width':1200,
-                 'trendlines': { 0: {} }
+                 'width':850,
+                //  'trendlines': { 0: {} }
                };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('all_mileage_graph'));
+  var chart = new google.visualization.ColumnChart(document.getElementById('year_mileage_graph'));
   chart.draw(data, options);
 }
 
@@ -70,14 +82,14 @@ function drawMonthChart() {
   data.addRows(month_graph_data);
 
   // Set chart options
-  var options = {'title':'Mileage',
+  var options = {'title':'Current Month Mileage',
                  'height':300,
-                 'width':1000,
-                 'trendlines': { 0: {} }
+                 'width':850,
+                //  'trendlines': { 0: {} }
                };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('7_mileage'));
+  var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));
   chart.draw(data, options);
 }
 
@@ -93,12 +105,12 @@ function drawWeekChart() {
   data.addRows(week_graph_data);
 
   // Set chart options
-  var options = {'title':'Mileage',
+  var options = {'title':'Current Week Mileage',
                  'height':300,
-                 'width':1000
+                 'width':850
                };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('date_range'));
+  var chart = new google.visualization.ColumnChart(document.getElementById('week_mileage_graph'));
   chart.draw(data, options);
 }
