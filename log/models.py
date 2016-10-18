@@ -3,27 +3,34 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
-
-class Team(models.Model):
-    """ ex: Hamilton Men """
-    school_name = models.CharField(max_length=50)
-    gender = models.CharField(max_length=1)
-    #conference
-    #mascot
-
-    def __str__(self):
-        return self.school_name + ' (' + self.gender + ')'
+from datetime import date
 
 class Season(models.Model):
-    """ ex: XC 2017 (athletes participate in seasons)"""
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    """ ex: 2017 (athletes participate in seasons)"""
+    #team = models.ForeignKey(Team, on_delete=models.CASCADE)
     year = models.PositiveIntegerField()
+    start_date = models.DateField(default = date.today)
+    end_date = models.DateField(default = date.today)
+
+class Team(models.Model):
+    """ ex: Hamilton Men XC """
+    school_name = models.CharField(max_length=50)
+    gender = models.CharField(max_length=1)
     sport_choices = [
         ('Indoor Track and Field','ITF'),
         ('Outdoor Track and Field','OTF'),
         ('Cross Country','XC')
     ]
-    sport = models.CharField(choices=sport_choices, max_length=3)
+    sport = models.CharField(choices=sport_choices, max_length=3,
+        default = 'Indoor Track and Field')
+    seasons = models.ManyToManyField(Season)
+
+    #conference
+    #mascot
+
+    def __str__(self):
+        return self.school_name + ' ' + self.gender + " " + self.sport
+
 
 class Athlete(models.Model):
     """ ex: Henry Whipple """
@@ -141,3 +148,14 @@ class Comment(models.Model):
     position = models.IntegerField()
     private = models.BooleanField()
     poster = models.ForeignKey(User)
+
+class Invite(models.Model):
+    user = models.OneToOneField(User) # associated user with the invite.
+    cookie = models.SlugField() # randomly generated string which is stored in the users browser.
+    token = models.SlugField() # randomly generated string which is used in the invite URL
+    def __unicode__(self):
+        return u"%s %s's invite" % (self.user.first_name, self.user.last_name)
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('invites.views.confirm_invite', [self.token])

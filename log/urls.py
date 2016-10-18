@@ -27,7 +27,10 @@ urlpatterns = [
     url(r'^athlete/add_intervals/$', athlete_views.add_intervals, name='add'),
     url(r'^athlete/edit_activity/(?P<activity_id>[0-9]+)/$', athlete_views.edit_activity, name='edit_activity'),
     url(r'^athlete/activity_detail/(?P<activity_id>[0-9]+)/$', athlete_views.activity_detail, name='activity_detail'),
-    url(r'^athlete/delete_activity/(?P<activity_id>[0-9]+)/$', athlete_views.delete_activity, name='delete_activity'),    
+    url(r'^athlete/delete_activity/(?P<activity_id>[0-9]+)/$', athlete_views.delete_activity, name='delete_activity'),
     url(r'^athlete/r2w_import/$', athlete_views.r2w_import, name='r2w_import'),
-    url(r'^create_team/(?P<user_id>[0-9]+)/$', coach_views.create_team, name='create_team'),
+    url(r'^create_season/(?P<user_id>[0-9]+)/(?P<team_id>[0-9]+)$', coach_views.create_season, name='create_season'),
+    url(r'^manage_teams/(?P<user_id>[0-9]+)/$', coach_views.manage_teams, name='manage_teams'),
+    url(r'^add_team/(?P<user_id>[0-9]+)/$', coach_views.add_team, name='add_team'),
+    url(r'^add_athletes/(?P<user_id>[0-9]+)/(?P<team_id>[0-9]+)/(?P<season_id>[0-9]+)/$', coach_views.add_athletes, name='add_athletes'),
 ]

@@ -51,10 +51,12 @@
      <div class="container-fluid">
        <div id="authentication">
          {% if user.is_authenticated %}
-            {% if user.coach_set %}
-              <a class="auth" href="/log/settings/"> Hi Coach {{ user.last_name }}</a>
-            {% elif user.athlete_set %}
-              <a class="auth" href="/log/athlete/{user.id}"> Hi {{ user.first_name }}</a>
+            <!-- NEED TO FIX! Athletes are detected as both coaches and athletes -->
+            {% if user.coach_set.all %}
+              <a class="auth" href="/log/manage_teams/{{user.id}}"> Hi Coach {{ user.last_name }}</a>
+            {% endif %}
+            {% if user.athlete_set.all  %}
+              <a class="auth" href="/log/athlete/{{user.id}}"> Hi {{ user.first_name }}</a>
             {% endif %}
            <a  class="auth" href="/log/logout/"> Logout </a>
          {% endif %}
