@@ -1,15 +1,17 @@
 {% extends 'log/base.html' %}
+{% load staticfiles %}
 
 {% block content %}
 
-  <form action="/log/signup/" method="post" autocomplete="off">
+  <head> ADD A NEW TEAM </head>
+
+  <form action="/log/add_team/{{user.id}}/" method="post" autocomplete="off">
     {% csrf_token %}
     {{ form.errors }}
     {{ form.non_field_errors }}
     {{ form.as_p }}
-    <p> (can add more sports later) </p>
   </br>
-    <input type="submit" value="Sign up" />
+    <input type="submit" value="Add Team"/>
   </form>
 
 {% endblock %}
