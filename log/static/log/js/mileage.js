@@ -86,7 +86,7 @@ function drawMonthChart() {
                  'height':300,
                  'width':'100%',
                 //  'trendlines': { 0: {} }
-               };
+              };
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));

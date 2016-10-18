@@ -13,7 +13,7 @@ function drawIntervalChart() {
   // Create the data table.
   var data = new google.visualization.DataTable();
   data.addColumn('number', 'Rep');
-  data.addColumn('timeofday', 'duration');
+  data.addColumn('timeofday', 'Time');
   data.addRows(interval_graph_data);
   // data.addRows([
   //   // hour, minute second millisecond
@@ -24,6 +24,7 @@ function drawIntervalChart() {
   var options = {'title':'Interval Graph',
                  'height':300,
                  'width':850,
+                //  'hAxis': {'format': '0'}
                 //  'trendlines': { 0: {} }
                };
 

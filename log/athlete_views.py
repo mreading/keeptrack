@@ -61,7 +61,7 @@ def edit_interval_run(request, activity_id):
                     units=rep_formset[i].cleaned_data.get('rep_units'),
                     duration=rep_formset[i].cleaned_data.get('rep_duration'),
                     rest=rep_formset[i].cleaned_data.get('rep_rest'),
-                    position=i
+                    position=i+1 #not zero based
                 )
                 rep.save()
 
@@ -513,7 +513,7 @@ def add_intervals(request):
                     units=rep_formset[i].cleaned_data.get('rep_units'),
                     duration=rep_formset[i].cleaned_data.get('rep_duration'),
                     rest=rep_formset[i].cleaned_data.get('rep_rest'),
-                    position=i
+                    position=i+1
                 )
                 rep.save()
 
