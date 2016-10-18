@@ -367,7 +367,7 @@ def athlete(request, user_id):
                         str(r.activity.date),
                         r.distance
                     ])
-            context['date_range_mileage'] = date_range
+            context['range_graph_data'] = date_range
             context['form'] = DateRangeForm()
             return render(request, "log/athlete.html", context)
     else:

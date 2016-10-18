@@ -213,16 +213,18 @@ def generate_athletes(season):
 def generate():
     team = Team.objects.create(
         school_name="Hamilton",
-        gender = "M"
+        gender = "M",
+        sport = "XC",
+
     )
     team.save()
 
     season = Season.objects.create(
-        team = team,
         year = 2016,
-        sport = "XC"
+        start_date = datetime.date(year=2016, month=8, day=25),
+        end_date = datetime.date(year=2016, month=11, day=20)
     )
-    season.save()
+    team.seasons.add(season)
 
     generate_athletes(season)
 

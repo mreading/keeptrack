@@ -10,6 +10,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     $("#week_mileage_graph").hide();
     $("#year_mileage_graph").hide();
+    $("#date_range_graph").hide();
 });
 
 // Show Year graph, hide others
@@ -18,6 +19,7 @@ $(document).ready(function() {
     $("#year_mileage_graph").show('slow');
     $("#month_mileage_graph").hide('slow');
     $("#week_mileage_graph").hide('slow');
+    $("#date_range_graph").hide('slow');
   });
 });
 
@@ -27,6 +29,7 @@ $(document).ready(function() {
     $("#year_mileage_graph").hide('slow');
     $("#month_mileage_graph").show('slow');
     $("#week_mileage_graph").hide('slow');
+    $("#date_range_graph").hide('slow');
   });
 });
 
@@ -36,6 +39,16 @@ $(document).ready(function() {
     $("#year_mileage_graph").hide('slow');
     $("#month_mileage_graph").hide('slow');
     $("#week_mileage_graph").show('slow');
+    $("#date_rangegraph").hide('slow');
+  });
+});
+
+$(document).ready(function() {
+  $("#range_selector").click(function(){
+    $("#year_mileage_graph").hide('slow');
+    $("#month_mileage_graph").hide('slow');
+    $("#week_mileage_graph").hide('slow');
+    $("#date_range_graph").show('slow');
   });
 });
 
@@ -112,5 +125,27 @@ function drawWeekChart() {
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('week_mileage_graph'));
+  chart.draw(data, options);
+}
+
+// Draw the bar chart for Sarah's pizza when Charts is loaded.
+google.charts.setOnLoadCallback(drawRangeChart);
+
+function drawWeekChart() {
+
+  // Create the data table.
+  var data = new google.visualization.DataTable();
+  data.addColumn('string', 'Day');
+  data.addColumn('number', 'Miles');
+  data.addRows(range_graph_data);
+
+  // Set chart options
+  var options = {'title':'Date Range Graph',
+                 'height':300,
+                 'width':850,
+               };
+
+  // Instantiate and draw our chart, passing in some options.
+  var chart = new google.visualization.ColumnChart(document.getElementById('date_range_graph'));
   chart.draw(data, options);
 }

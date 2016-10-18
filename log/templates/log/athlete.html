@@ -20,6 +20,7 @@
         <div class="graph_option" id="current_year_selector">Current Year</div>
         <div class="graph_option" id="current_month_selector">Current Month</div>
         <div class="graph_option" id="current_week_selector">Current Week</div>
+        <div class="graph_option" id="range_selector">Mileage Range</div>
       </div>
 
           <!--Load the AJAX API-->
@@ -34,20 +35,25 @@
           <script type="text/javascript">
             var week_graph_data = {{ week_graph_data|safe }}
           </script>
+          {% if range_graph_data %}
+            <script type="text/javascript">
+              var range_graph_data = {{ range_graph_data|safe }}
+            </script>
+          {% endif %}
           <script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
 
           <!--Div that will hold the bar chart-->
         <div id="year_mileage_graph"></div>
         <div id="month_mileage_graph"></div>
-        <div id="week_mileage_graph">
+        <div id="week_mileage_graph"></div>
+        <div id="date_range_graph">
           <form action="/log/athlete/{{ user.id }}/" method='post'>
             {% csrf_token %}
             {{ form.errors }}
             {{ form }}
-            <input type="submit" value="Show Mileage" />
+            <input type="submit" value="Show Mileage"/>
           </form>
         </div>
-        <div id="date_range"></div>
     </div>
     <div class="module_container">
       {% for r in all_runs %}
