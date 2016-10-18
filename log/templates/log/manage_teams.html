@@ -1,0 +1,28 @@
+{% extends 'log/base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+
+<head> TEAMS </head>
+
+
+  {% for t in teams %}
+    <div>
+          {{ t }}
+          {% for season in t.seasons.all %}
+        </br>
+            {{ season.year }}
+          {% endfor %}
+        </br>
+          <a href="/log/create_season/{{user.id}}/{{t.id}}">
+              Add Season
+          </a>
+    </div>
+  {% endfor %}
+
+</br>
+  {% if not full_team %}
+    <a href="/log/add_team/{{user.id}}/"> ADD NEW TEAM </a>
+  {% endif %}
+
+{% endblock %}

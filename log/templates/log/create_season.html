@@ -2,24 +2,12 @@
 {% load staticfiles %}
 
 {% block content %}
-    <form action="/log/create_team/{{user.id}}/", method="POST">
+
+    <p> Add a season for {{team}} </p>
+
+    <form action="/log/create_season/{{user.id}}/{{team.id}}", method="POST">
     {% csrf_token %}
     <div id="entry_container">
-      {{form.school.label}}
-      </br>
-      {{ form.school }}
-      </br></br>
-
-      {{form.gender.label}}
-      </br>
-      {{ form.gender }}
-      </br></br>
-
-      {{form.sport.label}}
-      </br>
-      {{ form.sport }}
-      </br></br>
-
       {{form.year.label}}
       </br>
       {{ form.year }}

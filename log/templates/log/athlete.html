@@ -65,7 +65,15 @@
       {% endfor %}
     </div>
     <div class="module_container">
-      Statistics?
+      <h3>Personal Records</h3>
+      {% for pr in prs %}
+        <div>
+          <p>{{ pr.distance }} {{ pr.units }}:
+          {{ pr.duration }}
+          (at {{ pr.meet.location }} {{ pr.activity.date }})
+          </p>
+        </div>
+      {% endfor %}
     </div>
   </div>
 {% endblock %}

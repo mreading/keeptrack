@@ -13,6 +13,42 @@ from django.contrib.auth.models import User
 # To clear out database completely, do:
 # > python manage.py flush
 
+def generate_meet(athlete, date):
+    event_distance = choice([5000, 8000, 3000, 10000])
+    location = choice(['Rochester', 'Hamilton', 'Geneseo', 'Ithaca', 'Potsdam'])
+    gender = 'M'
+    units = 'Meters'
+
+    seconds = int((event_distance/1000) * 200 * uniform(1.2, 0.8))
+    duration = timedelta(seconds=seconds)
+
+    activity = Activity.objects.create(
+        athlete=athlete,
+        date=date,
+        comment="What a race!",
+        act_type="Event"
+    )
+    activity.save()
+
+    thread = Thread.objects.create(activity=activity)
+    thread.save()
+
+    meet = Meet.objects.create(
+        location=location
+    )
+    meet.save()
+
+    event = Event.objects.create(
+        activity=activity,
+        meet=meet,
+        gender=gender,
+        distance=event_distance,
+        units=units,
+        duration=duration,
+        place=randrange(1, 300)
+    )
+    event.save()
+
 def add_rep(interval_run, position):
     #create a repeat object given an interval run object"
     rep = Rep.objects.create(
@@ -51,7 +87,7 @@ def generate_interval_workout(athlete, date):
 
     num_reps = randrange(3,10)
     for i in range(num_reps):
-        add_rep(interval_run, i)
+        add_rep(interval_run, i + 1)
 
     set_total_distance(interval_run)
     interval_run.save()
@@ -114,10 +150,10 @@ def generate_workout_data(athlete):
         'Interval',
         'Normal',
         'Normal',
-        'Interval',
         'CrossTrain',
         'Race',
-        'Normal'
+        'Normal',
+        'Off'
     ]
     #for each day, generate a workout
     for i in range(len(dates)):
@@ -127,6 +163,8 @@ def generate_workout_data(athlete):
             generate_normal_workout(athlete, dates[i])
         elif types[i%7] == 'CrossTrain':
             generate_xtrain_workout(athlete, dates[i])
+        elif types[i%7] == 'Race':
+            generate_meet(athlete, dates[i])
 
 
 def create_athlete(season, info):
@@ -155,18 +193,18 @@ def generate_athletes(season):
         ('Grant', 'Whitney', 2017),
         ('Henry', 'Whipple', 2018),
         ('Peter', 'Deweirdt', 2018),
-        ('Erich', 'Wohl', 2018),
-        ('Andrew', 'Sinclair', 2018),
-        ('Colin', 'Horgan', 2019),
-        ('Reilly', 'Shew', 2019),
-        ('Ben', 'Stoller', 2019),
-        ('Bryce', 'Murdick', 2020),
-        ('Jacob', 'Colangelo', 2020),
-        ('Matthew', 'Reading', 2020),
-        ('Christopher', 'Skeldon', 2020),
-        ('Conor', 'Courtney', 2020),
-        ('Francis', 'Zuroski', 2020),
-        ('Andrew', 'Wheeler', 2020),
+        # ('Erich', 'Wohl', 2018),
+        # ('Andrew', 'Sinclair', 2018),
+        # ('Colin', 'Horgan', 2019),
+        # ('Reilly', 'Shew', 2019),
+        # ('Ben', 'Stoller', 2019),
+        # ('Bryce', 'Murdick', 2020),
+        # ('Jacob', 'Colangelo', 2020),
+        # ('Matthew', 'Reading', 2020),
+        # ('Christopher', 'Skeldon', 2020),
+        # ('Conor', 'Courtney', 2020),
+        # ('Francis', 'Zuroski', 2020),
+        # ('Andrew', 'Wheeler', 2020),
     ]
 
     for info in seed_info:
