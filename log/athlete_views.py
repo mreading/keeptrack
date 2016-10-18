@@ -341,8 +341,11 @@ def athlete(request, user_id):
     month_graph_data = build_graph_data(curr_month, month_activities)
     week_graph_data = build_graph_data(curr_week, week_activities)
 
-    #------------------ recent workouts ---------------------
+    #------------------ Get PR's of athlete -----------------------------------
+    prs = list(get_prs(athlete).values())
+    print prs
     context = {
+        'prs':prs,
         'all_runs':all_runs,
         'year_graph_data':json.dumps(year_graph_data),
         'month_graph_data':json.dumps(month_graph_data),
@@ -428,11 +431,13 @@ def activity_detail(request, activity_id):
     thread = Thread.objects.get(activity=activity)
     comments = Comment.objects.filter(thread=thread).order_by('position')
     reps = None
+    interval_graph_data = None
     if activity.act_type == 'NormalRun':
         workout = NormalRun.objects.get(activity=activity)
     elif activity.act_type == 'IntervalRun':
         workout = IntervalRun.objects.get(activity=activity)
         reps = Rep.objects.filter(interval_run=workout).order_by('position')
+        interval_graph_data = get_interval_graph_data(reps)
     elif activity.act_type == 'CrossTrain':
         workout = CrossTrain.objects.get(activity=activity)
     elif activity.act_type == 'Event':
@@ -454,6 +459,7 @@ def activity_detail(request, activity_id):
 
     commentform = CommentForm()
     context = {
+        'interval_graph_data':json.dumps(interval_graph_data),
         'workout':workout,
         'activity':activity,
         'reps':reps,

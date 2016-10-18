@@ -1,19 +1,42 @@
 {% extends 'log/base.html' %}
-
+{% load staticfiles %}
 {% block content %}
-  Calendar Page
+
+  <h1>Calendar</h1>
   <div id="page">
+  {% for week in weeks %}
     <div class="module_container">
-      Week 1
-    </div>
-    <div class="module_container">
-      Week 2
-    </div>
-    <div class="module_container">
-      Week 3
-    </div>
-    <div class="module_container">
-      ...
-    </div>
+      <h2>Week</h2>
+      <hr>
+
+        <!------------------------------------------------------------------->
+        <!-- Week Table -->
+        <!------------------------------------------------------------------->
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Monday</th>
+              <th>Tuesday</th>
+              <th>Wednesday</th>
+              <th>Thursday</th>
+              <th>Friday</th>
+              <th>Saturday</th>
+              <th>Sunday</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class=events>
+            {% for day in week %}
+              <td class="day">
+              {% for event in day %}
+                {{ event.summary }}
+              {% endfor %}
+              </td>
+            {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    {% endfor %}
   </div>
 {% endblock %}

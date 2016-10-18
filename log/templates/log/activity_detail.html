@@ -1,4 +1,5 @@
 {% extends 'log/base.html' %}
+{% load staticfiles %}
 
 {% block content %}
 
@@ -43,6 +44,16 @@
           </tr>
         {% endfor %}
       </table>
+    </div>
+
+    <!--  Load the ajax api -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      var interval_graph_data = {{ interval_graph_data|safe }}
+    </script>
+
+    <script type="text/javascript" src="{% static 'log/js/interval_run_detail.js' %}"></script>
+    <div id='interval_graph'>
     </div>
   {% endifequal %}
 

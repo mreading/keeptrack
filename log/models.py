@@ -117,6 +117,7 @@ class IntervalRun(models.Model):
         ('Meters','Meters'),
         ('Kilometers','Kilometers')
     ]
+    units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     wu_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     cd_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     distance = models.FloatField(null=True)

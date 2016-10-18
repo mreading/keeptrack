@@ -1,0 +1,7 @@
+keeptrack requirements
+
+Python Modules:
+  google-api-python-client (version 1.5.3)
+  django-qsstats-magic (version 0.7.2)
+  python-dateutil (version 2.5.3)
+  django-google-charts (version 0.1.1)
