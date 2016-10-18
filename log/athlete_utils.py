@@ -6,6 +6,38 @@ from .utils import *
 from .models import *
 from .athlete_forms import *
 
+def get_prs(athlete):
+    activities = Activity.objects.filter(act_type='Event', athlete=athlete)
+    events = [Event.objects.filter(activity=a)[0] for a in activities]
+    prs = {}
+    for e in events:
+        if str(e.distance) in prs:
+            if e.duration < prs[str(e.distance)].duration:
+                prs[str(e.distance)] = e
+        else:
+            prs[str(e.distance)] = e
+
+    return prs
+
+def make_duration_chartable(duration):
+    """-------------------------------------------------------
+    Given a duration object, turn it into a list of the format
+    [hours, minutes, seconds, milliseconds]
+    -------------------------------------------------------"""
+    days, seconds = duration.days, duration.seconds
+    hours = days * 24 + seconds // 3600
+    minutes = (seconds % 3600) // 60
+    seconds = seconds % 60
+    # FIXME milliseconds are hardcoded
+    return [hours, minutes, seconds, 0]
+
+def get_interval_graph_data(reps):
+    graph_data = []
+    for rep in reps:
+        # [place, [hour, minute, second, millisecond]]
+        graph_data.append([rep.position, make_duration_chartable(rep.duration)])
+    return graph_data
+
 def get_workout_from_activity(activity):
     """---------------------------------------------------------
 	  Given an activity, return the corrosponding run
@@ -34,8 +66,9 @@ def build_graph_data(dates, activities):
     p = 0
     for i in range(len(dates)):
         if p < len(activities) and dates[i] == activities[p].date:
+            distance = get_miles(get_workout_from_activity(activities[p]))
             graph_data.append(
-            [str(activities[p].date), get_workout_from_activity(activities[p]).distance]
+            [str(activities[p].date), distance]
             )
             p += 1
         else:
@@ -52,8 +85,8 @@ def update_activity(activity, cleaned_data):
         run = IntervalRun.objects.get(activity=activity)
     elif activity.act_type == "CrossTrain":
         run = CrossTrail.objects.get(activity=activity)
-    # FIXME ??????? elif activity.act_type == "Meet":
-    #     run = Event.objects.get(activity=activity)
+    elif activity.act_type == "Event": #FIXME completely untested
+        run = Event.objects.get(activity=activity)
 
 
 def get_post_form(run_type, post):
