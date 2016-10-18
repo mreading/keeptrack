@@ -6,11 +6,13 @@ from .utils import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.utils.dateparse import parse_datetime
 
 # Google Calendar API modules
 import httplib2
 import os
 import datetime
+import pytz
 from apiclient import discovery
 import oauth2client
 from oauth2client import client
@@ -102,14 +104,14 @@ def create_calendar():
 
 def change_time(date, days=0, seconds=0, minutes=0, hours=0):
     # convert string to object
-    timestamp = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
+    timestamp = parse_datetime(date)
 
     # create change in time object
     deltatime = datetime.timedelta(days=days, seconds=seconds,
                                    minutes=minutes, hours=hours)
 
     # returns changed time in correct format
-    return (timestamp + deltatime).isoformat() + "Z"
+    return (timestamp + deltatime).isoformat()
 
 def get_week(start):
     # get google calendar information
@@ -127,7 +129,7 @@ def get_week(start):
         eventsResult = service.events().list(
             calendarId='primary', timeMin=start, timeMax=finish,
             singleEvents=True, orderBy='startTime').execute()
-        events = eventsResult.get('items', ['summary'])
+        events = eventsResult.get('items', [])
         week[day] = events
 
         # start becomes beginning of next day
@@ -143,14 +145,18 @@ def get_multiple_weeks(first_day, last_first_day):
     return weeks
 
 def get_current_week():
-    # find monday start timestamp
-    now = datetime.datetime.utcnow()
-    day = now.weekday() # monday is 0
-    week_start = change_time(now.isoformat()[:18]+"Z", -day)[:11] + "00:00:00Z"
+    # get current time with timezone
+    local_tz = pytz.timezone('US/Eastern')
+    now = datetime.datetime.now(local_tz)
+
+    # calculate start of the week (aka the first second of Monday)
+    # NOTE: now.weekday() gives a number where 0 is monday
+    monday = change_time(now.isoformat(), -(now.weekday()))
+    week_start = monday[:11] + "00:00:00.000000" + monday[-6:]
 
     return get_week(week_start)
 
 def calendar(request):
-    #current = [get_current_week()]
-    weeks = get_multiple_weeks("2016-10-17T00:00:00Z", "2016-11-21T00:00:00Z")
+    #weeks = [get_current_week()]
+    weeks = get_multiple_weeks("2016-10-17T00:00:00-04:00", "2016-11-21T00:00:00-04:00")
     return render(request, "log/calendar.html", {"weeks":weeks})
