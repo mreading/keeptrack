@@ -550,3 +550,6 @@ def r2w_import(request):
 
     form = R2WImportForm()
     return render(request, "log/r2w_import.html", {'form':form})
+
+def signup(request):
+    render(request, "log/")

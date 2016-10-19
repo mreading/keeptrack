@@ -17,7 +17,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+LOGIN_URL = '/log/login/'
+INVITATIONS_SIGNUP_REDIRECT = 'athlete_signup'
 # Application definition
 
 INSTALLED_APPS = [

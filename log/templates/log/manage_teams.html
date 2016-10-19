@@ -10,7 +10,8 @@
           {{ t }}
           {% for season in t.seasons.all %}
         </br>
-            {{ season.year }}
+        {{ season.year }}
+        <a href="/log/add_athletes/{{user.id}}/{{t.id}}/{{season.id}}"> Add Athletes</a>
           {% endfor %}
         </br>
           <a href="/log/create_season/{{user.id}}/{{t.id}}">

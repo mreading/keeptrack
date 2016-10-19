@@ -14,3 +14,4 @@ def index(request):
 
 def settings(request):
     return render(request, "log/settings.html", {})
+ 

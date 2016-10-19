@@ -89,4 +89,7 @@ def signup(request):
             return render(request, "log/signup.html", {'form':form})
     else:
         form = SignupForm()
-        return render(request, "log/signup.html", {'form':form})
+        return render(request, "log/signup.html", {'form':form}) 
+
+def AcceptInvite(request, key):
+    return render(request, "log/settings.html", {})
