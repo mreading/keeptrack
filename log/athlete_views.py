@@ -61,7 +61,7 @@ def edit_interval_run(request, activity_id):
                     units=rep_formset[i].cleaned_data.get('rep_units'),
                     duration=rep_formset[i].cleaned_data.get('rep_duration'),
                     rest=rep_formset[i].cleaned_data.get('rep_rest'),
-                    position=i
+                    position=i+1 #not zero based
                 )
                 rep.save()
 
@@ -367,7 +367,7 @@ def athlete(request, user_id):
                         str(r.activity.date),
                         r.distance
                     ])
-            context['date_range_mileage'] = date_range
+            context['range_graph_data'] = date_range
             context['form'] = DateRangeForm()
             return render(request, "log/athlete.html", context)
     else:
@@ -513,7 +513,7 @@ def add_intervals(request):
                     units=rep_formset[i].cleaned_data.get('rep_units'),
                     duration=rep_formset[i].cleaned_data.get('rep_duration'),
                     rest=rep_formset[i].cleaned_data.get('rep_rest'),
-                    position=i
+                    position=i+1
                 )
                 rep.save()
 

@@ -1,16 +1,10 @@
 /*----------------------------------------------------------------------------
-Enable sorting functionality
-----------------------------------------------------------------------------*/
-$(function(){
-  $("#athletes").tablesorter();
-  $('#meets').tablesorter();
-});
-
-/*----------------------------------------------------------------------------
 On hover, suggest clickability
 ----------------------------------------------------------------------------*/
+
 $("tr").hover(function() {
     $(this).css({"cursor": "pointer"})
+    console.log('here');
 });
 
 /*----------------------------------------------------------------------------
@@ -19,3 +13,4 @@ Redirect to athlete on click
 $("tr.athletes").click(function() {
     window.location.href = "/log/athlete/"+$(this).attr('id');
 })
+

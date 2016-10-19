@@ -87,7 +87,7 @@ def generate_interval_workout(athlete, date):
 
     num_reps = randrange(3,10)
     for i in range(num_reps):
-        add_rep(interval_run, i)
+        add_rep(interval_run, i + 1)
 
     set_total_distance(interval_run)
     interval_run.save()
@@ -213,16 +213,18 @@ def generate_athletes(season):
 def generate():
     team = Team.objects.create(
         school_name="Hamilton",
-        gender = "M"
+        gender = "M",
+        sport = "XC",
+
     )
     team.save()
 
     season = Season.objects.create(
-        team = team,
         year = 2016,
-        sport = "XC"
+        start_date = datetime.date(year=2016, month=8, day=25),
+        end_date = datetime.date(year=2016, month=11, day=20)
     )
-    season.save()
+    team.seasons.add(season)
 
     generate_athletes(season)
 
