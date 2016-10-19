@@ -34,7 +34,7 @@ class Team(models.Model):
 
 class Athlete(models.Model):
     """ ex: Henry Whipple """
-    season = models.ManyToManyField(Season)
+    seasons = models.ManyToManyField(Season)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     graduation_year = models.PositiveIntegerField()
 

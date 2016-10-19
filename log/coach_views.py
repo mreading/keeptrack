@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from .coach_forms import *
+from .forms import *
 from .utils import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -109,19 +110,35 @@ def add_team(request, user_id):
 
 @login_required(login_url='/log/login/')
 def add_athletes(request, user_id, team_id, season_id):
-    user = User.objects.get(id=user_id)
+    coach_user = User.objects.get(id=user_id)
 
     if request.method == 'POST':
-        form = InviteForm(request.POST)
+        form = AddAthleteForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
 
-            # inviter argument is optional
-            invite = Invitation.create(data['email'], inviter=request.user)
-            invite.send_invitation(request)
+            # Create a user
+            username = data['first_name'] + data['last_name']
+            password = data['last_name'] + data['first_name']
+            user = User.objects.create_user(username, data['email'], password)
+            user.first_name = data['first_name']
+            user.last_name = data['last_name']
+            user.save()
+
+            athlete = Athlete.objects.create(
+                user_id=user.id,
+                graduation_year=data['graduation_year'],
+                #Probably other stuff here
+                )
+            season = Season.objects.get(id = season_id)
+            athlete.seasons.add(season)
+
+            athlete.save()
+            user.athlete = athlete
+
 
         else:
             return render(request, "log/add_athletes.html", {'form':form, 'coach': coach, 'team':team})
 
-    form = InviteForm()
+    form = AddAthleteForm()
     return render(request, "log/add_athletes.html", {'form': form, 'user_id': user_id, 'team_id': team_id, 'season_id': season_id})

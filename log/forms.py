@@ -4,7 +4,7 @@ from .models import *
 
 SPORT_CHOICES = [('ITF', 'Indoor Track and Field'),
     ('OTF','Outdoor Track and Field'), ('XC', 'Cross Country')]
-    
+
 class SignupForm(forms.Form):
     first_name = forms.CharField(max_length=50, label="First Name")
     last_name = forms.CharField(max_length=50, label="Last Name")
@@ -18,3 +18,11 @@ class SignupForm(forms.Form):
     sport = forms.CharField(
         widget=forms.Select(
             choices=SPORT_CHOICES), label = "Sport")
+
+class AddAthleteForm(forms.Form):
+    first_name = forms.CharField(max_length=50, label="First Name")
+    last_name = forms.CharField(max_length=50, label="Last Name")
+    #username = forms.CharField(max_length=100, label="Username")
+    #password = forms.CharField(max_length=30, label="Password")
+    graduation_year = forms.IntegerField(label = "Graduation Year")
+    email = forms.EmailField(max_length=100, label="Email")
