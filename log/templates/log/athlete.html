@@ -6,21 +6,21 @@
     <h2 id='test'>{{ athlete_user.first_name }} {{ athlete_user.last_name}}</h2>
     {% ifequal athlete_user.id user.id %}
       <div class='add_workout'>
-        <a class='w_type' href="/log/athlete/add/NormalRun/">Add Normal Run</a>
-        <a class='w_type' href="/log/athlete/add_intervals/">Add Interval Workout</a>
-        <a class='w_type' href="/log/athlete/add/CrossTrain/">Add Cross Train</a>
-        <a class='w_type' href="/log/athlete/add/Event/">Add Meet</a>
+        <a class='w_type btn' href="/log/athlete/add/NormalRun/">Add Normal Run</a>
+        <a class='w_type btn' href="/log/athlete/add_intervals/">Add Interval Workout</a>
+        <a class='w_type btn' href="/log/athlete/add/CrossTrain/">Add Cross Train</a>
+        <a class='w_type btn' href="/log/athlete/add/Event/">Add Meet</a>
       </div>
-      <a href="/log/athlete/r2w_import/">Import Data from Running2Win</a>
+      <a class= 'btn' href="/log/athlete/r2w_import/">Import Data from Running2Win</a>
     {% endifequal %}
   </div>
   <div id="page">
     <div class="module_container">
       <div id= "mileage_options">
-        <div class="graph_option" id="current_year_selector">Current Year</div>
-        <div class="graph_option" id="current_month_selector">Current Month</div>
-        <div class="graph_option" id="current_week_selector">Current Week</div>
-        <div class="graph_option" id="range_selector">Mileage Range</div>
+        <div class="graph_option btn" id="current_year_selector">Year</div>
+        <div class="graph_option btn" id="current_month_selector">Month</div>
+        <div class="graph_option btn" id="current_week_selector">Week</div>
+        <div class="graph_option btn" id="range_selector">Range</div>
       </div>
 
           <!--Load the AJAX API-->
@@ -56,19 +56,13 @@
         </div>
     </div>
     <div class="module_container">
-      {% for r in all_runs %}
-        <div>
-          <a href="/log/athlete/activity_detail/{{ r.activity_id }}">
-          {{ r }}
-          </a>
-          <a href="/log/athlete/edit_activity/{{ r.activity_id }}">
-            EDIT
-          </a>
-          <a href="/log/athlete/delete_activity/{{ r.activity_id }}">
-            DELETE
-          </a>
-        </div>
-      {% endfor %}
+        {% for r in all_runs %}
+          <div class="run_container">
+            <a href="/log/athlete/activity_detail/{{ r.activity_id }}">{{ r }}</a>
+            <a href="/log/athlete/delete_activity/{{ r.activity_id }}">DELETE</a>
+            <a href="/log/athlete/edit_activity/{{ r.activity_id }}">EDIT</a>
+          </div>
+        {% endfor %}
     </div>
     <div class="module_container">
       <h3>Personal Records</h3>
