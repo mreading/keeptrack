@@ -34,9 +34,15 @@
         it work. What I did is set up a Coach and an Athlete relation,
         foreignkeyed to the built in (regrettable un-extendable) User
         model. -->
-          <li><a href="/log/athlete/{{ user.id }}/">Athlete</a></li>
+          {% if user.athlete_set.all %}
+            <li><a href="/log/athlete/{{ user.id }}/">Athlete</a></li>
+            <li><a href="/log/team/">Team</a></li>
+          {% endif%}
+
+          {% if user.coach_set.all %}
+            <li><a href="/log/team/">Home</a></li>
+          {% endif%}
           <li><a href="/log/workout_templates/">Workouts</a></li>
-          <li><a href="/log/team/">Team</a></li>
           <li><a href="/log/calendar/">Calendar</a></li>
           <li><a href="/log/team_stats/">Stats</a></li>
       </ul>
