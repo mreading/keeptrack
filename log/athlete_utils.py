@@ -32,10 +32,10 @@ def make_duration_chartable(duration):
     return [hours, minutes, seconds, 0]
 
 def get_interval_graph_data(reps):
-    graph_data = []
+    graph_data = [['stuff', 'otherstuff', {'role':'style'}]]
     for rep in reps:
         # [place, [hour, minute, second, millisecond]]
-        graph_data.append([rep.position, make_duration_chartable(rep.duration)])
+        graph_data.append([rep.position, make_duration_chartable(rep.duration), 'color:#abcabc'])
     return graph_data
 
 def get_workout_from_activity(activity):
@@ -60,20 +60,28 @@ def build_graph_data(dates, activities):
     Dates are datetime objects.
 	---------------------------------------------------------"""
 
+    colors = {
+        'NormalRun':'#abcabc',
+        'IntervalRun':'#ee1234',
+        'CrossTrain':'#123456',
+        'Event':'#654321',
+        'OffDay':'#111111'
+    }
+
     #graph data is expected to be of the form [[x-axis data, y-axis data], ...]
     # where x axis is a date string and y axis is floating point number representing distance
-    graph_data = []
+    graph_data = [['stuff', 'otherstuff', {'role':'style'}]]
     p = 0
     for i in range(len(dates)):
         if p < len(activities) and dates[i] == activities[p].date:
             distance = get_miles(get_workout_from_activity(activities[p]))
             graph_data.append(
-            [str(activities[p].date), distance]
+            [str(activities[p].date), distance, 'color:'+colors[activities[p].act_type]]
             )
             p += 1
         else:
             graph_data.append(
-            [str(dates[i]), 0.00]
+            [str(dates[i]), 0.00, 'color:'+colors['OffDay']]
             )
     return graph_data
 
