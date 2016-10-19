@@ -10,17 +10,17 @@ $(document).ready(function() {
    })
 })
 
-$(document).ready(function() {
-   $('.graph_option').bind("mouseover", function(){
-       var color = $(this).css("background-color");
-
-       $(this).css("background", "#dcc7aa");
-
-       $(this).bind("mouseout", function(){
-           $(this).css("background", color);
-       })
-   })
-})
+// $(document).ready(function() {
+//    $('.graph_option').bind("mouseover", function(){
+//        var color = $(this).css("background-color");
+//
+//        $(this).css("background", "#dcc7aa");
+//
+//        $(this).bind("mouseout", function(){
+//            $(this).css("background", color);
+//        })
+//    })
+// })
 
 // Show Year graph, hide others
 // -------------------- Mileage graph divs -----------------------

@@ -7,13 +7,13 @@
       <h2>{{ athlete_user.first_name }} {{ athlete_user.last_name}}</h2>
     </div>
     {% ifequal athlete_user.id user.id %}
-      <div class='add_workout' style="display:inline-block">
+      <div class='add_workout' style="float:right;">
         <a class='w_type btn' href="/log/athlete/add/NormalRun/">Add Normal Run</a>
         <a class='w_type btn' href="/log/athlete/add_intervals/">Add Interval Workout</a>
         <a class='w_type btn' href="/log/athlete/add/CrossTrain/">Add Cross Train</a>
         <a class='w_type btn' href="/log/athlete/add/Event/">Add Meet</a>
+        <a class= 'btn' href="/log/athlete/r2w_import/">Import Data from Running2Win</a>
       </div>
-      <a class= 'btn' href="/log/athlete/r2w_import/">Import Data from Running2Win</a>
     {% endifequal %}
   </div>
   <div id="page">
