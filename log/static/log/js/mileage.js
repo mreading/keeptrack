@@ -66,10 +66,7 @@ google.charts.setOnLoadCallback(drawYearChart);
 function drawYearChart() {
 
   // Create the data table.
-  var data = new google.visualization.DataTable();
-  data.addColumn('string', 'Day');
-  data.addColumn('number', 'Miles');
-  data.addRows(year_graph_data);
+  var data = google.visualization.arrayToDataTable(year_graph_data);
 
   // Set chart options
   var options = {'title':'Current Year Mileage',
@@ -89,10 +86,7 @@ google.charts.setOnLoadCallback(drawMonthChart);
 function drawMonthChart() {
 
   // Create the data table.
-  var data = new google.visualization.DataTable();
-  data.addColumn('string', 'Day');
-  data.addColumn('number', 'Miles');
-  data.addRows(month_graph_data);
+  var data = google.visualization.arrayToDataTable(month_graph_data);
 
   // Set chart options
   var options = {'title':'Current Month Mileage',
@@ -112,10 +106,7 @@ google.charts.setOnLoadCallback(drawWeekChart);
 function drawWeekChart() {
 
   // Create the data table.
-  var data = new google.visualization.DataTable();
-  data.addColumn('string', 'Day');
-  data.addColumn('number', 'Miles');
-  data.addRows(week_graph_data);
+  var data = google.visualization.arrayToDataTable(week_graph_data);
 
   // Set chart options
   var options = {'title':'Current Week Mileage',
@@ -131,13 +122,10 @@ function drawWeekChart() {
 // Draw the bar chart for Sarah's pizza when Charts is loaded.
 google.charts.setOnLoadCallback(drawRangeChart);
 
-function drawWeekChart() {
+function drawRangeChart() {
 
   // Create the data table.
-  var data = new google.visualization.DataTable();
-  data.addColumn('string', 'Day');
-  data.addColumn('number', 'Miles');
-  data.addRows(range_graph_data);
+  var data = google.visualization.arrayToDataTable(range_graph_data);
 
   // Set chart options
   var options = {'title':'Date Range Graph',
