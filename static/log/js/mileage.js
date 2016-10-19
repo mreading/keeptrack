@@ -10,24 +10,21 @@ $(document).ready(function() {
    })
 })
 
-// $(document).ready(function() {
-//    $('.graph_option').bind("mouseover", function(){
-//        var color = $(this).css("background-color");
-//
-//        $(this).css("background", "#dcc7aa");
-//
-//        $(this).bind("mouseout", function(){
-//            $(this).css("background", color);
-//        })
-//    })
-// })
-
-// Show Year graph, hide others
 // -------------------- Mileage graph divs -----------------------
 $(document).ready(function() {
-    $("#week_mileage_graph").hide();
-    $("#year_mileage_graph").hide();
-    $("#date_range_graph").hide();
+    console.log(show_range_graph_first);
+    if (Boolean(show_range_graph_first)) {
+      console.log("sup");
+      $("#month_mileage_graph").hide();
+      $("#week_mileage_graph").hide();
+      $("#year_mileage_graph").hide();
+    }
+    else {
+      console.log("blech");
+      $("#week_mileage_graph").hide();
+      $("#year_mileage_graph").hide();
+      $("#date_range_graph").hide();
+    }
 });
 
 // Show Year graph, hide others
@@ -56,7 +53,7 @@ $(document).ready(function() {
     $("#year_mileage_graph").hide('slow');
     $("#month_mileage_graph").hide('slow');
     $("#week_mileage_graph").show('slow');
-    $("#date_rangegraph").hide('slow');
+    $("#date_range_graph").hide('slow');
   });
 });
 
@@ -88,7 +85,8 @@ function drawYearChart() {
   // Set chart options
   var options = {'title':'Current Year Mileage',
                  'height':300,
-                 'width':850,
+                'width':900,
+                 legend:{position:'none'}
                 //  'trendlines': { 0: {} }
                };
 
@@ -108,7 +106,8 @@ function drawMonthChart() {
   // Set chart options
   var options = {'title':'Current Month Mileage',
                  'height':300,
-                 'width':'100%',
+                 'width':900,
+                 legend:{position:'none'}
                 //  'trendlines': { 0: {} }
               };
 
@@ -128,7 +127,8 @@ function drawWeekChart() {
   // Set chart options
   var options = {'title':'Current Week Mileage',
                  'height':300,
-                 'width':850
+                 'width':900,
+                 legend:{position:'none'},
                };
 
   // Instantiate and draw our chart, passing in some options.
@@ -147,7 +147,8 @@ function drawRangeChart() {
   // Set chart options
   var options = {'title':'Date Range Graph',
                  'height':300,
-                 'width':850,
+                 'width':900,
+                 legend:{position:'none'}
                };
 
   // Instantiate and draw our chart, passing in some options.

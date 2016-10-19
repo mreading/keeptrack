@@ -273,10 +273,10 @@ def athlete(request, user_id):
     # Used for the list of recent activities
     all_runs = []
     for a in activities:
-        all_runs += NormalRun.objects.filter(activity=a)
-        all_runs += CrossTrain.objects.filter(activity=a)
-        all_runs += IntervalRun.objects.filter(activity=a)
-        all_runs += Event.objects.filter(activity=a)
+        all_runs = list(NormalRun.objects.filter(activity=a)) + all_runs
+        all_runs = list(CrossTrain.objects.filter(activity=a)) + all_runs
+        all_runs = list(IntervalRun.objects.filter(activity=a)) + all_runs
+        all_runs = list(Event.objects.filter(activity=a)) + all_runs
 
     #------------------ mileage graph ----------------------
     # Year, Month, Week, Last 7 days, and Range
@@ -348,6 +348,7 @@ def athlete(request, user_id):
         all_runs = all_runs[:19]
 
     context = {
+        'show_range_first':'false',
         'prs':prs,
         'all_runs':all_runs,
         'year_graph_data':json.dumps(year_graph_data),
@@ -363,15 +364,22 @@ def athlete(request, user_id):
             data = date_range_form.cleaned_data
             start_date = data['start_date']
             end_date = data['end_date']
-            date_range = []
+
+            #collect the activities between the two dates
+            range_activities = []
             for r in runs:
                 if r.activity.date >= start_date and r.activity.date <= end_date:
-                    date_range.append([
-                        str(r.activity.date),
-                        r.distance
-                    ])
-            context['range_graph_data'] = date_range
+                    range_activities.append(r.activity)
+
+            #collect all the dates between the start and the end date
+            range_dates = [start_date]
+            while range_dates[-1] <= end_date:
+                range_dates.append(range_dates[-1]+datetime.timedelta(1))
+
+            range_graph_data = build_graph_data(range_dates, range_activities)
+            context['range_graph_data'] = range_graph_data
             context['form'] = DateRangeForm()
+            context['show_range_first'] = 'true'
             return render(request, "log/athlete.html", context)
     else:
         date_range_form = DateRangeForm()

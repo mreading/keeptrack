@@ -32,7 +32,7 @@ def make_duration_chartable(duration):
     return [hours, minutes, seconds, 0]
 
 def get_interval_graph_data(reps):
-    graph_data = [['stuff', 'otherstuff', {'role':'style'}]]
+    graph_data = [['Date', 'Miles', {'role':'style'}]]
     for rep in reps:
         # [place, [hour, minute, second, millisecond]]
         graph_data.append([rep.position, make_duration_chartable(rep.duration), 'color:#abcabc'])
@@ -70,14 +70,16 @@ def build_graph_data(dates, activities):
 
     #graph data is expected to be of the form [[x-axis data, y-axis data], ...]
     # where x axis is a date string and y axis is floating point number representing distance
-    graph_data = [['stuff', 'otherstuff', {'role':'style'}]]
+    graph_data = [['Date', 'Miles', {'role':'style'}]]
     p = 0
     for i in range(len(dates)):
         if p < len(activities) and dates[i] == activities[p].date:
             distance = get_miles(get_workout_from_activity(activities[p]))
-            graph_data.append(
-            [str(activities[p].date), distance, 'color:'+colors[activities[p].act_type]]
-            )
+            graph_data.append([
+                str(activities[p].date),
+                distance,
+                'color:'+colors[activities[p].act_type],
+            ])
             p += 1
         else:
             graph_data.append(
