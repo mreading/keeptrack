@@ -51,9 +51,14 @@
      <div class="container-fluid">
        <div id="authentication">
          {% if user.is_authenticated %}
-            <!-- NEED TO FIX! Athletes are detected as both coaches and athletes -->
             {% if user.coach_set.all %}
-              <a class="auth" href="/log/manage_teams/{{user.id}}"> Hi Coach {{ user.last_name }}</a>
+              <div class="dropdown">
+                 <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Hi Coach {{ user.last_name }}
+                 <span class="caret"></span></button>
+                 <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                   <li role="presentation"><a role="menuitem" tabindex="-1" href="/log/manage_teams/{{user.id}}">Manage Teams</a></li>
+                 </ul>
+                </div>
             {% endif %}
             {% if user.athlete_set.all  %}
               <a class="auth" href="/log/athlete/{{user.id}}"> Hi {{ user.first_name }}</a>

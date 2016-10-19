@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, include
 from . import views
 from . import athlete_views
 from . import auth_views
@@ -8,6 +8,7 @@ from . import stats_views
 from . import team_views
 from . import workout_views
 from . import coach_views
+
 
 import os
 
@@ -33,4 +34,5 @@ urlpatterns = [
     url(r'^manage_teams/(?P<user_id>[0-9]+)/$', coach_views.manage_teams, name='manage_teams'),
     url(r'^add_team/(?P<user_id>[0-9]+)/$', coach_views.add_team, name='add_team'),
     url(r'^add_athletes/(?P<user_id>[0-9]+)/(?P<team_id>[0-9]+)/(?P<season_id>[0-9]+)/$', coach_views.add_athletes, name='add_athletes'),
+    url(r'^invitations/', include('invitations.urls', namespace='invitations')),
 ]

@@ -148,14 +148,3 @@ class Comment(models.Model):
     position = models.IntegerField()
     private = models.BooleanField()
     poster = models.ForeignKey(User)
-
-class Invite(models.Model):
-    user = models.OneToOneField(User) # associated user with the invite.
-    cookie = models.SlugField() # randomly generated string which is stored in the users browser.
-    token = models.SlugField() # randomly generated string which is used in the invite URL
-    def __unicode__(self):
-        return u"%s %s's invite" % (self.user.first_name, self.user.last_name)
-
-    @models.permalink
-    def get_absolute_url(self):
-        return ('invites.views.confirm_invite', [self.token])

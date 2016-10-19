@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.db import IntegrityError, transaction
 from django.forms.formsets import formset_factory
 from django.shortcuts import redirect, render
+from invitations.models import Invitation
 import json
 
 @login_required(login_url='/log/login/')
@@ -42,20 +43,16 @@ def create_season(request, user_id, team_id):
                     #season.team = team
                     team.seasons.add(season)
                     return redirect("/log/add_athletes/" + str(user.id) + "/" + str(team.id) + "/" + str(season.id) + "/", {})
-                else:
                     return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
 
-
-
-            else:
-                return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
+            return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
 
         else:
             form = NewSeasonForm()
             return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
 
     elif athlete:
-        print "Athlete"
+        print "Error: Athlete shouldn't be here"
         return render(request, "log/settings.html")
 
     else:
@@ -100,6 +97,7 @@ def add_team(request, user_id):
                 team = Team.objects.create(school_name = school, gender = gender, sport = data['sport'])
                 coach.teams.add(team)
                 return redirect("/log/manage_teams/" + str(user.id) + "/", {'full_team': len(sport_list) == 3})
+
             else:
                 return render(request, "log/add_team.html", {'form':form})
 
@@ -112,4 +110,18 @@ def add_team(request, user_id):
 @login_required(login_url='/log/login/')
 def add_athletes(request, user_id, team_id, season_id):
     user = User.objects.get(id=user_id)
-    return render(request, "log/add_athletes.html", {})
+
+    if request.method == 'POST':
+        form = InviteForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+
+            # inviter argument is optional
+            invite = Invitation.create(data['email'], inviter=request.user)
+            invite.send_invitation(request)
+
+        else:
+            return render(request, "log/add_athletes.html", {'form':form, 'coach': coach, 'team':team})
+
+    form = InviteForm()
+    return render(request, "log/add_athletes.html", {'form': form, 'user_id': user_id, 'team_id': team_id, 'season_id': season_id})

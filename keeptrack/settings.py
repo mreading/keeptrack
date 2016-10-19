@@ -23,13 +23,20 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'log.apps.LogConfig',
+    'allauth',
+    'invitations',
 ]
 
+ACCOUNT_ADAPTER = 'invitations.models.InvitationsAdapter'
+
+SITE_ID = 1
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',

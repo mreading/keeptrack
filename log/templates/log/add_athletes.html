@@ -5,4 +5,13 @@
 
   <head> ADD ATHLETES </head>
 
+    <form action="/log/add_athletes/{{user_id}}/{{team_id}}/{{season_id}}/", method="post" autocomplete="off">
+      {% csrf_token %}
+      {{ form.errors }}
+      {{ form.non_field_errors }}
+      {{ form.as_p }}
+    </br>
+      <input type="submit" value="Add Athletes" />
+    </form>
+
 {% endblock %}
