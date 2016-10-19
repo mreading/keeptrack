@@ -83,7 +83,7 @@ def print_all_calendars():
         calendar_list = service.calendarList().list(pageToken=page_token).execute()
         for calendar_list_entry in calendar_list['items']:
             print calendar_list_entry['summary']
-            print calendar_list_entry
+            print calendar_list_entry['id']
         page_token = calendar_list.get('nextPageToken')
         if not page_token:
             break
@@ -158,5 +158,6 @@ def get_current_week():
 
 def calendar(request):
     #weeks = [get_current_week()]
+    #print_all_calendars()
     weeks = get_multiple_weeks("2016-10-17T00:00:00-04:00", "2016-11-21T00:00:00-04:00")
     return render(request, "log/calendar.html", {"weeks":weeks})
