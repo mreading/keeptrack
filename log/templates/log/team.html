@@ -1,52 +1,42 @@
+<!----------------------------------------------------------------------------
+PURPOSE: 			The team page is the home screen for 
+                    the coach. It can also be be accessed
+                    via the 'TEAM' button on the navbar
+CONNECTED FILES:	/log/base.html
+				    /static/log/js/team.js
+				    /static/log/js/tablesorter/jquery-latest.js
+                    /static/log/js/tablesorter/jquery.tablesorter.js
+----------------------------------------------------------------------------->
 {% extends 'log/base.html' %}
 {% load staticfiles %}
 {% block content %}
 
-
-
+<!----------------------------------------------------------------------------
+This div holds the entirety of the page
+----------------------------------------------------------------------------->
 <div>
   <h1> Team Home Page </h1>
   <div id="page">
     
-    <!----------------------------------------------------------------------->
-    <!--Schedule for the upcoming week -->
-    <!----------------------------------------------------------------------->  
+    <!-----------------------------------------------------------------------
+    MODULE: Schedule for the upcoming week 
+    ------------------------------------------------------------------------>  
     <div class="module_container">
       Current Week
     </div>
       
-    <!----------------------------------------------------------------------->
-    <!--Schedule for the upcoming week -->
-    <!-----------------------------------------------------------------------> 
+    <!------------------------------------------------------------------------
+    MODULE: Athlete table
+    -------------------------------------------------------------------------> 
     <div class="module_container">
         <h2>Athletes</h2>
         <hr>
         
-        <!------------------------------------------------------------------->
-        <!-- Athlete Table -->
-        <!------------------------------------------------------------------->
-        <table class="table table-hover" id="athletes">
-            <thead>
-                <tr>
-                    <!--NOTE: Table should collapse on mobile version (or scroll) -->
-                    <th>First</th>
-                    <th>Last</th>
-                    <th>Grad Year</th>
-                    <th>Rank* </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for athlete in athletes %}
-              <tr class="athletes" id="{{athlete.user.id}}">
-                <td>{{ athlete.user.first_name }}</td>
-                <td>{{ athlete.user.last_name }}</td>
-                <td>{{ athlete.graduation_year }}</td>
-                <td></td>
-              </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        <!--------------------------------------------------------------------
+        Athlete Table div that will later be filled
+        --------------------------------------------------------------------->
+        <div class="table table-hover" id="athletes" style="width: 100%">
+        </div>
         
         <!------------------------------------------------------------------->
         <!-- Table Notes -->
@@ -55,9 +45,9 @@
         <p>*Rank based on previous race results.</p>
     </div>
       
-    <!----------------------------------------------------------------------->
-    <!--Schedule for upcoming meets -->
-    <!----------------------------------------------------------------------->
+    <!------------------------------------------------------------------------
+    MODULE:Schedule for upcoming meets
+    ------------------------------------------------------------------------->
     <div class="module_container">
         <h2>Meets</h2>
         <hr>
@@ -68,8 +58,6 @@
         <table id="meets" width="100%">
             <thead>
                 <tr>
-                    <!--NOTE: create hover-over that says username -->
-                    <!--Table should collapse on mobile version (or scroll) -->
                     <th>Race</th>
                     <th>Date</th>
                     <th>Distance</th>
@@ -77,6 +65,10 @@
                 </tr>
             </thead>
             <tbody>
+                
+            <!--------------------------------------------------------------->
+            <!-- NOTE: Need to create a table once races available to pull
+            <!--------------------------------------------------------------->
             {% for meet in meets %}
             <tr>
                 <td>{{meet.meet}}</td>
@@ -92,8 +84,102 @@
   </div>
 </div>
 
+<!----------------------------------------------------------------------------
+NOTE: Need to move this script to a separate file; this will involve adding 
+another url, it seems
+----------------------------------------------------------------------------->
+<script type="text/javascript">
+    
+    /*------------------------------------------------------------------------
+    Loading table packages; drawing table once loaded
+    ------------------------------------------------------------------------*/
+    google.charts.load('current', {'packages':['table']});
+    google.charts.setOnLoadCallback(drawTable);
+
+    /*------------------------------------------------------------------------
+    Create DataTable, then pluggin DataTable into Table object
+    ------------------------------------------------------------------------*/
+    function drawTable() {
+        var data = new google.visualization.DataTable();
+        
+        /*--------------------------------------------------------------------
+        Adding columns, then providing rows for these columns
+        --------------------------------------------------------------------*/
+        data.addColumn('string', 'First');
+        data.addColumn('string', 'Last');
+        data.addColumn('string', 'Grade');
+        data.addColumn('number', 'Rank');
+        data.addRows({{data1|safe}});
+       
+        /*--------------------------------------------------------------------
+        Creating table, but not drawing yet
+        --------------------------------------------------------------------*/  
+        var table = new google.visualization.Table(document.getElementById('athletes'));
+    
+        /*--------------------------------------------------------------------
+        Adding a 'ready' event listener - this way we know the table has 
+        loaded before attempting any interactions with it
+        --------------------------------------------------------------------*/
+        google.visualization.events.addListener(table, 'ready', myReadyHandler);
+        google.visualization.events.addListener(table, 'sort', handleSort);
+        
+        /*--------------------------------------------------------------------
+        Need to reapply hover and clickability of rows
+        --------------------------------------------------------------------*/
+        function handleSort(e) {
+            myReadyHandler();
+        }
+        
+        /*--------------------------------------------------------------------
+        Called once table has loaded
+        --------------------------------------------------------------------*/
+        function myReadyHandler() {
+            sortIndices = table.getSortInfo().sortedIndexes
+            
+            /*----------------------------------------------------------------
+            IF the table has been sorted, we now have a list of <tr> indices
+            ----------------------------------------------------------------*/
+            if (sortIndices){
+                
+                /*----------------------------------------------------------------
+                Add id's to all but first row (column names)
+                ----------------------------------------------------------------*/
+                $("tr").not(':first').each(function(index) {
+                    $(this).attr('id', {{userIDs}}[sortIndices[index]]);      
+                });
+            }
+            
+            /*----------------------------------------------------------------
+            ELSE, sortIndices is NULL and we can just index in order
+            ----------------------------------------------------------------*/
+            else {
+                $("tr").not(':first').each(function(index) {
+                    $(this).attr('id', {{userIDs}}[index]);      
+                });
+            }
+            
+            /*----------------------------------------------------------------
+            On hover, suggest clickability
+            ----------------------------------------------------------------*/
+            $("tr").hover(function() {
+                $(this).css({"cursor": "pointer"})
+            });
+               
+            /*----------------------------------------------------------------
+            On click, redirect to selected athlete's page
+            ----------------------------------------------------------------*/
+            $("tr").not(':first').click(function() {
+                window.location.href = "/log/athlete/"+$(this).attr('id');
+            });
+        }
+        
+        /*--------------------------------------------------------------------
+        Draw the table using the DataTable we created earlier
+        --------------------------------------------------------------------*/
+        table.draw(data, {showRowNumber: true, width: '100%'});     
+    } 
+</script>
+
 <script type="text/javascript" src="/static/log/js/team.js"></script>
-<script type="text/javascript" src="/static/log/js/tablesorter/jquery-latest.js"></script>
-<script type="text/javascript" src="/static/log/js/tablesorter/jquery.tablesorter.js"></script>
 
 {% endblock %}
