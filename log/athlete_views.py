@@ -59,7 +59,7 @@ def edit_interval_run(request, activity_id):
                     interval_run=i_run,
                     distance=float(rep_formset[i].cleaned_data.get('rep_distance')),
                     units=rep_formset[i].cleaned_data.get('rep_units'),
-                    duration=rep_formset[i].cleaned_data.get('rep_duration'),
+                    duration=rep_formset[i].cleaned_data.get('duration'),
                     rest=rep_formset[i].cleaned_data.get('rep_rest'),
                     position=i+1 #not zero based
                 )
@@ -104,7 +104,7 @@ def edit_interval_run(request, activity_id):
     for i in range(len(reps)):
         rep_formset.forms[i].fields['rep_distance'].initial=reps[i].distance
         rep_formset.forms[i].fields['rep_units'].initial=reps[i].units
-        rep_formset.forms[i].fields['rep_duration'].initial=reps[i].duration
+        rep_formset.forms[i].fields['duration'].initial=reps[i].duration
         # Without the if statement an error is generated
         if reps[i].goal_pace != None:
             rep_formset.forms[i].fields['goal_pace'].initial=reps[i].goal_pace
@@ -511,7 +511,7 @@ def add_intervals(request):
                     interval_run=interval_workout,
                     distance=float(rep_formset[i].cleaned_data.get('rep_distance')),
                     units=rep_formset[i].cleaned_data.get('rep_units'),
-                    duration=rep_formset[i].cleaned_data.get('rep_duration'),
+                    duration=rep_formset[i].cleaned_data.get('duration'),
                     rest=rep_formset[i].cleaned_data.get('rep_rest'),
                     position=i+1
                 )

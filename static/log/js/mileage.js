@@ -10,6 +10,7 @@ $(document).ready(function() {
 $(document).ready(function() {
     $("#week_mileage_graph").hide();
     $("#year_mileage_graph").hide();
+    $("#date_range_graph").hide();
 });
 
 // Show Year graph, hide others
@@ -18,6 +19,7 @@ $(document).ready(function() {
     $("#year_mileage_graph").show('slow');
     $("#month_mileage_graph").hide('slow');
     $("#week_mileage_graph").hide('slow');
+    $("#date_range_graph").hide('slow');
   });
 });
 
@@ -27,6 +29,7 @@ $(document).ready(function() {
     $("#year_mileage_graph").hide('slow');
     $("#month_mileage_graph").show('slow');
     $("#week_mileage_graph").hide('slow');
+    $("#date_range_graph").hide('slow');
   });
 });
 
@@ -36,6 +39,16 @@ $(document).ready(function() {
     $("#year_mileage_graph").hide('slow');
     $("#month_mileage_graph").hide('slow');
     $("#week_mileage_graph").show('slow');
+    $("#date_rangegraph").hide('slow');
+  });
+});
+
+$(document).ready(function() {
+  $("#range_selector").click(function(){
+    $("#year_mileage_graph").hide('slow');
+    $("#month_mileage_graph").hide('slow');
+    $("#week_mileage_graph").hide('slow');
+    $("#date_range_graph").show('slow');
   });
 });
 
@@ -53,10 +66,7 @@ google.charts.setOnLoadCallback(drawYearChart);
 function drawYearChart() {
 
   // Create the data table.
-  var data = new google.visualization.DataTable();
-  data.addColumn('string', 'Day');
-  data.addColumn('number', 'Miles');
-  data.addRows(year_graph_data);
+  var data = google.visualization.arrayToDataTable(year_graph_data);
 
   // Set chart options
   var options = {'title':'Current Year Mileage',
@@ -76,17 +86,14 @@ google.charts.setOnLoadCallback(drawMonthChart);
 function drawMonthChart() {
 
   // Create the data table.
-  var data = new google.visualization.DataTable();
-  data.addColumn('string', 'Day');
-  data.addColumn('number', 'Miles');
-  data.addRows(month_graph_data);
+  var data = google.visualization.arrayToDataTable(month_graph_data);
 
   // Set chart options
   var options = {'title':'Current Month Mileage',
                  'height':300,
                  'width':'100%',
                 //  'trendlines': { 0: {} }
-               };
+              };
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));
@@ -99,10 +106,7 @@ google.charts.setOnLoadCallback(drawWeekChart);
 function drawWeekChart() {
 
   // Create the data table.
-  var data = new google.visualization.DataTable();
-  data.addColumn('string', 'Day');
-  data.addColumn('number', 'Miles');
-  data.addRows(week_graph_data);
+  var data = google.visualization.arrayToDataTable(week_graph_data);
 
   // Set chart options
   var options = {'title':'Current Week Mileage',
@@ -112,5 +116,24 @@ function drawWeekChart() {
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('week_mileage_graph'));
+  chart.draw(data, options);
+}
+
+// Draw the bar chart for Sarah's pizza when Charts is loaded.
+google.charts.setOnLoadCallback(drawRangeChart);
+
+function drawRangeChart() {
+
+  // Create the data table.
+  var data = google.visualization.arrayToDataTable(range_graph_data);
+
+  // Set chart options
+  var options = {'title':'Date Range Graph',
+                 'height':300,
+                 'width':850,
+               };
+
+  // Instantiate and draw our chart, passing in some options.
+  var chart = new google.visualization.ColumnChart(document.getElementById('date_range_graph'));
   chart.draw(data, options);
 }

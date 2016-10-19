@@ -1,11 +1,16 @@
-$(function(){
-  $("#athletes").tablesorter();
-});
+/*----------------------------------------------------------------------------
+On hover, suggest clickability
+----------------------------------------------------------------------------*/
 
-$("tr.athletes").hover(function() {
+$("tr").hover(function() {
     $(this).css({"cursor": "pointer"})
+    console.log('here');
 });
 
+/*----------------------------------------------------------------------------
+Redirect to athlete on click
+----------------------------------------------------------------------------*/
 $("tr.athletes").click(function() {
     window.location.href = "/log/athlete/"+$(this).attr('id');
 })
+

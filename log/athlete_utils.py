@@ -59,13 +59,13 @@ def build_graph_data(dates, activities):
     page given a bunch of dates and activites.
     Dates are datetime objects.
 	---------------------------------------------------------"""
-
+    #change this to change the color of the bars in bar graphs for different types of runs.
     colors = {
         'NormalRun':'#abcabc',
         'IntervalRun':'#ee1234',
         'CrossTrain':'#123456',
         'Event':'#654321',
-        'OffDay':'#111111'
+        'OffDay':'#111111' #immaterial, because days off have no color.
     }
 
     #graph data is expected to be of the form [[x-axis data, y-axis data], ...]
