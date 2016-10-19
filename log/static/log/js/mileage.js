@@ -1,5 +1,5 @@
 $(document).ready(function() {
-   $('.run_container').bind("mouseover", function(){
+   $('.btn').bind("mouseover", function(){
        var color = $(this).css("background-color");
 
        $(this).css("background", "#dcc7aa");
@@ -23,13 +23,6 @@ $(document).ready(function() {
 })
 
 // Show Year graph, hide others
-$(document).ready(function() {
-  $(".graph_option").hover(function(){
-    console.log("hey there");
-    // $("#current_year_selector").css("background-color","blue");
-  });
-});
-
 // -------------------- Mileage graph divs -----------------------
 $(document).ready(function() {
     $("#week_mileage_graph").hide();

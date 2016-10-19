@@ -1,11 +1,28 @@
-// Show Year graph, hide others
 $(document).ready(function() {
-  $(".graph_option").hover(function(){
-    console.log("hey there");
-    // $("#current_year_selector").css("background-color","blue");
-  });
-});
+   $('.btn').bind("mouseover", function(){
+       var color = $(this).css("background-color");
 
+       $(this).css("background", "#dcc7aa");
+
+       $(this).bind("mouseout", function(){
+           $(this).css("background", color);
+       })
+   })
+})
+
+$(document).ready(function() {
+   $('.graph_option').bind("mouseover", function(){
+       var color = $(this).css("background-color");
+
+       $(this).css("background", "#dcc7aa");
+
+       $(this).bind("mouseout", function(){
+           $(this).css("background", color);
+       })
+   })
+})
+
+// Show Year graph, hide others
 // -------------------- Mileage graph divs -----------------------
 $(document).ready(function() {
     $("#week_mileage_graph").hide();

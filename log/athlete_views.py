@@ -343,7 +343,10 @@ def athlete(request, user_id):
 
     #------------------ Get PR's of athlete -----------------------------------
     prs = list(get_prs(athlete).values())
-    print prs
+
+    if len(all_runs) > 20:
+        all_runs = all_runs[:19]
+
     context = {
         'prs':prs,
         'all_runs':all_runs,

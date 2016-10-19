@@ -1,7 +1,26 @@
-div {
-  background-color: lightblue;
+.jumbotron, .footer {
+    background-color:#6b7a8f;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color:#f7882f;
+}
+
+
+.pull-left, .nav, .nav-pills {
+  color:#f7c331;
+}
+
+.container-fluid   {
+  background-color:#dcc7aa;
+}
+
+.nav {
+  background-color:#dcc7aa;
 }
 
 a {
-  font-family:'comic sans'
+  text-decoration: none;
+  font-family: "Abel";
+
 }

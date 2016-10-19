@@ -61,10 +61,10 @@ def build_graph_data(dates, activities):
 	---------------------------------------------------------"""
     #change this to change the color of the bars in bar graphs for different types of runs.
     colors = {
-        'NormalRun':'#abcabc',
-        'IntervalRun':'#ee1234',
-        'CrossTrain':'#123456',
-        'Event':'#654321',
+        'NormalRun':'#6b7a8f',
+        'IntervalRun':'#f7c331',
+        'CrossTrain':'#dcc7aa',
+        'Event':'#f7882f',
         'OffDay':'#111111' #immaterial, because days off have no color.
     }
 
