@@ -8,6 +8,9 @@ from .models import *
 from datetime import date
 from django.forms.formsets import BaseFormSet
 
+class SettingsForm(forms.Form):
+    log_private = forms.BooleanField(initial=False, required=False)
+
 class R2WImportForm(forms.Form):
     log = forms.FileField()
 

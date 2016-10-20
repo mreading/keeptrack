@@ -64,6 +64,7 @@
                 </div>
             {% endif %}
             {% if user.athlete_set.all  %}
+              <a href="/log/athlete/settings/{{ user.id }}">Settings</a>
               <a class="auth" href="/log/athlete/{{user.id}}"> Hi {{ user.first_name }}</a>
             {% endif %}
            <a  class="auth" href="/log/logout/"> Logout </a>

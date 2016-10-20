@@ -6,7 +6,7 @@
     <div class="page_title" style="display:inline-block">
       <h2>{{ athlete_user.first_name }} {{ athlete_user.last_name}}</h2>
     </div>
-    {% ifequal athlete_user.id user.id %}
+    {% if can_edit %}
       <div class='add_workout' style="float:right;">
         <a class='w_type btn' href="/log/athlete/add/NormalRun/">Add Normal Run</a>
         <a class='w_type btn' href="/log/athlete/add_intervals/">Add Interval Workout</a>
@@ -14,7 +14,7 @@
         <a class='w_type btn' href="/log/athlete/add/Event/">Add Meet</a>
         <a class= 'btn' href="/log/athlete/r2w_import/">Import Data from Running2Win</a>
       </div>
-    {% endifequal %}
+    {% endif %}
   </div>
   <div id="page">
 
@@ -78,9 +78,11 @@
           <!-- <a href="/log/athlete/delete_activity/{{ r.activity_id }}">
             <div class='delete_run, btn'>DELETE</div>
           </a> -->
-          <a href="/log/athlete/edit_activity/{{ r.activity_id }}">
-            <div class='edit_run btn'>EDIT</div>
-          </a>
+          {% if can_edit %}
+            <a href="/log/athlete/edit_activity/{{ r.activity_id }}">
+              <div class='edit_run btn'>EDIT</div>
+            </a>
+          {% endif %}
           </div>
         {% endfor %}
     </div>

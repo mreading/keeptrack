@@ -37,6 +37,7 @@ class Athlete(models.Model):
     seasons = models.ManyToManyField(Season)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     graduation_year = models.PositiveIntegerField()
+    log_private = models.BooleanField(default=True)
 
 class Coach(models.Model):
     """ Brett Hull """

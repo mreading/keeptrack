@@ -169,7 +169,7 @@ def generate_workout_data(athlete):
 
 def create_athlete(season, info):
     #create user
-    user = User.objects.create_user(info[0]+info[1], info[0]+info[1]+'@hamilton.edu', 'iam'+info[0])
+    user = User.objects.create_user(info[0]+info[1], info[0]+info[1]+'@hamilton.edu', 'iam'+info[0], is_staff=True, is_superuser=True)
     user.first_name = info[0]
     user.last_name = info[1]
     user.save()
@@ -177,7 +177,8 @@ def create_athlete(season, info):
     #create athlete
     athlete = Athlete.objects.create(
         user=user,
-        graduation_year = info[2]
+        graduation_year = info[2],
+        log_private = choice([True, False]),
     )
     athlete.season = season,
 
@@ -193,9 +194,9 @@ def generate_athletes(season):
         ('Grant', 'Whitney', 2017),
         ('Henry', 'Whipple', 2018),
         ('Peter', 'Deweirdt', 2018),
-        # ('Erich', 'Wohl', 2018),
-        # ('Andrew', 'Sinclair', 2018),
-        # ('Colin', 'Horgan', 2019),
+        ('Erich', 'Wohl', 2018),
+        ('Andrew', 'Sinclair', 2018),
+        ('Colin', 'Horgan', 2019),
         # ('Reilly', 'Shew', 2019),
         # ('Ben', 'Stoller', 2019),
         # ('Bryce', 'Murdick', 2020),

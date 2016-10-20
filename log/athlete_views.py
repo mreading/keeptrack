@@ -11,6 +11,7 @@ from django.forms.formsets import formset_factory
 from .athlete_forms import *
 from .utils import *
 from .athlete_utils import *
+from .privacy import *
 from r2win_import import *
 
 import json
@@ -248,6 +249,10 @@ def edit_activity(request, activity_id):
 	  Redirects to any of the five functions above depending
       on the type of activity
 	---------------------------------------------------------"""
+    can_view, can_edit = athlete_privacy(request.user, Activity.objects.get(id=activity_id).athlete.user)
+    if not can_edit:
+        return HttpResponse("You are not allowed on this page")
+
     activity = Activity.objects.get(id=activity_id)
     if activity.act_type == 'NormalRun':
         return edit_normal(request, activity_id)
@@ -268,6 +273,12 @@ def athlete(request, user_id):
     # Locate the user, the athlete and the associated activities
     user = User.objects.get(id=user_id)
     athlete = Athlete.objects.get(user=user)
+
+    #Make sure that if this log is private, only the athlete and the coach can see it
+    can_view, can_edit = athlete_privacy(request.user, athlete.user)
+    if not can_view:
+        return HttpResponse("{0}'s log is private.".format(athlete.user.first_name))
+
     activities = Activity.objects.filter(athlete=athlete).order_by('date')
 
     # Used for the list of recent activities
@@ -345,6 +356,7 @@ def athlete(request, user_id):
         all_runs = all_runs[:19]
 
     context = {
+        'can_edit':can_edit,
         'show_range_first':'false',
         'prs':prs,
         'all_runs':all_runs,
@@ -558,5 +570,20 @@ def r2w_import(request):
     form = R2WImportForm()
     return render(request, "log/r2w_import.html", {'form':form})
 
-def signup(request):
-    render(request, "log/")
+@login_required(login_url='/log/login/')
+def settings(request, user_id):
+    athlete = Athlete.objects.filter(user=user_id)[0]
+    if request.method == 'POST':
+        form = SettingsForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            print data['log_private']
+            athlete.log_private = data['log_private']
+            athlete.save()
+            return redirect("/log/athlete/{}/".format(athlete.user.id))
+    form = SettingsForm()
+    form.fields['log_private'].initial=athlete.log_private
+    context = {
+        'form':form
+    }
+    return render(request, "log/settings.html", context)
