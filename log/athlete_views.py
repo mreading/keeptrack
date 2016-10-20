@@ -304,14 +304,10 @@ def athlete(request, user_id):
     today = datetime.date.today()
     start_week = today - datetime.timedelta(today.weekday())
     end_week = start_week + datetime.timedelta(7)
-    print start_week
-    print end_week
     week_activities = Activity.objects.filter(
         athlete=athlete,
         date__range=[start_week, end_week]
     ).order_by('date')
-    for w in week_activities:
-        print w
 
     # ------------------------- get dates -------------------------------------
     curr_year = []
