@@ -374,13 +374,12 @@ def athlete(request, user_id):
                 range_dates.append(range_dates[-1]+datetime.timedelta(1))
 
             range_graph_data = build_graph_data(range_dates, range_activities)
-            context['range_graph_data'] = range_graph_data
+            context['range_graph_data'] = json.dumps(range_graph_data)
             context['form'] = DateRangeForm()
             context['show_range_first'] = 'true'
             return render(request, "log/athlete.html", context)
     else:
-        date_range_form = DateRangeForm()
-        context['form'] = date_range_form
+        context['form'] = DateRangeForm()
 
     return render(request, "log/athlete.html", context)
 
