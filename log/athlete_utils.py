@@ -72,10 +72,16 @@ def build_graph_data(dates, activities, week_name_labels=False):
     # where x axis is a date string and y axis is floating point number representing distance
     graph_data = [['Date', 'Miles', {'role':'style'}, 'Link']]
     p = 0
-    for i in range(len(dates)):
+    i = 0
+    while i < len(dates):
         if p < len(activities) and dates[i] == activities[p].date:
-            distance = get_miles(get_workout_from_activity(activities[p]))
             w_date = activities[p].date
+            distance = get_miles(get_workout_from_activity(activities[p]))
+
+            #add distances of other runs
+            if str(w_date) == graph_data[-1][0]:
+                distance += graph_data[-1][1]
+
             if week_name_labels:
                 w_date = w_date.strftime("%A")
             graph_data.append([
@@ -85,6 +91,10 @@ def build_graph_data(dates, activities, week_name_labels=False):
                 '/log/athlete/activity_detail/'+str(activities[p].id),
             ])
             p += 1
+            if p < len(activities) and dates[i] == activities[p].date:
+                i = i
+            else:
+                i += 1
         else:
             w_date = dates[i]
             if week_name_labels:
@@ -92,6 +102,7 @@ def build_graph_data(dates, activities, week_name_labels=False):
             graph_data.append(
             [str(w_date), None, 'color:'+colors['OffDay'], 'nothing']
             )
+            i += 1
     return graph_data
 
 def update_activity(activity, cleaned_data):

@@ -347,6 +347,8 @@ def athlete(request, user_id):
     #--------------- generate graph data, including days off -------------------
     year_graph_data = build_graph_data(curr_year, year_activities)
     month_graph_data = build_graph_data(curr_month, month_activities)
+    for p in month_graph_data:
+        print p
     week_graph_data = build_graph_data(curr_week, week_activities, week_name_labels=True)
 
     #------------------ Get PR's of athlete -----------------------------------

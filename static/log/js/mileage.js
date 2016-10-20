@@ -114,7 +114,7 @@ function drawMonthChart() {
   var options = {'title':'Current Month Mileage',
                  'height':300,
                  'width':900,
-                 legend:{position:'none'}
+                 legend:{position:'none'},
                 //  'trendlines': { 0: {} }
               };
 
