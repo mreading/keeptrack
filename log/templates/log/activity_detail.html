@@ -27,7 +27,7 @@
 
       {% ifequal activity.act_type "NormalRun" %}
         <div class="activity_detail_container">
-          <h2> {{ workout.distance }} {{ workout.units }} in {{ workout.duration }} </h2>
+          <h5> {{ workout.distance }} {{ workout.units }} in {{ workout.duration }} </h5>
         </div>
       {% endifequal %}
 
@@ -39,11 +39,11 @@
         <h2 id='test'> Interval Run </h2>
         <div class="activity_detail_container">
           <h4>Warm up</h4>
-          <p> {{ workout.warmup }} (in {{ workout.wu_units }})</p>
+          <p> {{ workout.warmup }} {{ workout.wu_units }}</p>
           <h4>Cool Down</h4>
-          <p> {{ workout.cooldown }}( in {{ workout.cd_units }})</p>
+          <p> {{ workout.cooldown }} {{ workout.cd_units }}</p>
           <h4>Total Distance</h4>
-          <p> {{ workout.distance }} ( in Miles )</p>
+          <p> {{ workout.distance }} Miles</p>
 
           <table>
             <tr>
@@ -109,9 +109,11 @@
     <div class='module_container'>
       {% if comments %}
         <div id='thread_container'>
+          <h3>Comments</h3>
           {% for comment in comments %}
             <div class='comment_container'>
-              {{ comment.poster }}: {{ comment.text }}
+              <h5 style="color:#6b7a8f">{{ comment.poster }}</h5>
+              <p style="margin-left:10px;">{{ comment.text }} <p>
             </div>
           {% endfor %}
         </div>

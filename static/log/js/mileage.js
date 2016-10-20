@@ -74,13 +74,13 @@ google.charts.load('current', {'packages':['corechart']});
 // Draw the bar chart for the Anthony's pizza when Charts is loaded.
 google.charts.setOnLoadCallback(drawYearChart);
 
-// Callback that creates and populates a data table,
-// instantiates the pie chart, passes in the data and
-// draws it.
+//-----------------------------------------------------------------------------
 function drawYearChart() {
 
   // Create the data table.
   var data = google.visualization.arrayToDataTable(year_graph_data);
+  var view = new google.visualization.DataView(data);
+  view.setColumns([0, 1, 2])
 
   // Set chart options
   var options = {'title':'Current Year Mileage',
@@ -92,16 +92,23 @@ function drawYearChart() {
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('year_mileage_graph'));
-  chart.draw(data, options);
+  chart.draw(view, options);
+
+  var selectHandler = function(e) {
+    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
+  }
+  google.visualization.events.addListener(chart, 'select', selectHandler);
 }
 
-// Draw the bar chart for Sarah's pizza when Charts is loaded.
+//-----------------------------------------------------------------------------
 google.charts.setOnLoadCallback(drawMonthChart);
 
 function drawMonthChart() {
 
   // Create the data table.
   var data = google.visualization.arrayToDataTable(month_graph_data);
+  var view = new google.visualization.DataView(data);
+  view.setColumns([0, 1, 2])
 
   // Set chart options
   var options = {'title':'Current Month Mileage',
@@ -111,18 +118,32 @@ function drawMonthChart() {
                 //  'trendlines': { 0: {} }
               };
 
+  // var selectHandler = function(e) {
+  //   window.location = data.getValue(chart.getSelection()[0]['row'], 3);
+  // }
+  //  // Add our selection handler.
+  //  google.visualization.events.addListener(chart, 'select', selectHandler);
+  //   }
+
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));
-  chart.draw(data, options);
+  chart.draw(view, options);
+
+  var selectHandler = function(e) {
+    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
+  }
+  google.visualization.events.addListener(chart, 'select', selectHandler);
 }
 
-// Draw the bar chart for Sarah's pizza when Charts is loaded.
+//-----------------------------------------------------------------------------
 google.charts.setOnLoadCallback(drawWeekChart);
 
 function drawWeekChart() {
 
   // Create the data table.
   var data = google.visualization.arrayToDataTable(week_graph_data);
+  var view = new google.visualization.DataView(data);
+  view.setColumns([0, 1, 2])
 
   // Set chart options
   var options = {'title':'Current Week Mileage',
@@ -133,16 +154,23 @@ function drawWeekChart() {
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('week_mileage_graph'));
-  chart.draw(data, options);
+  chart.draw(view, options);
+
+  var selectHandler = function(e) {
+    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
+  }
+  google.visualization.events.addListener(chart, 'select', selectHandler);
 }
 
-// Draw the bar chart for Sarah's pizza when Charts is loaded.
+//-----------------------------------------------------------------------------
 google.charts.setOnLoadCallback(drawRangeChart);
 
 function drawRangeChart() {
 
   // Create the data table.
   var data = google.visualization.arrayToDataTable(range_graph_data);
+  var view = new google.visualization.DataView(data);
+  view.setColumns([0, 1, 2])
 
   // Set chart options
   var options = {'title':'Date Range Graph',
@@ -153,5 +181,10 @@ function drawRangeChart() {
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('date_range_graph'));
-  chart.draw(data, options);
+  chart.draw(view, options);
+
+  var selectHandler = function(e) {
+    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
+  }
+  google.visualization.events.addListener(chart, 'select', selectHandler);
 }

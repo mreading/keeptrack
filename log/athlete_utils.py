@@ -70,7 +70,7 @@ def build_graph_data(dates, activities):
 
     #graph data is expected to be of the form [[x-axis data, y-axis data], ...]
     # where x axis is a date string and y axis is floating point number representing distance
-    graph_data = [['Date', 'Miles', {'role':'style'}]]
+    graph_data = [['Date', 'Miles', {'role':'style'}, 'Link']]
     p = 0
     for i in range(len(dates)):
         if p < len(activities) and dates[i] == activities[p].date:
@@ -79,11 +79,12 @@ def build_graph_data(dates, activities):
                 str(activities[p].date),
                 distance,
                 'color:'+colors[activities[p].act_type],
+                '/log/athlete/activity_detail/'+str(activities[p].id),
             ])
             p += 1
         else:
             graph_data.append(
-            [str(dates[i]), 0.00, 'color:'+colors['OffDay']]
+            [str(dates[i]), None, 'color:'+colors['OffDay'], 'nothing']
             )
     return graph_data
 
@@ -128,7 +129,7 @@ def create_run(run_type, activity, data):
     if run_type == "NormalRun":
         run = NormalRun.objects.create(
             activity=activity,
-            distance=float(data['distance']),
+            distance=round(float(data['distance']), 2),
             duration=data['duration'],
             units=data['units'],
         )
@@ -138,7 +139,7 @@ def create_run(run_type, activity, data):
     elif run_type == "CrossTrain":
         run = CrossTrain.objects.create(
             activity=activity,
-            distance=float(data['distance']),
+            distance=round(float(data['distance']), 2),
             duration=data['duration'],
             sport=data['sport'],
             units=data['units'],
@@ -152,7 +153,7 @@ def create_run(run_type, activity, data):
         run = Event.objects.create(
             activity=activity,
             meet=meet,
-            distance=float(data['distance']),
+            distance=round(float(data['distance']), 2),
             duration=data['duration'],
             place=data['place'],
             units=data['units'],
