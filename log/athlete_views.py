@@ -50,7 +50,7 @@ def edit_interval_run(request, activity_id):
             activity.date = data['date']
             activity.save()
 
-            # Rhe ordering of reps is probably messed up, so delete them all
+            # The ordering of reps is probably messed up, so delete them all
             # and then create new rep objects rather than updating the existing
             # ones.
             Rep.objects.filter(interval_run=i_run).delete()
@@ -301,17 +301,17 @@ def athlete(request, user_id):
         ).order_by('date')
     month_activities = list(month_activities)
 
-    week_activities = Activity.objects.filter(
-        date__year=datetime.date.today().year,
-        date__month=datetime.date.today().month,
-        athlete=athlete
-        ).order_by('date')
-    week_activities = list(week_activities)
-
     today = datetime.date.today()
     start_week = today - datetime.timedelta(today.weekday())
     end_week = start_week + datetime.timedelta(7)
-    week_activities = Activity.objects.filter(date__range=[start_week, end_week])
+    print start_week
+    print end_week
+    week_activities = Activity.objects.filter(
+        athlete=athlete,
+        date__range=[start_week, end_week]
+    ).order_by('date')
+    for w in week_activities:
+        print w
 
     # ------------------------- get dates -------------------------------------
     curr_year = []
@@ -333,13 +333,14 @@ def athlete(request, user_id):
             curr_month.append(day)
 
     # get the dates for the current week
-    for i in range(7):
-        curr_week.append(datetime.date.today() - datetime.timedelta(i))
+    while start_week <= end_week:
+        curr_week.append(start_week)
+        start_week = start_week + datetime.timedelta(1)
 
     #--------------- generate graph data, including days off -------------------
     year_graph_data = build_graph_data(curr_year, year_activities)
     month_graph_data = build_graph_data(curr_month, month_activities)
-    week_graph_data = build_graph_data(curr_week, week_activities)
+    week_graph_data = build_graph_data(curr_week, week_activities, week_name_labels=True)
 
     #------------------ Get PR's of athlete -----------------------------------
     prs = list(get_prs(athlete).values())

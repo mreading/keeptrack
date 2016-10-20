@@ -244,6 +244,7 @@ def generate():
     #     user = User.objects.create_user(name, name+'@hamilton.edu', 'iam'+name, is_staff=True, is_superuser=True)
 
 def clean_database():
+    Activity.objects.all().delete()
     Team.objects.all().delete()
     Season.objects.all().delete()
     Athlete.objects.all().delete()

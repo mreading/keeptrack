@@ -40,7 +40,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return render(request, "log/logout.html", {})
+    return redirect('/log/login/')
 
 def signup(request):
     if request.method == 'POST':
@@ -89,7 +89,7 @@ def signup(request):
             return render(request, "log/signup.html", {'form':form})
     else:
         form = SignupForm()
-        return render(request, "log/signup.html", {'form':form}) 
+        return render(request, "log/signup.html", {'form':form})
 
 def AcceptInvite(request, key):
     return render(request, "log/settings.html", {})

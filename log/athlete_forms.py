@@ -190,13 +190,11 @@ class AddIntervalForm(forms.Form):
 class BaseAddRepFormSet(BaseFormSet):
     def clean(self):
         """--------------------------------------------------------------------
-        Adds validation to check that no two links have the same rep_duration or rep_rest
-        and that all links have both an rep_duration and rep_rest.
+        Adds validation to check that no two links have the same duration or rep_rest
+        and that all links have both an duration and rep_rest.
         --------------------------------------------------------------------"""
-        print "cleaning..."
         if any(self.errors):
             return
-        print "here"
         rep_durations = []
         rep_rests = []
         duplicates = False

@@ -52,6 +52,9 @@ class Activity(models.Model):
     #weather
     #gpx file
 
+    def __str__(self):
+        return str(self.date) + ' ' + self.act_type
+
 class Meet(models.Model):
     location = models.CharField(max_length=100)
 

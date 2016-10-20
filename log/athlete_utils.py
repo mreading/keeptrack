@@ -53,7 +53,7 @@ def get_workout_from_activity(activity):
     else:
         print "Unknown type of workout"
 
-def build_graph_data(dates, activities):
+def build_graph_data(dates, activities, week_name_labels=False):
     """---------------------------------------------------------
 	Build the data array for google charts mileage on the athlete
     page given a bunch of dates and activites.
@@ -75,16 +75,22 @@ def build_graph_data(dates, activities):
     for i in range(len(dates)):
         if p < len(activities) and dates[i] == activities[p].date:
             distance = get_miles(get_workout_from_activity(activities[p]))
+            w_date = activities[p].date
+            if week_name_labels:
+                w_date = w_date.strftime("%A")
             graph_data.append([
-                str(activities[p].date),
+                str(w_date),
                 distance,
                 'color:'+colors[activities[p].act_type],
                 '/log/athlete/activity_detail/'+str(activities[p].id),
             ])
             p += 1
         else:
+            w_date = dates[i]
+            if week_name_labels:
+                w_date = w_date.strftime("%A")
             graph_data.append(
-            [str(dates[i]), None, 'color:'+colors['OffDay'], 'nothing']
+            [str(w_date), None, 'color:'+colors['OffDay'], 'nothing']
             )
     return graph_data
 
@@ -96,7 +102,7 @@ def update_activity(activity, cleaned_data):
         run = IntervalRun.objects.get(activity=activity)
     elif activity.act_type == "CrossTrain":
         run = CrossTrail.objects.get(activity=activity)
-    elif activity.act_type == "Event": #FIXME completely untested
+    elif activity.act_type == "Event":
         run = Event.objects.get(activity=activity)
 
 
