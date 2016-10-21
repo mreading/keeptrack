@@ -25,27 +25,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'log/css/custom.css' %}">
   </head>
 
-  <!-- Navigation -->
-  <div class="nav">
-    <div class="container-fluid">
-      <ul class="pull-left nav nav-pills">
-          {% if user.athlete_set.all %}
-            <li><a href="/log/athlete/{{ user.id }}/">Athlete</a></li>
-            <li><a href="/log/team/">Team</a></li>
-          {% endif%}
-
-          {% if user.coach_set.all %}
-            <li><a href="/log/team/">Home</a></li>
-          {% endif%}
-
-          {% if user.athlete_set.all or user.coach_set.all %}
-            <li><a href="/log/workout_templates/">Workouts</a></li>
-            <li><a href="/log/calendar/">Calendar</a></li>
-            <li><a href="/log/team_stats/">Stats</a></li>
-          {% endif %}
-      </ul>
-    </div>
-  </div>
 
   <!-- BODY -->
   <body>
@@ -72,6 +51,28 @@
        </div>
      </div>
    </div>
+      
+      <!-- Navigation -->
+  <div class="nav">
+    <div class="container-fluid">
+      <ul class="pull-left nav nav-pills">
+          {% if user.athlete_set.all %}
+            <li><a href="/log/athlete/{{ user.id }}/">Athlete</a></li>
+            <li><a href="/log/team/">Team</a></li>
+          {% endif%}
+
+          {% if user.coach_set.all %}
+            <li><a href="/log/team/">Home</a></li>
+          {% endif%}
+
+          {% if user.athlete_set.all or user.coach_set.all %}
+            <li><a href="/log/workout_templates/">Workouts</a></li>
+            <li><a href="/log/calendar/">Calendar</a></li>
+            <li><a href="/log/team_stats/">Stats</a></li>
+          {% endif %}
+      </ul>
+    </div>
+  </div>
 
    <div id="content_container">
       {% block content %}
