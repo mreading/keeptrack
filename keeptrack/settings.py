@@ -37,9 +37,6 @@ INSTALLED_APPS = [
 
 ACCOUNT_ADAPTER = 'invitations.models.InvitationsAdapter'
 
-SITE_ID = 1
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
