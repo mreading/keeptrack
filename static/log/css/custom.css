@@ -1,5 +1,6 @@
+
 .jumbotron, .footer {
-    background-color:#6b7a8f;
+    background-color:var(--color1);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -16,7 +17,7 @@ h1, h2, h3, h4, h5, h6 {
 }*/
 
 .nav {
-  background-color:#dcc7aa;
+  background-color: var(--color3);
 }
 
 a {
@@ -26,7 +27,7 @@ a {
 }
 
 .panel-default > .panel-heading {
-    background-color: #6b7a8f;
+    background-color: var(--color1);
     text-align: center;
     color: aliceblue;
     font-family: "Abel";
@@ -46,4 +47,3 @@ h1 {
 .jumbotron {
     margin-bottom: 0px;
 }
-
