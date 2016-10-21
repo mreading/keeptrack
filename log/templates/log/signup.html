@@ -1,15 +1,51 @@
 {% extends 'log/base.html' %}
-
+{% load widget_tweaks %}
 {% block content %}
 
-  <form action="/log/signup/" method="post" autocomplete="off">
-    {% csrf_token %}
-    {{ form.errors }}
-    {{ form.non_field_errors }}
-    {{ form.as_p }}
-    <p> (can add more sports later) </p>
+<form class="form-horizontal" action="/log/signup/" method="POST" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+  {% csrf_token %}
+  {{ form.media }}
+
+  <!---------------------------------------------------------
+	  Code for generating pretty django forms with bootstrap
+	---------------------------------------------------------->
+  {% if form.errors %}
+      <div class="alert alert-error">
+          <ul>
+              {% for error in form.non_field_errors %}
+                  <li>{{ error }}</li>
+              {% endfor %}
+          </ul>
+      </div>
+  {% endif %}
+
+  {% for field in form.visible_fields %}
+      <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+          <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+          <div class="controls">
+              <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
+              {{ field|add_class:"form-control" }}
+              {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+          </div>
+      </div>
+  {% endfor %}
+
+  {% for field in form.hidden_fields %}
+      {{ field }}
+  {% endfor %}
+
+  {% block formsets %}
+      {% for formset in inlines %}
+          {% include "inline_formset.html" with formset=formset %}
+      {% endfor %}
+  {% endblock formsets %}
   </br>
-    <input type="submit" value="Sign up" />
-  </form>
+
+  <div class="form-actions">
+      <input class="btn btn-primary btn-large" type="submit" value="Sign Up"/>
+      {% block extra_buttons %}
+      {% endblock extra_buttons %}
+  </div>
+</form>
 
 {% endblock %}

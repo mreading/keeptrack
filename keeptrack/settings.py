@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'log.apps.LogConfig',
     'allauth',
     'invitations',
+    'widget_tweaks',
 ]
 
 ACCOUNT_ADAPTER = 'invitations.models.InvitationsAdapter'
