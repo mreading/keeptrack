@@ -40,7 +40,11 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
+<<<<<<< HEAD
     return render(request, "log/login.html", {})
+=======
+    return redirect('/log/login/')
+>>>>>>> 0e15c1e84b854a784daa82bde3f9a098918d045e
 
 def signup(request):
     if request.method == 'POST':

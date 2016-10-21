@@ -15,23 +15,22 @@ CONNECTED FILES:	/log/base.html
 This div holds the entirety of the page
 ----------------------------------------------------------------------------->
 <div>
-  <h1> Team Home Page </h1>
   <div id="page">
     
-    <!-----------------------------------------------------------------------
-    MODULE: Schedule for the upcoming week 
-    ------------------------------------------------------------------------>  
-    <div class="module_container">
-      Current Week
+      
+ <div class="container-fluid">
+     <h1> Team Home Page </h1>
+  <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">CURRENT WEEK</div>
+      <div class="panel-body">
+          
+      </div>
     </div>
       
-    <!------------------------------------------------------------------------
-    MODULE: Athlete table
-    -------------------------------------------------------------------------> 
-    <div class="module_container">
-        <h2>Athletes</h2>
-        <hr>
-        
+    <div class="panel panel-default">
+      <div class="panel-heading">ATHLETES</div>
+      <div class="panel-body">
         <!--------------------------------------------------------------------
         Athlete Table div that will later be filled
         --------------------------------------------------------------------->
@@ -43,19 +42,12 @@ This div holds the entirety of the page
         <!------------------------------------------------------------------->
         <hr>
         <p>*Rank based on previous race results.</p>
-    </div>
-      
-    <!------------------------------------------------------------------------
-    MODULE:Schedule for upcoming meets
-    ------------------------------------------------------------------------->
-    <div class="module_container">
-        <h2>Meets</h2>
-        <hr>
-        
-        <!------------------------------------------------------------------->
-        <!-- Athlete Table -->
-        <!------------------------------------------------------------------->
-        <table id="meets" width="100%">
+        </div>
+      </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">MEETS</div>
+      <div class="panel-body">
+      <table id="meets" width="100%">
             <thead>
                 <tr>
                     <th>Race</th>
@@ -78,11 +70,14 @@ This div holds the entirety of the page
             </tr>
             {% endfor %}
             </tbody>
-        </table>
-        <hr>
+        </table>  
+        
+      </div>
     </div>
   </div>
 </div>
+    </div>
+  </div>
 
 <!----------------------------------------------------------------------------
 NOTE: Need to move this script to a separate file; this will involve adding 

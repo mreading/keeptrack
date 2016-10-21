@@ -1,10 +1,13 @@
-#milage_options {
+.delete_run, .edit_run, .run_detail {
+  border-radius:5px;
+  padding:5px;
+  margin:3px;
 }
 
-.graph_option {
+.delete_run, .edit_run {
+  float:right;
+}
+
+.w_type {
   display:inline-block;
-  border: 1px solid black;
-  height: 40px;
-  width: 70px;
-  margin: 10px;
 }

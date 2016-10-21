@@ -11,6 +11,7 @@ from django.forms.formsets import formset_factory
 from .athlete_forms import *
 from .utils import *
 from .athlete_utils import *
+from .privacy import *
 from r2win_import import *
 
 import json
@@ -50,16 +51,16 @@ def edit_interval_run(request, activity_id):
             activity.date = data['date']
             activity.save()
 
-            # Rhe ordering of reps is probably messed up, so delete them all
+            # The ordering of reps is probably messed up, so delete them all
             # and then create new rep objects rather than updating the existing
             # ones.
             Rep.objects.filter(interval_run=i_run).delete()
             for i in range(len(rep_formset)):
                 rep = Rep.objects.create(
                     interval_run=i_run,
-                    distance=float(rep_formset[i].cleaned_data.get('rep_distance')),
+                    distance=round(float(rep_formset[i].cleaned_data.get('rep_distance')), 2),
                     units=rep_formset[i].cleaned_data.get('rep_units'),
-                    duration=rep_formset[i].cleaned_data.get('rep_duration'),
+                    duration=rep_formset[i].cleaned_data.get('duration'),
                     rest=rep_formset[i].cleaned_data.get('rep_rest'),
                     position=i+1 #not zero based
                 )
@@ -104,7 +105,7 @@ def edit_interval_run(request, activity_id):
     for i in range(len(reps)):
         rep_formset.forms[i].fields['rep_distance'].initial=reps[i].distance
         rep_formset.forms[i].fields['rep_units'].initial=reps[i].units
-        rep_formset.forms[i].fields['rep_duration'].initial=reps[i].duration
+        rep_formset.forms[i].fields['duration'].initial=reps[i].duration
         # Without the if statement an error is generated
         if reps[i].goal_pace != None:
             rep_formset.forms[i].fields['goal_pace'].initial=reps[i].goal_pace
@@ -134,7 +135,7 @@ def edit_xtrain(request, activity_id):
         if form.is_valid():
             # Save the updated data to CrossTrain object and the Activity Object
             data = form.cleaned_data
-            xtrain.distance=float(data['distance'])
+            xtrain.distance=round(float(data['distance']), 2)
             xtrain.duration=data['duration']
             xtrain.units=data['units']
             xtrain.sport=data['sport']
@@ -150,7 +151,7 @@ def edit_xtrain(request, activity_id):
     # has to be done this way.
     form = AddXTrainForm()
     form.fields['date'].initial=activity.date
-    form.fields['distance'].initial=float(xtrain.distance)
+    form.fields['distance'].initial=round(float(xtrain.distance), 2)
     form.fields['units'].initial=xtrain.units
     form.fields['sport'].initial=xtrain.sport
     form.fields['duration'].initial=xtrain.duration
@@ -176,7 +177,7 @@ def edit_race(request, activity_id):
         if form.is_valid():
             # save the new data
             data = form.cleaned_data
-            event.distance=float(data['distance'])
+            event.distance=round(float(data['distance']), 2)
             event.duration=data['duration']
             event.units=data['units']
             event.gender=data['gender']
@@ -195,7 +196,7 @@ def edit_race(request, activity_id):
     # has to be done this way.
     form = AddEventForm()
     form.fields['date'].initial=activity.date
-    form.fields['distance'].initial=float(event.distance)
+    form.fields['distance'].initial=round(float(event.distance), 2)
     form.fields['units'].initial=event.units
     form.fields['duration'].initial=event.duration
     form.fields['gender'].initial=event.gender
@@ -220,7 +221,7 @@ def edit_normal(request, activity_id):
         if form.is_valid():
             # save the updated data
             data = form.cleaned_data
-            normal_run.distance=float(data['distance'])
+            normal_run.distance=round(float(data['distance']), 2)
             normal_run.duration=data['duration']
             normal_run.units=data['units']
             activity.comment=data['comments']
@@ -248,6 +249,10 @@ def edit_activity(request, activity_id):
 	  Redirects to any of the five functions above depending
       on the type of activity
 	---------------------------------------------------------"""
+    can_view, can_edit = athlete_privacy(request.user, Activity.objects.get(id=activity_id).athlete.user)
+    if not can_edit:
+        return HttpResponse("You are not allowed on this page")
+
     activity = Activity.objects.get(id=activity_id)
     if activity.act_type == 'NormalRun':
         return edit_normal(request, activity_id)
@@ -268,15 +273,21 @@ def athlete(request, user_id):
     # Locate the user, the athlete and the associated activities
     user = User.objects.get(id=user_id)
     athlete = Athlete.objects.get(user=user)
+
+    #Make sure that if this log is private, only the athlete and the coach can see it
+    can_view, can_edit = athlete_privacy(request.user, athlete.user)
+    if not can_view:
+        return HttpResponse("{0}'s log is private.".format(athlete.user.first_name))
+
     activities = Activity.objects.filter(athlete=athlete).order_by('date')
 
     # Used for the list of recent activities
     all_runs = []
     for a in activities:
-        all_runs += NormalRun.objects.filter(activity=a)
-        all_runs += CrossTrain.objects.filter(activity=a)
-        all_runs += IntervalRun.objects.filter(activity=a)
-        all_runs += Event.objects.filter(activity=a)
+        all_runs = list(NormalRun.objects.filter(activity=a)) + all_runs
+        all_runs = list(CrossTrain.objects.filter(activity=a)) + all_runs
+        all_runs = list(IntervalRun.objects.filter(activity=a)) + all_runs
+        all_runs = list(Event.objects.filter(activity=a)) + all_runs
 
     #------------------ mileage graph ----------------------
     # Year, Month, Week, Last 7 days, and Range
@@ -301,17 +312,13 @@ def athlete(request, user_id):
         ).order_by('date')
     month_activities = list(month_activities)
 
-    week_activities = Activity.objects.filter(
-        date__year=datetime.date.today().year,
-        date__month=datetime.date.today().month,
-        athlete=athlete
-        ).order_by('date')
-    week_activities = list(week_activities)
-
     today = datetime.date.today()
     start_week = today - datetime.timedelta(today.weekday())
     end_week = start_week + datetime.timedelta(7)
-    week_activities = Activity.objects.filter(date__range=[start_week, end_week])
+    week_activities = Activity.objects.filter(
+        athlete=athlete,
+        date__range=[start_week, end_week]
+    ).order_by('date')
 
     # ------------------------- get dates -------------------------------------
     curr_year = []
@@ -333,18 +340,26 @@ def athlete(request, user_id):
             curr_month.append(day)
 
     # get the dates for the current week
-    for i in range(7):
-        curr_week.append(datetime.date.today() - datetime.timedelta(i))
+    while start_week <= end_week:
+        curr_week.append(start_week)
+        start_week = start_week + datetime.timedelta(1)
 
     #--------------- generate graph data, including days off -------------------
     year_graph_data = build_graph_data(curr_year, year_activities)
     month_graph_data = build_graph_data(curr_month, month_activities)
-    week_graph_data = build_graph_data(curr_week, week_activities)
+    for p in month_graph_data:
+        print p
+    week_graph_data = build_graph_data(curr_week, week_activities, week_name_labels=True)
 
     #------------------ Get PR's of athlete -----------------------------------
     prs = list(get_prs(athlete).values())
-    print prs
+
+    if len(all_runs) > 20:
+        all_runs = all_runs[:19]
+
     context = {
+        'can_edit':can_edit,
+        'show_range_first':'false',
         'prs':prs,
         'all_runs':all_runs,
         'year_graph_data':json.dumps(year_graph_data),
@@ -360,19 +375,25 @@ def athlete(request, user_id):
             data = date_range_form.cleaned_data
             start_date = data['start_date']
             end_date = data['end_date']
-            date_range = []
+
+            #collect the activities between the two dates
+            range_activities = []
             for r in runs:
                 if r.activity.date >= start_date and r.activity.date <= end_date:
-                    date_range.append([
-                        str(r.activity.date),
-                        r.distance
-                    ])
-            context['range_graph_data'] = date_range
+                    range_activities.append(r.activity)
+
+            #collect all the dates between the start and the end date
+            range_dates = [start_date]
+            while range_dates[-1] <= end_date:
+                range_dates.append(range_dates[-1]+datetime.timedelta(1))
+
+            range_graph_data = build_graph_data(range_dates, range_activities)
+            context['range_graph_data'] = json.dumps(range_graph_data)
             context['form'] = DateRangeForm()
+            context['show_range_first'] = 'true'
             return render(request, "log/athlete.html", context)
     else:
-        date_range_form = DateRangeForm()
-        context['form'] = date_range_form
+        context['form'] = DateRangeForm()
 
     return render(request, "log/athlete.html", context)
 
@@ -509,9 +530,9 @@ def add_intervals(request):
             for i in range(len(rep_formset)):
                 rep = Rep.objects.create(
                     interval_run=interval_workout,
-                    distance=float(rep_formset[i].cleaned_data.get('rep_distance')),
+                    distance=round(float(rep_formset[i].cleaned_data.get('rep_distance')), 2),
                     units=rep_formset[i].cleaned_data.get('rep_units'),
-                    duration=rep_formset[i].cleaned_data.get('rep_duration'),
+                    duration=rep_formset[i].cleaned_data.get('duration'),
                     rest=rep_formset[i].cleaned_data.get('rep_rest'),
                     position=i+1
                 )
@@ -551,5 +572,20 @@ def r2w_import(request):
     form = R2WImportForm()
     return render(request, "log/r2w_import.html", {'form':form})
 
-def signup(request):
-    render(request, "log/")
+@login_required(login_url='/log/login/')
+def settings(request, user_id):
+    athlete = Athlete.objects.filter(user=user_id)[0]
+    if request.method == 'POST':
+        form = SettingsForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            print data['log_private']
+            athlete.log_private = data['log_private']
+            athlete.save()
+            return redirect("/log/athlete/{}/".format(athlete.user.id))
+    form = SettingsForm()
+    form.fields['log_private'].initial=athlete.log_private
+    context = {
+        'form':form
+    }
+    return render(request, "log/settings.html", context)

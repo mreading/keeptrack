@@ -36,6 +36,7 @@ class Athlete(models.Model):
     seasons = models.ManyToManyField(Season)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     graduation_year = models.PositiveIntegerField()
+    log_private = models.BooleanField(default=True)
 
 class Coach(models.Model):
     """ Brett Hull """
@@ -50,6 +51,9 @@ class Activity(models.Model):
     #duration
     #weather
     #gpx file
+
+    def __str__(self):
+        return str(self.date) + ' ' + self.act_type
 
 class Meet(models.Model):
     location = models.CharField(max_length=100)

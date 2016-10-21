@@ -8,6 +8,9 @@ from .models import *
 from datetime import date
 from django.forms.formsets import BaseFormSet
 
+class SettingsForm(forms.Form):
+    log_private = forms.BooleanField(initial=False, required=False)
+
 class R2WImportForm(forms.Form):
     log = forms.FileField()
 
@@ -54,6 +57,7 @@ class MultiValueDurationField(forms.MultiValueField):
 
     def __init__(self, *args, **kwargs):
         fields = (
+            #use a numberinput widget to set the width of the input fields
          forms.IntegerField(),
          forms.IntegerField(),
          forms.IntegerField(),
@@ -89,8 +93,8 @@ class AddNormalForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     units = forms.ChoiceField(choices=unit_choices)
-    # duration = MultiValueDurationField()
-    duration = DurationField()
+
+    duration = MultiValueDurationField()
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
 class AddXtrainForm(forms.Form):
@@ -109,7 +113,7 @@ class AddXtrainForm(forms.Form):
         ('Laps', 'Laps'),
     ]
     units = forms.ChoiceField(choices=unit_choices)
-    duration = forms.DurationField()
+    duration = MultiValueDurationField()
     sport = forms.CharField(max_length=20)
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
@@ -128,7 +132,7 @@ class AddEventForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     units = forms.ChoiceField(choices=unit_choices)
-    duration = forms.DurationField()
+    duration = MultiValueDurationField()
     location = forms.CharField(max_length=100)
     place = forms.IntegerField()
     gender_choices = [
@@ -150,7 +154,7 @@ class AddRepForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     rep_units = forms.ChoiceField(choices=unit_choices, initial='Meters')
-    rep_duration = forms.DurationField()
+    duration = MultiValueDurationField()
     # goal_pace = forms.DurationField(optional=True)
     rep_rest = forms.DurationField()
 
@@ -189,20 +193,18 @@ class AddIntervalForm(forms.Form):
 class BaseAddRepFormSet(BaseFormSet):
     def clean(self):
         """--------------------------------------------------------------------
-        Adds validation to check that no two links have the same rep_duration or rep_rest
-        and that all links have both an rep_duration and rep_rest.
+        Adds validation to check that no two links have the same duration or rep_rest
+        and that all links have both an duration and rep_rest.
         --------------------------------------------------------------------"""
-        print "cleaning..."
         if any(self.errors):
             return
-        print "here"
         rep_durations = []
         rep_rests = []
         duplicates = False
 
         for form in self.forms:
             if form.cleaned_data:
-                rep_duration = form.cleaned_data['rep_duration']
+                rep_duration = form.cleaned_data['duration']
                 rep_rest = form.cleaned_data['rep_rest']
 
                 # Check that all links have both an rep_duration and rep_rest

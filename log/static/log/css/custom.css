@@ -1,0 +1,49 @@
+.jumbotron, .footer {
+    background-color:#6b7a8f;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color:#f7882f;
+}
+
+
+.pull-left, .nav, .nav-pills {
+  color:#f7c331;
+}
+
+/*.container-fluid   {
+  background-color:#dcc7aa;
+}*/
+
+.nav {
+  background-color:#dcc7aa;
+}
+
+a {
+  text-decoration: none;
+  font-family: "Abel";
+
+}
+
+.panel-default > .panel-heading {
+    background-color: #6b7a8f;
+    text-align: center;
+    color: aliceblue;
+    font-family: "Abel";
+    font-weight: normal;
+    font-size: 125%;
+}
+
+.panel-default {
+    box-shadow: 5px 10px 5px grey;
+    column-gap: 40px;
+}
+
+h1 {
+    font-family: "Abel";
+}
+
+.jumbotron {
+    margin-bottom: 0px;
+}
+

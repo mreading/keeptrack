@@ -32,7 +32,7 @@ def make_duration_chartable(duration):
     return [hours, minutes, seconds, 0]
 
 def get_interval_graph_data(reps):
-    graph_data = [['stuff', 'otherstuff', {'role':'style'}]]
+    graph_data = [['Date', 'Miles', {'role':'style'}]]
     for rep in reps:
         # [place, [hour, minute, second, millisecond]]
         graph_data.append([rep.position, make_duration_chartable(rep.duration), 'color:#abcabc'])
@@ -53,36 +53,56 @@ def get_workout_from_activity(activity):
     else:
         print "Unknown type of workout"
 
-def build_graph_data(dates, activities):
+def build_graph_data(dates, activities, week_name_labels=False):
     """---------------------------------------------------------
 	Build the data array for google charts mileage on the athlete
     page given a bunch of dates and activites.
     Dates are datetime objects.
 	---------------------------------------------------------"""
-
+    #change this to change the color of the bars in bar graphs for different types of runs.
     colors = {
-        'NormalRun':'#abcabc',
-        'IntervalRun':'#ee1234',
-        'CrossTrain':'#123456',
-        'Event':'#654321',
-        'OffDay':'#111111'
+        'NormalRun':'#6b7a8f',
+        'IntervalRun':'#f7c331',
+        'CrossTrain':'#dcc7aa',
+        'Event':'#f7882f',
+        'OffDay':'#111111' #immaterial, because days off have no color.
     }
 
     #graph data is expected to be of the form [[x-axis data, y-axis data], ...]
     # where x axis is a date string and y axis is floating point number representing distance
-    graph_data = [['stuff', 'otherstuff', {'role':'style'}]]
+    graph_data = [['Date', 'Miles', {'role':'style'}, 'Link']]
     p = 0
-    for i in range(len(dates)):
+    i = 0
+    while i < len(dates):
         if p < len(activities) and dates[i] == activities[p].date:
+            w_date = activities[p].date
             distance = get_miles(get_workout_from_activity(activities[p]))
-            graph_data.append(
-            [str(activities[p].date), distance, 'color:'+colors[activities[p].act_type]]
-            )
+
+            #add distances of other runs
+            if str(w_date) == graph_data[-1][0]:
+                distance += graph_data[-1][1]
+
+            if week_name_labels:
+                w_date = w_date.strftime("%A")
+            graph_data.append([
+                str(w_date),
+                distance,
+                'color:'+colors[activities[p].act_type],
+                '/log/athlete/activity_detail/'+str(activities[p].id),
+            ])
             p += 1
+            if p < len(activities) and dates[i] == activities[p].date:
+                i = i
+            else:
+                i += 1
         else:
+            w_date = dates[i]
+            if week_name_labels:
+                w_date = w_date.strftime("%A")
             graph_data.append(
-            [str(dates[i]), 0.00, 'color:'+colors['OffDay']]
+            [str(w_date), None, 'color:'+colors['OffDay'], 'nothing']
             )
+            i += 1
     return graph_data
 
 def update_activity(activity, cleaned_data):
@@ -93,7 +113,7 @@ def update_activity(activity, cleaned_data):
         run = IntervalRun.objects.get(activity=activity)
     elif activity.act_type == "CrossTrain":
         run = CrossTrail.objects.get(activity=activity)
-    elif activity.act_type == "Event": #FIXME completely untested
+    elif activity.act_type == "Event":
         run = Event.objects.get(activity=activity)
 
 
@@ -126,7 +146,7 @@ def create_run(run_type, activity, data):
     if run_type == "NormalRun":
         run = NormalRun.objects.create(
             activity=activity,
-            distance=float(data['distance']),
+            distance=round(float(data['distance']), 2),
             duration=data['duration'],
             units=data['units'],
         )
@@ -136,7 +156,7 @@ def create_run(run_type, activity, data):
     elif run_type == "CrossTrain":
         run = CrossTrain.objects.create(
             activity=activity,
-            distance=float(data['distance']),
+            distance=round(float(data['distance']), 2),
             duration=data['duration'],
             sport=data['sport'],
             units=data['units'],
@@ -150,7 +170,7 @@ def create_run(run_type, activity, data):
         run = Event.objects.create(
             activity=activity,
             meet=meet,
-            distance=float(data['distance']),
+            distance=round(float(data['distance']), 2),
             duration=data['duration'],
             place=data['place'],
             units=data['units'],

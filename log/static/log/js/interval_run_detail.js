@@ -11,14 +11,15 @@ function drawIntervalChart() {
 
   // Create the data table.
   var data = google.visualization.arrayToDataTable(interval_graph_data);
-
   // Set chart options
   var options = {'title':'Interval Graph',
                  'height':300,
                  'width':850,
+                 legend:{position:'none'},
                 };
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('interval_graph'));
   chart.draw(data, options);
+
 }
