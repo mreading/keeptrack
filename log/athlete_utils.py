@@ -124,7 +124,7 @@ def get_post_form(run_type, post):
     elif run_type == "IntervalRun":
         return AddIntervalForm(post)
     elif run_type == "CrossTrain":
-        return AddXtrainForm(post)
+        return AddXTrainForm(post)
     else:
         return AddEventForm(post)
 
@@ -135,7 +135,7 @@ def get_form(run_type):
     elif run_type == "IntervalRun":
         return AddIntervalForm()
     elif run_type == "CrossTrain":
-        return AddXtrainForm()
+        return AddXTrainForm()
     else:
         return AddEventForm()
 

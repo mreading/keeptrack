@@ -77,7 +77,6 @@ def edit_interval_run(request, activity_id):
 
         else:
             # Form was not valid. Try again.
-            print "invalid"
             context = {
                 'IntervalForm':IntervalForm,
                 'rep_formset':rep_formset,
@@ -134,6 +133,7 @@ def edit_xtrain(request, activity_id):
         form = AddXTrainForm(request.POST)
         if form.is_valid():
             # Save the updated data to CrossTrain object and the Activity Object
+            data = form.cleaned_data
             data = form.cleaned_data
             xtrain.distance=round(float(data['distance']), 2)
             xtrain.duration=data['duration']
@@ -347,8 +347,6 @@ def athlete(request, user_id):
     #--------------- generate graph data, including days off -------------------
     year_graph_data = build_graph_data(curr_year, year_activities)
     month_graph_data = build_graph_data(curr_month, month_activities)
-    for p in month_graph_data:
-        print p
     week_graph_data = build_graph_data(curr_week, week_activities, week_name_labels=True)
 
     #------------------ Get PR's of athlete -----------------------------------
@@ -579,7 +577,6 @@ def settings(request, user_id):
         form = SettingsForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            print data['log_private']
             athlete.log_private = data['log_private']
             athlete.save()
             return redirect("/log/athlete/{}/".format(athlete.user.id))
