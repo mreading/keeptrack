@@ -66,13 +66,7 @@ def manage_teams(request, user_id):
     coach = user.coach_set.all()[0]
     teams = coach.teams.all()
 
-
-    sport_list = []
-    for team in teams:
-        sport_list.append(team.sport)
-    print sport_list
-
-    return render(request, "log/manage_teams.html", {'teams': teams, 'full_team': len(sport_list) == 3})
+    return render(request, "log/manage_teams.html", {'teams': teams})
 
 @login_required(login_url='/log/login/')
 def add_team(request, user_id):

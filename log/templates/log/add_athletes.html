@@ -3,8 +3,9 @@
 
 {% block content %}
 
-  <head> ADD ATHLETES </head>
+  <h1> Add New Athlete </h1>
 
+</br>
     <form action="/log/add_athletes/{{user_id}}/{{team_id}}/{{season_id}}/", method="post" autocomplete="off">
       {% csrf_token %}
       {{ form.errors }}
@@ -13,5 +14,7 @@
     </br>
       <input type="submit" value="Add Athletes" />
     </form>
+
+    <a href= "/log/manage_teams/{{user.id}}" > Return to Manage Teams Page </a>
 
 {% endblock %}

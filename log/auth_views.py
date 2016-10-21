@@ -40,7 +40,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return render(request, "log/logout.html", {})
+    return render(request, "log/login.html", {})
 
 def signup(request):
     if request.method == 'POST':
@@ -62,25 +62,6 @@ def signup(request):
             user.coach = coach
             coach.teams.add(team)
 
-            # OLD CODE: used to be coach or athlete, now whoever is signing up
-            # will be coach
-            # Depending on whether the person signing up is a coach or an
-            # athlete, different objects need to be created.
-            # if data['is_coach'] == True:
-            #     coach = Coach.objects.create(user_id = user.id)
-            #     coach.save()
-            #     user.coach = coach
-            #     coach.teams.add(team)
-            # else:
-            #     print "was athlete"
-            #     athlete = Athlete.objects.create(
-            #         user_id=user.id,
-            #         graduation_year=data['graduation_year'],
-            #         #Probably other stuff here
-            #         )
-            #     athlete.save()
-            #     user.athlete = athlete
-
             user.save()
             user = authenticate(username=data['username'], password=data['password'])
             login(request, user)
@@ -89,7 +70,7 @@ def signup(request):
             return render(request, "log/signup.html", {'form':form})
     else:
         form = SignupForm()
-        return render(request, "log/signup.html", {'form':form}) 
+        return render(request, "log/signup.html", {'form':form})
 
 def AcceptInvite(request, key):
     return render(request, "log/settings.html", {})

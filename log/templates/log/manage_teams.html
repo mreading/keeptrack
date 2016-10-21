@@ -3,26 +3,40 @@
 
 {% block content %}
 
-<head> TEAMS </head>
+<div>
+  <h1> Manage Teams </h1>
 
-  {% for t in teams %}
-    <div>
-          {{ t }}
-          {% for season in t.seasons.all %}
-        </br>
-        {{ season.year }}
-        <a href="/log/add_athletes/{{user.id}}/{{t.id}}/{{season.id}}"> Add Athletes</a>
-          {% endfor %}
-        </br>
-          <a href="/log/create_season/{{user.id}}/{{t.id}}">
-              Add Season
-          </a>
-    </div>
-  {% endfor %}
+    {% for t in teams %}
+      <div class="module_container">
+            <h2>{{ t }}</h2>
+              {% with season=t.seasons.all|first %}
+              {% if season %}
+              <h3> Current Season - {{season.year}} </h3>
+              {% for athlete in season.athlete_set.all %}
+                {{athlete.user.first_name}} {{athlete.user.last_name}}
+                </br>
+              {% endfor %}
+                </br>
+              <a href="/log/add_athletes/{{user.id}}/{{t.id}}/{{season.id}}"> Add Athlete </a>
+                </br>
+                {% else %}
+                <h3> No Seasons </h3>
 
-</br>
-  {% if not full_team %}
-    <a href="/log/add_team/{{user.id}}/"> ADD NEW TEAM </a>
-  {% endif %}
+                {% endif %}
+
+              {% endwith %}
+
+          </br>
+            <a href="/log/create_season/{{user.id}}/{{t.id}}">
+                Add Season
+            </a>
+      </div>
+    {% endfor %}
+
+  </br>
+    {% if not full_team %}
+      <a href="/log/add_team/{{user.id}}/"> ADD NEW TEAM </a>
+    {% endif %}
+</div>
 
 {% endblock %}
