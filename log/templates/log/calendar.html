@@ -3,10 +3,13 @@
 {% block content %}
 
   <h1>Calendar</h1>
+
+  <script type="text/javascript" src="{% static 'log/js/calendar.js' %}"></script>
   <div id="page">
-  {% for week in weeks %}
+  {% for date, week in weeks %}
     <div class="module_container">
-      <h2>Week</h2>
+      <h2>Week {{ forloop.counter }}</h2>
+      <h4>{{ date.0 }} - {{ date.1 }}</h4>
       <hr>
 
         <!------------------------------------------------------------------->
@@ -29,7 +32,9 @@
             {% for day in week %}
               <td class="day">
               {% for event in day %}
-                {{ event.summary }}
+                <div class="event">
+                  {{ event.summary }}
+                </div>
               {% endfor %}
               </td>
             {% endfor %}
