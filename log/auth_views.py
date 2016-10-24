@@ -41,10 +41,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('/log/login/')
-<<<<<<< HEAD
-=======
-
->>>>>>> 2a9b9050d86da71b753a8137bfcddc05296499f9
 
 def signup(request):
     if request.method == 'POST':
