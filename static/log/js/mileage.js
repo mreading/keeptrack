@@ -85,7 +85,7 @@ function drawYearChart() {
   // Set chart options
   var options = {'title':'Current Year Mileage',
                  'height':300,
-                'width':900,
+                'width':"100%",
                  legend:{position:'none'}
                 //  'trendlines': { 0: {} }
                };
@@ -113,8 +113,8 @@ function drawMonthChart() {
   // Set chart options
   var options = {'title':'Current Month Mileage',
                  'height':300,
-                 'width':900,
-                 legend:{position:'none'},
+                 'width':"100%",
+                 legend:{position:'none'}
                 //  'trendlines': { 0: {} }
               };
 
@@ -148,7 +148,7 @@ function drawWeekChart() {
   // Set chart options
   var options = {'title':'Current Week Mileage',
                  'height':300,
-                 'width':900,
+                 'width':"100%",
                  legend:{position:'none'},
                };
 
@@ -175,7 +175,7 @@ function drawRangeChart() {
   // Set chart options
   var options = {'title':'Date Range Graph',
                  'height':300,
-                 'width':900,
+                 'width':"100%",
                  legend:{position:'none'}
                };
 

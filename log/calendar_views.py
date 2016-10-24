@@ -113,12 +113,13 @@ def change_time(date, days=0, seconds=0, minutes=0, hours=0):
     # returns changed time in correct format
     return (timestamp + deltatime).isoformat()
 
-def get_week(start):
+def get_week(first):
     # get google calendar information
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
+    start = first
     # get events for each day in the week
     week = [0,1,2,3,4,5,6]
     for day in week:
@@ -135,10 +136,13 @@ def get_week(start):
         # start becomes beginning of next day
         start = change_time(start, 1)
 
-    return week
+    first = parse_datetime(first).strftime("%m/%d/%y")
+    finish = parse_datetime(finish).strftime("%m/%d/%y")
+    return [(first, finish), week]
 
 def get_multiple_weeks(first_day, last_first_day):
     weeks = []
+    dates = []
     while first_day <= last_first_day:
         weeks.append(get_week(first_day))
         first_day = change_time(first_day, 7)
@@ -152,12 +156,49 @@ def get_current_week():
     # calculate start of the week (aka the first second of Monday)
     # NOTE: now.weekday() gives a number where 0 is monday
     monday = change_time(now.isoformat(), -(now.weekday()))
-    week_start = monday[:11] + "00:00:00.000000" + monday[-6:]
+    week_start = monday[:11] + "00:00:00" + monday[-6:]
 
     return get_week(week_start)
 
+def get_default_weeks(seasons):
+    # get current date and timezone
+    local_tz = pytz.timezone('US/Eastern')
+    now = datetime.datetime.now().date()
+
+    # check if current date is within a season
+    for season in seasons:
+        if season.start_date <= now <= season.end_date:
+            # format start and end dates so they include time and timezones
+            start = datetime.datetime.combine(season.start_date, datetime.time())
+            start = timezone.make_aware(start, local_tz)
+            finish = datetime.datetime.combine(season.end_date, datetime.time())
+            finish = timezone.make_aware(finish, local_tz).isoformat()
+
+            # make sure start is a monday
+            start = change_time(start.isoformat(), -start.weekday())
+
+            # get weeks for current season
+            return get_multiple_weeks(start, finish)
+
+    # not in season currently
+    return []
+
+@login_required(login_url='/log/login/')
 def calendar(request):
-    #weeks = [get_current_week()]
-    #print_all_calendars()
-    weeks = get_multiple_weeks("2016-10-17T00:00:00-04:00", "2016-11-21T00:00:00-04:00")
-    return render(request, "log/calendar.html", {"weeks":weeks})
+
+    try:
+        # Coach logged in
+        teams = Coach.objects.get(user=request.user.id).teams.all()
+        seasons = []
+        for team in teams:
+            seasons.append(team.seasons.all())
+    except:
+        # Atlete logged in
+        seasons = Athlete.objects.get(user=request.user.id).seasons.all()
+        teams = []
+        for season in seasons:
+            teams.append(Team.objects.filter(seasons=season))
+
+    weeks = get_default_weeks(seasons)
+    return render(request, "log/calendar.html",
+                  {"weeks":weeks, "seasons":seasons, "teams":teams})

@@ -11,3 +11,25 @@
 .w_type {
   display:inline-block;
 }
+
+
+/* ---------- legend for mileage graphs -----------*/
+.legend {
+  padding:5px;
+  display:inline-block;
+}
+
+#legend_normal {
+  background-color: var(--color1);
+  margin-left:100px;
+}
+#legend_interval {
+  background-color: var(--color2);
+}
+#legend_cross {
+  background-color: var(--color3);
+}
+#legend_event {
+  background-color: var(--color4);
+}
+/*-------------------------------------------------*/

@@ -10,3 +10,8 @@ Python Modules:
   django-qsstats-magic (version 0.7.2)
   python-dateutil (version 2.5.3)
   django-google-charts (version 0.1.1)
+
+  Authorization Stuff:
+  django-allauth (version 0.28.0)
+  django-invitations (version 1.8)
+  django-widgets-tweaks (version 1.4.1)

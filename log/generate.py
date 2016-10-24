@@ -180,7 +180,7 @@ def create_athlete(season, info):
         graduation_year = info[2],
         log_private = choice([True, False]),
     )
-    athlete.season = season,
+    athlete.seasons = season,
 
     #save user/athlete
     athlete.save()

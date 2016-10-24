@@ -97,7 +97,7 @@ class AddNormalForm(forms.Form):
     duration = MultiValueDurationField()
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
 
-class AddXtrainForm(forms.Form):
+class AddXTrainForm(forms.Form):
     """--------------------------------------------------------------------
     Form for adding CrossTrain workouts.
     --------------------------------------------------------------------"""
@@ -163,7 +163,6 @@ class AddIntervalForm(forms.Form):
     Form for adding or editing interval workouts
     --------------------------------------------------------------------"""
     def __init__(self, *args, **kwargs):
-        print "initializing interval form..."
         self.user = kwargs.pop('user', None)
         super(AddIntervalForm, self).__init__(*args, **kwargs)
 

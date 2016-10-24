@@ -1,5 +1,6 @@
+
 .jumbotron, .footer {
-    background-color:#6b7a8f;
+    background-color:var(--color1);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -11,16 +12,38 @@ h1, h2, h3, h4, h5, h6 {
   color:#f7c331;
 }
 
-.container-fluid   {
+/*.container-fluid   {
   background-color:#dcc7aa;
-}
+}*/
 
 .nav {
-  background-color:#dcc7aa;
+  background-color: var(--color3);
 }
 
 a {
   text-decoration: none;
   font-family: "Abel";
 
+}
+
+.panel-default > .panel-heading {
+    background-color: var(--color1);
+    text-align: center;
+    color: aliceblue;
+    font-family: "Abel";
+    font-weight: normal;
+    font-size: 125%;
+}
+
+.panel-default {
+    box-shadow: 5px 10px 5px grey;
+    column-gap: 40px;
+}
+
+h1 {
+    font-family: "Abel";
+}
+
+.jumbotron {
+    margin-bottom: 0px;
 }
