@@ -36,6 +36,5 @@ urlpatterns = [
     url(r'^manage_teams/(?P<user_id>[0-9]+)/$', coach_views.manage_teams, name='manage_teams'),
     url(r'^add_team/(?P<user_id>[0-9]+)/$', coach_views.add_team, name='add_team'),
     url(r'^add_athletes/(?P<user_id>[0-9]+)/(?P<team_id>[0-9]+)/(?P<season_id>[0-9]+)/$', coach_views.add_athletes, name='add_athletes'),
-    url(r'^invitations/accept-invite/(?P<key>\w+)/?$', auth_views.AcceptInvite ,name='accept-invite'),
-    url(r'^invitations/', include('invitations.urls', namespace='invitations')),
+    url(r'^add_coach/(?P<team_id>[0-9]+)/$', coach_views.add_coach, name='add_coach'),
  ]

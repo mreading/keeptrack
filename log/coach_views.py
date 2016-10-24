@@ -136,3 +136,38 @@ def add_athletes(request, user_id, team_id, season_id):
 
     form = AddAthleteForm()
     return render(request, "log/add_athletes.html", {'form': form, 'user_id': user_id, 'team_id': team_id, 'season_id': season_id})
+
+@login_required(login_url='/log/login/')
+def add_coach(request, team_id):
+    if request.method == 'POST':
+        form = AddCoachForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+
+            # Create a user
+            username = data['first_name'] + data['last_name']
+            password = data['last_name'] + data['first_name']
+            user = User.objects.create_user(username, data['email'], password)
+            user.first_name = data['first_name']
+            user.last_name = data['last_name']
+            user.save()
+
+            # athlete = Athlete.objects.create(
+            #     user_id=user.id,
+            #     graduation_year=data['graduation_year'],
+            #     #Probably other stuff here
+            #     )
+
+            coach = Coach.objects.create(
+                user_id = user.id,
+            )
+            team = Team.objects.get(id=team_id)
+            coach.teams.add(team)
+
+            coach.save()
+
+        else:
+            return render(request, "log/add_coach.html", {'form':form, 'team_id':team_id})
+
+    form = AddCoachForm()
+    return render(request, "log/add_coach.html", {'form': form, 'team_id':team_id})

@@ -8,7 +8,8 @@
 
     {% for t in teams %}
       <div class="module_container">
-            <h2>{{ t }}</h2>
+            <h2>{{ t }}</h2> <a href="/log/add_coach/{{t.id}}/"> ADD NEW COACH </a>
+
               {% with season=t.seasons.all|first %}
               {% if season %}
               <h3> Current Season - {{season.year}} </h3>

@@ -5,10 +5,10 @@
 
 {% block content %}
 
-  <h1> Add New Athlete </h1>
+  <h1> Add New Coach </h1>
 
 </br>
-    <form action="/log/add_athletes/{{user_id}}/{{team_id}}/{{season_id}}/", method="post" autocomplete="off">
+    <form action="/log/add_coach/{{ team_id }}/", method="post" autocomplete="off">
       {% csrf_token %}
       {{ form.media }}
 
@@ -48,12 +48,12 @@
       </br>
 
       <div class="form-actions">
-          <input class="btn btn-primary btn-large" type="submit" value="Add Athlete"/>
+          <input class="btn btn-primary btn-large" type="submit" value="Add Coach"/>
           {% block extra_buttons %}
           {% endblock extra_buttons %}
       </div>
     </form>
 
-    <a href= "/log/manage_teams/{{user.id}}" > Return to Manage Teams Page </a>
+    <a href= "/log/manage_teams/{{user.id}}"> Return to Manage Teams Page </a>
 
 {% endblock %}

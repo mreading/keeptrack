@@ -17,7 +17,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
     <!-- Latest compiled and minified JavaScript -->
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -32,24 +32,6 @@
     <!-- Jumbotron -->
     <div class="jumbotron">
      <div class="container-fluid">
-       <div id="authentication">
-         {% if user.is_authenticated %}
-            {% if user.coach_set.all %}
-              <div class="dropdown">
-                 <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Hi Coach {{ user.last_name }}
-                 <span class="caret"></span></button>
-                 <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                   <li role="presentation"><a role="menuitem" tabindex="-1" href="/log/manage_teams/{{user.id}}">Manage Teams</a></li>
-                 </ul>
-                </div>
-            {% endif %}
-            {% if user.athlete_set.all  %}
-              <a href="/log/athlete/settings/{{ user.id }}">Settings</a>
-              <a class="auth" href="/log/athlete/{{user.id}}"> Hi {{ user.first_name }}</a>
-            {% endif %}
-           <a  class="auth" href="/log/logout/"> Logout </a>
-         {% endif %}
-       </div>
      </div>
    </div>
 
@@ -71,7 +53,41 @@
             <li><a href="/log/calendar/">Calendar</a></li>
             <li><a href="/log/team_stats/">Stats</a></li>
           {% endif %}
-      </ul>
+        </ul>
+
+
+        {% if user.athlete_set.all or user.coach_set.all %}
+          <ul class="pull-right nav nav-pills">
+            <li class="dropdown">
+              {% if user.coach_set.all %}
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hi Coach {{ user.last_name }} <span class="caret"></span></a>
+              {% endif%}
+
+              {% if user.athlete_set.all %}
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hi {{ user.first_name }} <span class="caret"></span></a>
+              {% endif%}
+
+              <ul class="pull-right dropdown-menu">
+                {% if user.athlete_set.all %}
+                  <li><a href="/log/athlete/add/NormalRun/">Add Normal Run</a></li>
+                  <li><a href="/log/athlete/add_intervals/">Add Interval Workout</a></li>
+                  <li><a href="/log/athlete/add/CrossTrain/">Add Cross Train</a></li>
+                  <li><a href="/log/athlete/add/Event/">Add Meet</a></li>
+                  <li><a href="/log/athlete/r2w_import/">Import Data from Running2Win</a></li>
+                  <!-- <li role="separator" class="divider"></li> -->
+                  <li><a href="/log/athlete/settings/{{ user.id }}">Settings</a></li>
+                {% endif%}
+
+                {% if user.coach_set.all %}
+                  <li><a href="/log/manage_teams/{{user.id}}">Manage Teams</a></li>
+                  <!-- <li role="separator" class="divider"></li> -->
+                {% endif%}
+
+                <li><a href="/log/logout/"> Logout </a></li>
+              </ul>
+            </li>
+        </ul>
+      {% endif %}
     </div>
   </div>
 

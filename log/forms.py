@@ -22,7 +22,10 @@ class SignupForm(forms.Form):
 class AddAthleteForm(forms.Form):
     first_name = forms.CharField(max_length=50, label="First Name")
     last_name = forms.CharField(max_length=50, label="Last Name")
-    #username = forms.CharField(max_length=100, label="Username")
-    #password = forms.CharField(max_length=30, label="Password")
     graduation_year = forms.IntegerField(label = "Graduation Year")
+    email = forms.EmailField(max_length=100, label="Email")
+
+class AddCoachForm(forms.Form):
+    first_name = forms.CharField(max_length=50, label="First Name")
+    last_name = forms.CharField(max_length=50, label="Last Name")
     email = forms.EmailField(max_length=100, label="Email")
