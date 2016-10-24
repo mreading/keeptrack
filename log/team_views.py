@@ -18,7 +18,7 @@ def team(request):
     athletes = Athlete.objects.all()
     meets = Event.objects.all()
     userIDs = []
-    data1 = []
+    athleteData = []
     meetData = []
     
     for meet in meets:
@@ -28,8 +28,8 @@ def team(request):
     for athlete in athletes:
         row = [str(athlete.user.first_name), str(athlete.user.last_name), str(athlete.graduation_year), 1]
         userIDs.append(athlete.user.id) 
-        data1.append(row)
-    return render(request, "log/team.html", {'athletes':athletes, 'data1': data1, 'userIDs':userIDs, 'meetData': meetData})
+        athleteData.append(row)
+    return render(request, "log/team.html", {'athletes':athletes, 'athleteData': athleteData, 'userIDs':userIDs, 'meetData': meetData})
 
 
 
