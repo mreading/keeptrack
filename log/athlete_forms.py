@@ -154,7 +154,7 @@ class AddRepForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     rep_units = forms.ChoiceField(choices=unit_choices, initial='Meters')
-    duration = MultiValueDurationField()
+    duration = MultiValueDurationField()   
     # goal_pace = forms.DurationField(optional=True)
     rep_rest = forms.DurationField()
 
