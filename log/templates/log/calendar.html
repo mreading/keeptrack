@@ -2,49 +2,53 @@
 {% load staticfiles %}
 {% block content %}
 
-  <h1 style="display:inline-block">Calendar</h1>
-  <div class='change_time' style="float:right;">
-    <a class='btn' href="/log/calendar/select_time_period/">Select Time Period</a>
-  </div>
+<div id="page">
+  <div = class="container-fluid">
+    <h1 style="display:inline-block">Calendar</h1>
+    <div class='change_time' style="float:right;">
+      <a class='btn' href="/log/calendar/select_time_period/">Select Time Period</a>
+    </div>
 
-  <script type="text/javascript" src="{% static 'log/js/calendar.js' %}"></script>
-  <div id="page">
-  {% for date, week in weeks %}
-    <div class="module_container">
-      <h2>Week {{ forloop.counter }}</h2>
-      <h4>{{ date.0 }} - {{ date.1 }}</h4>
-      <hr>
+    <script type="text/javascript" src="{% static 'log/js/calendar.js' %}"></script>
 
-        <!------------------------------------------------------------------->
-        <!-- Week Table -->
-        <!------------------------------------------------------------------->
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Monday</th>
-              <th>Tuesday</th>
-              <th>Wednesday</th>
-              <th>Thursday</th>
-              <th>Friday</th>
-              <th>Saturday</th>
-              <th>Sunday</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class=week>
-            {% for day in week %}
-              <td class="day">
-              {% for event in day %}
-                <div class="event">
-                  {{ event.summary }}
-                </div>
+    <div class="panel-group">
+    {% for date, week in weeks %}
+      <div class="panel panel-default">
+        <div class="panel-heading">Week {{ forloop.counter }} ({{ date.0 }} - {{ date.1 }})</div>
+        <div class="panel-body">
+          <!------------------------------------------------------------------->
+          <!-- Week Table -->
+          <!------------------------------------------------------------------->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+                <th>Sunday</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class=week>
+              {% for day in week %}
+                <td class="day">
+                {% for event in day %}
+                  <div class="event">
+                    {{ event.summary }}
+                  </div>
+                {% endfor %}
+                </td>
               {% endfor %}
-              </td>
-            {% endfor %}
-            </tr>
-          </tbody>
-        </table>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     {% endfor %}
+    </div>
   </div>
+</div>
 {% endblock %}

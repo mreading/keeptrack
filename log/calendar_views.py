@@ -46,32 +46,6 @@ def get_credentials():
         print('Storing credentials to ' + credential_path)
     return credentials
 
-def print_10_events():
-    """Shows basic usage of the Google Calendar API.
-
-    Creates a Google Calendar API service object and outputs a list of the next
-    10 events on the user's calendar.
-    """
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    service = discovery.build('calendar', 'v3', http=http)
-
-    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    # change calendarId to pick calendar
-    eventsResult = service.events().list(
-        calendarId='esears@hamilton.edu', timeMin=now, maxResults=10,
-        singleEvents=True, orderBy='startTime').execute()
-    events = eventsResult.get('items', [])
-
-    if not events:
-        print('No upcoming events found.')
-    for event in events:
-        #for key in event:
-        #    print key, "=== ", event[key]
-        #print
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        print(start, event['summary'])
-
 def print_all_calendars():
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
@@ -96,7 +70,7 @@ def create_calendar(name):
 
     calendar = {
     'summary': name,
-    'timeZone': 'America/Los_Angeles'
+    'timeZone': 'America/New_York'
     }
 
     new_calendar = service.calendars().insert(body=calendar).execute()
@@ -113,39 +87,88 @@ def change_time(date, days=0, seconds=0, minutes=0, hours=0):
     # returns changed time in correct format
     return (timestamp + deltatime).isoformat()
 
-def get_week(first, calendarId):
+def sort_events(events, start, finish):
+    weeks = []
+
+    # time range for first day
+    day_end = change_time(start, 1, -1)
+    day_start = start
+
+    # go through each day in the date range
+    while day_start < finish:
+        week = []
+        week_range = [parse_datetime(day_start).strftime("%m/%d/%y"), None]
+
+        # go through each day in a week
+        for _ in range(7):
+            day = []
+
+            # go through each event and see if it is within the time range
+            for i in range(len(events)):
+                # get event start date/time
+                try:
+                    # event at certain time
+                    current = events[i]['start']['dateTime']
+                except:
+                    # all day events so add time to date
+                    current = events[i]['start']['date']
+                    current = datetime.datetime.strptime(current, "%Y-%m-%d")
+                    current = datetime.datetime.combine(current, datetime.time())
+                    local_tz = pytz.timezone('US/Eastern')
+                    current = timezone.make_aware(current, local_tz)
+                    current = current.isoformat()
+
+                # event is during the time range
+                if day_start <= current <= day_end:
+                    day.append(events[i])
+
+                # event is after time range so stop looking through events
+                elif day_end < current:
+                    events = events[i:] # remove events already parsed
+                    break
+
+            # finished a day so add to week and increase time range
+            week.append(day)
+            day_start = change_time(day_start, 1)
+            day_end = change_time(day_end, 1)
+
+        # finished a week so add week and week range to weeks
+        end_week = change_time(day_start, -1)
+        week_range[1] = parse_datetime(end_week).strftime("%m/%d/%y")
+        weeks.append([week_range, week])
+
+    return weeks
+
+def convert_start_end_dates(start, finish):
+    # format start and end dates so they include time and timezones
+    local_tz = pytz.timezone('US/Eastern')
+    start = datetime.datetime.combine(start, datetime.time())
+    start = timezone.make_aware(start, local_tz)
+    finish = datetime.datetime.combine(finish, datetime.time())
+    finish = timezone.make_aware(finish, local_tz)
+
+    # make sure start is a monday and finish is a sunday
+    start = change_time(start.isoformat(), -start.weekday())
+    finish = change_time(finish.isoformat(), 7-finish.weekday(), -1)
+
+    return start, finish
+
+def get_range_weeks(start, finish, calendarId):
     # get google calendar information
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    start = first
-    # get events for each day in the week
-    week = [0,1,2,3,4,5,6]
-    for day in week:
-        # get end of the day timestamp
-        finish = change_time(start, 1, -1)
+    # get list of events within the date range
+    eventsResult = service.events().list(
+        calendarId=calendarId, timeMin=start, timeMax=finish,
+        singleEvents=True, orderBy='startTime').execute()
+    events = eventsResult.get('items', [])
 
-        # get list of events for that day
-        eventsResult = service.events().list(
-            calendarId=calendarId, timeMin=start, timeMax=finish,
-            singleEvents=True, orderBy='startTime').execute()
-        events = eventsResult.get('items', [])
-        week[day] = events
+    # sort events into days and weeks
+    # weeks is a list of weeks, week is a list of days, day is a list of events
+    weeks = sort_events(events, start, finish)
 
-        # start becomes beginning of next day
-        start = change_time(start, 1)
-
-    first = parse_datetime(first).strftime("%m/%d/%y")
-    finish = parse_datetime(finish).strftime("%m/%d/%y")
-    return [(first, finish), week]
-
-def get_multiple_weeks(first_day, last_first_day, calendarId):
-    weeks = []
-    dates = []
-    while first_day <= last_first_day:
-        weeks.append(get_week(first_day, calendarId))
-        first_day = change_time(first_day, 7)
     return weeks
 
 def get_current_week(calendarId):
@@ -153,31 +176,18 @@ def get_current_week(calendarId):
     local_tz = pytz.timezone('US/Eastern')
     now = datetime.datetime.now(local_tz)
 
-    # calculate start of the week (aka the first second of Monday)
+    # calculate start/end of the week
     # now.weekday() gives a number where 0 is monday
     monday = change_time(now.isoformat(), -(now.weekday()))
     week_start = monday[:11] + "00:00:00" + monday[-6:]
+    week_end = change_time(week_start, 7, -1)
 
-    return get_week(week_start, calendarId)
-
-def get_season_weeks(season, calendarId):
-    # format start and end dates so they include time and timezones
-    local_tz = pytz.timezone('US/Eastern')
-    start = datetime.datetime.combine(season.start_date, datetime.time())
-    start = timezone.make_aware(start, local_tz)
-    finish = datetime.datetime.combine(season.end_date, datetime.time())
-    finish = timezone.make_aware(finish, local_tz).isoformat()
-
-    # make sure start is a monday
-    start = change_time(start.isoformat(), -start.weekday())
-
-    # get weeks for current season
-    return get_multiple_weeks(start, finish, calendarId)
+    return get_range_weeks(week_start, week_end, calendarId)
 
 def get_current_team_season(seasons):
     # get current date and timezone
     local_tz = pytz.timezone('US/Eastern')
-    now = datetime.datetime.now().date()
+    now = datetime.datetime.now(local_tz).date()
 
     # find the current season and team
     for season in seasons:
@@ -233,7 +243,12 @@ def calendar(request):
     #calendarId = team.calendarId
     calendarId = 'primary'
 
-    weeks = get_season_weeks(season, calendarId)
+    # convert season dates to datetimes
+    start, finish = convert_start_end_dates(season.start_date, season.end_date)
+
+    # get event data for season
+    weeks = get_range_weeks(start, finish, calendarId)
+
     return render(request, "log/calendar.html",
                   {"weeks":weeks, "teams_seasons":teams_seasons})
 
@@ -244,7 +259,6 @@ def time_period(request):
         if form.is_valid():
             data = form.cleaned_data
 
-            # CODE HERE
             team = data['team']
             season = data['season']
 
@@ -252,7 +266,7 @@ def time_period(request):
             #calendarId = team.calendarId
             calendarId = 'primary'
 
-            weeks = get_season_weeks(season, calendarId)
+            weeks = get_range_weeks(start, finish, calendarId)
             return render(request, "log/calendar.html",
                           {"weeks":weeks})
         else:
