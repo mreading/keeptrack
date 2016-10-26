@@ -37,15 +37,6 @@ $(document).ready(function() {
   });
 });
 
-// Show Month Graph, hide others
-$(document).ready(function() {
-  $("#current_month_selector").click(function(){
-    $("#year_mileage_graph").hide('slow');
-    $("#month_mileage_graph").show('slow');
-    $("#week_mileage_graph").hide('slow');
-    $("#date_range_graph").hide('slow');
-  });
-});
 
 // Show Week Graph, hide others
 $(document).ready(function() {
@@ -118,21 +109,35 @@ function drawMonthChart() {
                 //  'trendlines': { 0: {} }
               };
 
-  // var selectHandler = function(e) {
-  //   window.location = data.getValue(chart.getSelection()[0]['row'], 3);
-  // }
-  //  // Add our selection handler.
-  //  google.visualization.events.addListener(chart, 'select', selectHandler);
-  //   }
 
   // Instantiate and draw our chart, passing in some options.
   var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));
+  google.visualization.events.addListener(chart, 'select', selectHandler);
+  //google.visualization.events.addListener(chart, 'ready', readyHandler);
   chart.draw(view, options);
 
   var selectHandler = function(e) {
     window.location = data.getValue(chart.getSelection()[0]['row'], 3);
   }
-  google.visualization.events.addListener(chart, 'select', selectHandler);
+  
+  var readyHandler = function() {
+      // Show Month Graph, hide others
+      console.log('here');
+  }
+    
+
+    //create trigger to resizeEnd event     
+    $(window).resize(function() {
+        if(this.resizeTO) clearTimeout(this.resizeTO);
+        this.resizeTO = setTimeout(function() {
+            $(this).trigger('resizeEnd');
+        }, 0);
+    });
+
+    //redraw graph when window resize is completed  
+    $(window).on('resizeEnd', function() {
+        chart.draw(view, options);
+    });
 }
 
 //-----------------------------------------------------------------------------

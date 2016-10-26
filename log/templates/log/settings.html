@@ -1,12 +1,47 @@
 {% extends 'log/base.html' %}
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block content %}
 <form method="post", name='intervalform' action="/log/athlete/settings/{{ user.id }}/">
     {% csrf_token %}
+    {{ form.media }}
+    {% if form.errors %}
+        <div class="alert alert-error">
+            <ul>
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
-    {{ form }}
+    {% for field in form.visible_fields %}
+        <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+            <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+            <div class="controls">
+                <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
+                {{ field|add_class:"form-control" }}
+                {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+            </div>
+        </div>
+    {% endfor %}
 
-    <input type="submit" value="Update Settings" class="button"/>
-</form>
+    {% for field in form.hidden_fields %}
+        {{ field }}
+    {% endfor %}
+
+    {% block formsets %}
+        {% for formset in inlines %}
+            {% include "inline_formset.html" with formset=formset %}
+        {% endfor %}
+    {% endblock formsets %}
+    </br>
+
+    <div class="form-actions">
+        <input class="btn btn-primary btn-large" type="submit" value="Update Settings"/>
+        {% block extra_buttons %}
+        {% endblock extra_buttons %}
+    </div>
+  </form>
 {% endblock %}
