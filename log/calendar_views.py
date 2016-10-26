@@ -252,7 +252,7 @@ def time_period(request):
             #calendarId = team.calendarId
             calendarId = 'primary'
 
-            #weeks = get_season_weeks(season, calendarId)
+            weeks = get_season_weeks(season, calendarId)
             return render(request, "log/calendar.html",
                           {"weeks":weeks})
         else:
