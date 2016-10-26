@@ -37,6 +37,10 @@ a {
     column-gap: 40px;
 }
 
+.panel-group .panel+.panel {
+    margin-top: 20px;
+}
+
 .jumbotron {
     margin-bottom: 0px;
 }

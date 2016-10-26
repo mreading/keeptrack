@@ -153,7 +153,7 @@ def convert_start_end_dates(start, finish):
 
     return start, finish
 
-def get_range_weeks(start, finish, calendarId):
+def range_weeks(start, finish, calendarId):
     # get google calendar information
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
@@ -171,7 +171,7 @@ def get_range_weeks(start, finish, calendarId):
 
     return weeks
 
-def get_current_week(calendarId):
+def current_week(calendarId):
     # get current time with timezone
     local_tz = pytz.timezone('US/Eastern')
     now = datetime.datetime.now(local_tz)
@@ -182,7 +182,7 @@ def get_current_week(calendarId):
     week_start = monday[:11] + "00:00:00" + monday[-6:]
     week_end = change_time(week_start, 7, -1)
 
-    return get_range_weeks(week_start, week_end, calendarId)
+    return range_weeks(week_start, week_end, calendarId)
 
 def get_current_team_season(seasons):
     # get current date and timezone
@@ -247,7 +247,7 @@ def calendar(request):
     start, finish = convert_start_end_dates(season.start_date, season.end_date)
 
     # get event data for season
-    weeks = get_range_weeks(start, finish, calendarId)
+    weeks = range_weeks(start, finish, calendarId)
 
     return render(request, "log/calendar.html",
                   {"weeks":weeks, "teams_seasons":teams_seasons})
@@ -266,7 +266,7 @@ def time_period(request):
             #calendarId = team.calendarId
             calendarId = 'primary'
 
-            weeks = get_range_weeks(start, finish, calendarId)
+            weeks = range_weeks(start, finish, calendarId)
             return render(request, "log/calendar.html",
                           {"weeks":weeks})
         else:

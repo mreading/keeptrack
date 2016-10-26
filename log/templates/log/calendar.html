@@ -4,7 +4,7 @@
 
 <div id="page">
   <div = class="container-fluid">
-    <h1 style="display:inline-block">Calendar</h1>
+    <h2 style="display:inline-block">Calendar</h2>
     <div class='change_time' style="float:right;">
       <a class='btn' href="/log/calendar/select_time_period/">Select Time Period</a>
     </div>
@@ -47,6 +47,8 @@
           </table>
         </div>
       </div>
+    {% empty %}
+      <h3>There is no current season. Select a time period using the button above.</h3>
     {% endfor %}
     </div>
   </div>
