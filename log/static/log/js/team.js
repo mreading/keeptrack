@@ -43,16 +43,15 @@ function drawTable() {
     --------------------------------------------------------------------*/
     function myReadyHandler() {
         sortIndices = table.getSortInfo().sortedIndexes
-
+        
         /*----------------------------------------------------------------
         IF the table has been sorted, we now have a list of <tr> indices
         ----------------------------------------------------------------*/
         if (sortIndices){
-
             /*----------------------------------------------------------------
             Add id's to all but first row (column names)
             ----------------------------------------------------------------*/
-            $("tr.athlete").not(':first').each(function(index) {
+            $("tr.athlete").each(function(index) {
                 $(this).attr('id', userIDs[sortIndices[index]]);
                 $(this).attr('class', 'athlete');
             });
@@ -65,6 +64,7 @@ function drawTable() {
             $("tr").not(':first').each(function(index) {
                 $(this).attr('id', userIDs[index]);  
                 $(this).attr('class', 'athlete');
+                console.log($(this));
             });
         }
 
@@ -83,11 +83,13 @@ function drawTable() {
             window.location.href = "/log/athlete/"+$(this).attr('id');
         });
     }
+    
+    var cssClassNames = {'headerRow': 'italic-darkblue-font large-font bold-font'};
 
     /*--------------------------------------------------------------------
     Draw the table using the DataTable we created earlier
     --------------------------------------------------------------------*/
-    table.draw(data, {showRowNumber: true, width: '100%'});     
+    table.draw(data, {'showRowNumber': true, 'width': '100%', 'cssClassNames': cssClassNames});     
 } 
 
 
