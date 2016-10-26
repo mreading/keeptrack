@@ -12,6 +12,9 @@ class Season(models.Model):
     start_date = models.DateField(default = date.today)
     end_date = models.DateField(default = date.today)
 
+    def __str__(self):
+        return self.start_date.strftime("%m/%d/%y") + " - " + self.end_date.strftime("%m/%d/%y")
+
 class Team(models.Model):
     """ ex: Hamilton Men XC """
     school_name = models.CharField(max_length=50)

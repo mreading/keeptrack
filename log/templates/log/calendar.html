@@ -2,7 +2,10 @@
 {% load staticfiles %}
 {% block content %}
 
-  <h1>Calendar</h1>
+  <h1 style="display:inline-block">Calendar</h1>
+  <div class='change_time' style="float:right;">
+    <a class='btn' href="/log/calendar/select_time_period/">Select Time Period</a>
+  </div>
 
   <script type="text/javascript" src="{% static 'log/js/calendar.js' %}"></script>
   <div id="page">
@@ -28,7 +31,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr class=events>
+            <tr class=week>
             {% for day in week %}
               <td class="day">
               {% for event in day %}

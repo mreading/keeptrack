@@ -29,3 +29,7 @@ class AddCoachForm(forms.Form):
     first_name = forms.CharField(max_length=50, label="First Name")
     last_name = forms.CharField(max_length=50, label="Last Name")
     email = forms.EmailField(max_length=100, label="Email")
+
+class SelectTimePeriodForm(forms.Form):
+    team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Team")
+    season = forms.ModelChoiceField(queryset=Season.objects.all(), label="Season")

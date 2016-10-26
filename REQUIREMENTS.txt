@@ -14,4 +14,6 @@ Python Modules:
   Authorization Stuff:
   django-allauth (version 0.28.0)
   django-invitations (version 1.8)
-  django-widgets-tweaks (version 1.4.1)
+
+  Form Stuff:
+  django-widget-tweaks (version 1.4.1)
