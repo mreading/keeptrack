@@ -33,3 +33,7 @@ class AddCoachForm(forms.Form):
 class SelectTimePeriodForm(forms.Form):
     team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Team")
     season = forms.ModelChoiceField(queryset=Season.objects.all(), label="Season")
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=50, label="Username")
+    password = forms.CharField(max_length=50, label="Password", widget=forms.PasswordInput)
