@@ -8,6 +8,15 @@
   <h1> Add New Coach </h1>
 
 </br>
+
+{% if IE %}
+<div class="alert alert-error">
+    <ul>
+      <li> ERROR: User with same name already exists </li>
+    </ul>
+</div>
+{% endif %}
+
     <form action="/log/add_coach/{{ team_id }}/", method="post" autocomplete="off">
       {% csrf_token %}
       {{ form.media }}

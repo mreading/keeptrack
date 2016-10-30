@@ -6,6 +6,8 @@ from .utils import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db import IntegrityError
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -49,7 +51,11 @@ def signup(request):
             data = form.cleaned_data
 
             # Create a user
-            user = User.objects.create_user(data['username'], data['email'], data['password'])
+            try:
+                user = User.objects.create_user(data['username'], data['email'], data['password'])
+            except IntegrityError as e:
+                return render(request, "log/signup.html", {'form':form,
+                    'IE': True})
             user.first_name = data['first_name']
             user.last_name = data['last_name']
 
