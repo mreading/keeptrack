@@ -77,10 +77,13 @@ def build_graph_data(dates, activities, week_name_labels=False):
     #??????????????????????????????????????????????????????//
     #????
     #????????????????????????////
+    validPoint=False
+    
     p = 0
     i = 0
     while i < len(dates):
         if p < len(activities) and dates[i] == activities[p].date:
+            validPoint = True
             w_date = activities[p].date
             distance = get_miles(get_workout_from_activity(activities[p]))
 
@@ -115,9 +118,11 @@ def build_graph_data(dates, activities, week_name_labels=False):
             [str(w_date), None, 'color:'+colors['OffDay'], 'nothing']
             )
             
-            graph_data2.append([str(w_date), None, None, None, None, 'color:'+colors['OffDay'],
+            graph_data2.append([str(w_date), None, None, 0, 0, 'color:'+colors['OffDay'],
                 'nothing'])
             i += 1
+    if not validPoint:
+        return False
     return graph_data2
 
 def update_activity(activity, cleaned_data):

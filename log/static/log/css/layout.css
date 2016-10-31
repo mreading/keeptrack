@@ -20,3 +20,7 @@ div.pagetitle {
   padding: 20px;
   color: black;
 }
+
+.error {
+    text-align: center;
+}
