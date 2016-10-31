@@ -111,14 +111,9 @@ for (var nthGraph = 0; nthGraph < numGraphs; nthGraph++){
     graphs.push(graph);
 };
 
+// Need to figure out how to change this based on the selected button - pass url variable?
 var DEFAULT_GRAPH_INDEX = 1
 graphSelector = new GraphSelector(graphs, DEFAULT_GRAPH_INDEX);
-// build in that on refresh it stays on the graph that you were on!!
-google.charts.setOnLoadCallback(function() {
-    $(document).ready(function() {
-        graphSelector.initiateDefaultGraph();
-    });
-});
 //#########################################################################################
 //google.charts.setOnLoadCallback(drawYearChart);
 
@@ -133,16 +128,20 @@ function drawYearChart() {
   var options = {'title':'Current Year Mileage',
                  'height':300,
                 'width': graphSelector.getActiveDivWidth(),
-                 legend:{position:'none'}
+                 'interpolateNulls': true,
+                 'pointShape': 'circle',
+                 'pointSize': 5,
+                 'colors': ['#6b7a8f', '#f7c331'],
+                 'legend':{position:'right'}
                 //  'trendlines': { 0: {} }
                };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('year_mileage_graph'));
+  var chart = new google.visualization.LineChart(document.getElementById('year_mileage_graph'));
   chart.draw(view, options);
 
   var selectHandler = function(e) {
-    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
+    window.location = data.getValue(chart.getSelection()[0]['row'], 6);
   }
   google.visualization.events.addListener(chart, 'select', selectHandler);
     
@@ -161,6 +160,8 @@ function drawYearChart() {
     });
 }
 
+var LINK_INDEX = 6;
+
 //-----------------------------------------------------------------------------
 //google.charts.setOnLoadCallback(drawMonthChart);
 
@@ -175,20 +176,27 @@ function drawMonthChart() {
   var options = {'title':'Current Month Mileage',
                  'height':300,
                  'width':graphSelector.getActiveDivWidth(),
-                 legend:{position:'none'}
+                 'interpolateNulls': true,
+                 'pointShape': 'circle',
+                 'pointSize': 5,
+                 'colors': ['#6b7a8f', '#f7c331'],
+                 'legend':{position:'right'}
                 //  'trendlines': { 0: {} }
               };
+ 
+
+  var selectHandler = function() {
+      var row = chart.getSelection()[0]['row']
+      // this means that we've selected a valid point
+      if (row) {
+          window.location = data.getValue(row, LINK_INDEX);
+      }
+  }
     
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));
+  var chart = new google.visualization.LineChart(document.getElementById('month_mileage_graph'));
   google.visualization.events.addListener(chart, 'select', selectHandler);
   chart.draw(view, options);
-
-  var selectHandler = function(e) {
-    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
-  }
-  
-    
 
     //create trigger to resizeEnd event     
     $(window).resize(function() {
@@ -227,7 +235,7 @@ function drawWeekChart() {
   chart.draw(view, options);
 
   var selectHandler = function(e) {
-    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
+    window.location = data.getValue(chart.getSelection()[0]['row'], LINK_INDEX);
   }
   google.visualization.events.addListener(chart, 'select', selectHandler);
     
@@ -268,7 +276,7 @@ function drawRangeChart() {
   chart.draw(view, options);
 
   var selectHandler = function(e) {
-    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
+    window.location = data.getValue(chart.getSelection()[0]['row'], LINK_INDEX);
   }
   google.visualization.events.addListener(chart, 'select', selectHandler);
     
