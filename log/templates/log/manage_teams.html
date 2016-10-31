@@ -19,24 +19,20 @@
                 </br>
               {% endfor %}
                 </br>
-              <a href="/log/add_athletes/{{user.id}}/{{t.id}}/{{season.id}}"> Add Athlete </a>
+                  <a href="/log/add_athletes/{{user.id}}/{{t.id}}/{{season.id}}"> Add Athlete </a>
                 </br>
                 {% else %}
                 <h3> No Seasons </h3>
-
                 {% endif %}
 
               {% endwith %}
 
             </br>
-            <a href="/log/create_season/{{user.id}}/{{t.id}}">
-                Add Season
-            </a>
+            <a href="/log/create_season/{{user.id}}/{{t.id}}">Add Season</a>
           </div>
         </div>
-      </div>
-
-    {% endfor %}
+      {% endfor %}
+    </div>
 
   </br>
     {% if not full_team %}
