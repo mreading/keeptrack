@@ -1,5 +1,6 @@
 from django.forms import *
 from django import forms
+from datetime import datetime
 from .models import *
 
 SPORT_CHOICES = [('ITF', 'Indoor Track and Field'),
@@ -30,6 +31,16 @@ class AddCoachForm(forms.Form):
     last_name = forms.CharField(max_length=50, label="Last Name")
     email = forms.EmailField(max_length=100, label="Email")
 
+def str2season(string):
+    return Season.objects.filter(start_date=string[:10])[0]
+
 class SelectTimePeriodForm(forms.Form):
+    seasons = []
+    for season in Season.objects.all():
+        start = season.start_date.strftime("%Y-%m-%d")
+        end = season.end_date.strftime("%Y-%m-%d")
+        seasons.append((season, start + " to " + end),)
+
     team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Team")
-    season = forms.ModelChoiceField(queryset=Season.objects.all(), label="Season")
+    season = forms.TypedChoiceField(choices=seasons, coerce=str2season, 
+                                    label="Season")
