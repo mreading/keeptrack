@@ -12,6 +12,7 @@ class SignupForm(forms.Form):
     password = forms.CharField(max_length=30, label="Password")
     email = forms.EmailField(max_length=100, label="Email")
     school = forms.CharField(max_length=50, label="School Name")
+
     gender = forms.CharField(
         widget=forms.Select(
              choices=[('Men\'s', 'Men\'s'), ('Women\'s', 'Women\'s')]), label="Team Gender")
