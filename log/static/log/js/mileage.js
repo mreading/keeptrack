@@ -27,25 +27,26 @@ class GraphOption {
 class GraphSelector {
     // graphList is a list of Graph objects
     // currentGraph takes the index of the default graph
-    constructor(graphList, exemptions, currentGraphIndex = 0) {
+    constructor(graphList, currentGraphIndex = 0) {
         this.graphList = graphList;
         this.currentGraphIndex = currentGraphIndex;
-        this.exemptions = exemptions;
+        
+        var thisGraph = this
+        google.charts.setOnLoadCallback(function() {
+            $(document).ready(function() {
+                thisGraph.initiateDefaultGraph();
+            });
+        });
     }
     
-    hideExemptions() {
-        var numExempts = this.exemptions.length;
-        for (var nthExempt = 0; nthExempt < numExempts; nthExempt++) {
-            var graphDivID = this.exemptions[nthExempt];
-            $(graphDivID).hide();
-        }
+    getActiveDivWidth() {
+        return document.getElementById(this.graphList[this.currentGraphIndex].graphID.slice(1)).offsetWidth
     }
     
     initiateDefaultGraph() {
-        this.hideExemptions();
         this.initiateButtons();
         
-        // hide non-active graphs
+        // hide non-active graphs - should be done sooner!
         var numGraphs = this.graphList.length;
         for (var nthGraph = 0; nthGraph < numGraphs; nthGraph++) {
             if (this.currentGraphIndex != nthGraph) {
@@ -77,6 +78,7 @@ class GraphSelector {
     }
     
     setActiveButton(index) {
+        
         var buttonID = this.graphList[index].buttonID;
         $(buttonID).addClass('active');
     }
@@ -97,23 +99,10 @@ class GraphSelector {
             $(currentButtonID).addClass('active');
         }
     }
-    
-    getActiveDivWidth() {
-        return document.getElementById(this.graphList[this.currentGraphIndex].graphID.slice(1)).offsetWidth
-    }
 }
 
 // ADD ORDER HERE
-var graphOptionData = [["#current_year_selector", "#year_mileage_graph", year_graph_data, drawYearChart], ["#current_month_selector", "#month_mileage_graph", month_graph_data, drawMonthChart], ["#current_week_selector", "#week_mileage_graph", week_graph_data, drawWeekChart]];
-
-var exemptions = [];
-
-if (typeof range_graph_data !== 'undefined') {
-    graphOptionData.push(["#range_selector", "#date_range_graph", range_graph_data, drawRangeChart]);
-}
-else {
-    exemptions.push("#date_range_graph");
-}
+var graphOptionData = [["#current_year_selector", "#year_mileage_graph", year_graph_data, drawYearChart], ["#current_month_selector", "#month_mileage_graph", month_graph_data, drawMonthChart], ["#current_week_selector", "#week_mileage_graph", week_graph_data, drawWeekChart], ["#range_selector", "#date_range_graph", range_graph_data, drawRangeChart]];
 
 graphs = [];
 numGraphs = graphOptionData.length
@@ -123,7 +112,7 @@ for (var nthGraph = 0; nthGraph < numGraphs; nthGraph++){
 };
 
 var DEFAULT_GRAPH_INDEX = 1
-graphSelector = new GraphSelector(graphs, exemptions, DEFAULT_GRAPH_INDEX);
+graphSelector = new GraphSelector(graphs, DEFAULT_GRAPH_INDEX);
 // build in that on refresh it stays on the graph that you were on!!
 google.charts.setOnLoadCallback(function() {
     $(document).ready(function() {
@@ -261,7 +250,7 @@ function drawWeekChart() {
 //google.charts.setOnLoadCallback(drawRangeChart);
 
 function drawRangeChart() {
-
+    if (range_graph_data) {
   // Create the data table.
   var data = google.visualization.arrayToDataTable(range_graph_data);
   var view = new google.visualization.DataView(data);
@@ -296,4 +285,5 @@ function drawRangeChart() {
         options['width'] = graphSelector.getActiveDivWidth();
         chart.draw(view, options);
     });
+    }
 }

@@ -36,6 +36,10 @@
                 <script type="text/javascript">
                   var range_graph_data = {{ range_graph_data|safe }}
                 </script>
+              {% else %}
+                <script type="text/javascript">
+                  var range_graph_data = null;
+                </script>
               {% endif %}
               <script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
 
