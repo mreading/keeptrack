@@ -11,8 +11,10 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError, transaction
 from django.forms.formsets import formset_factory
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, render_to_response
 from invitations.models import Invitation
+from django.db import IntegrityError
+
 import json
 
 @login_required(login_url='/log/login/')
@@ -104,6 +106,7 @@ def add_team(request, user_id):
 
 @login_required(login_url='/log/login/')
 def add_athletes(request, user_id, team_id, season_id):
+    print "IN add_athletes"
     coach_user = User.objects.get(id=user_id)
 
     if request.method == 'POST':
@@ -114,7 +117,13 @@ def add_athletes(request, user_id, team_id, season_id):
             # Create a user
             username = data['first_name'] + data['last_name']
             password = data['last_name'] + data['first_name']
-            user = User.objects.create_user(username, data['email'], password)
+            try:
+                user = User.objects.create_user(username, data['email'], password)
+            except IntegrityError as e:
+                return render(request, "log/add_athletes.html", {'form':form,
+                    'coach': coach_user, 'IE': True, "user_id": user_id,
+                    "team_id": team_id, "season_id":season_id})
+
             user.first_name = data['first_name']
             user.last_name = data['last_name']
             user.save()
@@ -122,7 +131,6 @@ def add_athletes(request, user_id, team_id, season_id):
             athlete = Athlete.objects.create(
                 user_id=user.id,
                 graduation_year=data['graduation_year'],
-                #Probably other stuff here
                 )
             season = Season.objects.get(id = season_id)
             athlete.seasons.add(season)
@@ -132,7 +140,8 @@ def add_athletes(request, user_id, team_id, season_id):
 
 
         else:
-            return render(request, "log/add_athletes.html", {'form':form, 'coach': coach, 'team':team})
+            return render(request, "log/add_athletes.html", {'form':form, 'coach': coach_user, "user_id": user_id,
+            "team_id": team_id, "season_id":season_id})
 
     form = AddAthleteForm()
     return render(request, "log/add_athletes.html", {'form': form, 'user_id': user_id, 'team_id': team_id, 'season_id': season_id})
@@ -147,7 +156,11 @@ def add_coach(request, team_id):
             # Create a user
             username = data['first_name'] + data['last_name']
             password = data['last_name'] + data['first_name']
-            user = User.objects.create_user(username, data['email'], password)
+            try:
+                user = User.objects.create_user(username, data['email'], password)
+            except IntegrityError as e:
+                return render(request, "log/add_coach.html", {'form':form,
+                    'IE': True, "team_id": team_id})
             user.first_name = data['first_name']
             user.last_name = data['last_name']
             user.save()

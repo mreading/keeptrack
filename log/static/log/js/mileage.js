@@ -1,3 +1,6 @@
+// Load the Visualization API and the corechart package.
+google.charts.load('current', {'packages':['corechart']});
+
 $(document).ready(function() {
    $('.btn').bind("mouseover", function(){
        var color = $(this).css("background-color");
@@ -10,60 +13,109 @@ $(document).ready(function() {
    })
 })
 
-// -------------------- Mileage graph divs -----------------------
-$(document).ready(function() {
-    console.log(show_range_graph_first);
-    if (Boolean(show_range_graph_first)) {
-      console.log("sup");
-      $("#month_mileage_graph").hide();
-      $("#week_mileage_graph").hide();
-      $("#year_mileage_graph").hide();
+
+//#########################################################################################
+class GraphOption {
+  constructor(buttonID, graphID, data, drawFunc) {
+    this.buttonID = buttonID;
+    this.graphID = graphID;
+    this.data = data;
+    this.drawFunc = drawFunc;
+  }
+}
+
+class GraphSelector {
+    // graphList is a list of Graph objects
+    // currentGraph takes the index of the default graph
+    constructor(graphList, currentGraphIndex = 0) {
+        this.graphList = graphList;
+        this.currentGraphIndex = currentGraphIndex;
+        
+        var thisGraph = this
+        google.charts.setOnLoadCallback(function() {
+            $(document).ready(function() {
+                thisGraph.initiateDefaultGraph();
+            });
+        });
     }
-    else {
-      console.log("blech");
-      $("#week_mileage_graph").hide();
-      $("#year_mileage_graph").hide();
-      $("#date_range_graph").hide();
+    
+    getActiveDivWidth() {
+        return document.getElementById(this.graphList[this.currentGraphIndex].graphID.slice(1)).offsetWidth
     }
-});
+    
+    initiateDefaultGraph() {
+        this.initiateButtons();
+        
+        // hide non-active graphs - should be done sooner!
+        var numGraphs = this.graphList.length;
+        for (var nthGraph = 0; nthGraph < numGraphs; nthGraph++) {
+            if (this.currentGraphIndex != nthGraph) {
+                var currentGraphID = this.graphList[nthGraph].graphID;
+                $(currentGraphID).hide();
+            }
+        }
+        
+        // draw default
+        this.graphList[this.currentGraphIndex].drawFunc();
+    }
+    
+    initiateButtons() {
+        var thisGraph = this;
+        
+        var numGraphs = this.graphList.length;
+        function buttonCallback(index) {
+            return function() {
+                thisGraph.setGraph(index);   
+            }
+        }
+        
+        for (var nthGraph = 0; nthGraph < numGraphs; nthGraph++) {
+            var buttonID = this.graphList[nthGraph].buttonID;
+            $(buttonID).click(buttonCallback(nthGraph));
+        }
+        
+        this.setActiveButton(this.currentGraphIndex);
+    }
+    
+    setActiveButton(index) {
+        
+        var buttonID = this.graphList[index].buttonID;
+        $(buttonID).addClass('active');
+    }
+    
+    setGraph(index) {
+        if (this.currentGraphIndex != index) {
+            var prevGraphID = this.graphList[this.currentGraphIndex].graphID;
+            var prevButtonID = this.graphList[this.currentGraphIndex].buttonID;
+            
+            $(prevGraphID).hide('slow', this.graphList[index].drawFunc());
+            var currentGraphID = this.graphList[index].graphID;
+            $(currentGraphID).show('slow');  
+            
+            this.currentGraphIndex = index;
+            var currentButtonID = this.graphList[this.currentGraphIndex].buttonID;
+            
+            $(prevButtonID).removeClass('active');
+            $(currentButtonID).addClass('active');
+        }
+    }
+}
 
-// Show Year graph, hide others
-$(document).ready(function() {
-  $("#current_year_selector").click(function(){
-    $("#year_mileage_graph").show('slow');
-    $("#month_mileage_graph").hide('slow');
-    $("#week_mileage_graph").hide('slow');
-    $("#date_range_graph").hide('slow');
-  });
-});
+// ADD ORDER HERE
+var graphOptionData = [["#current_year_selector", "#year_mileage_graph", year_graph_data, drawYearChart], ["#current_month_selector", "#month_mileage_graph", month_graph_data, drawMonthChart], ["#current_week_selector", "#week_mileage_graph", week_graph_data, drawWeekChart], ["#range_selector", "#date_range_graph", range_graph_data, drawRangeChart]];
 
+graphs = [];
+numGraphs = graphOptionData.length
+for (var nthGraph = 0; nthGraph < numGraphs; nthGraph++){
+    graph = new GraphOption(graphOptionData[nthGraph][0], graphOptionData[nthGraph][1], graphOptionData[nthGraph][2], graphOptionData[nthGraph][3]);
+    graphs.push(graph);
+};
 
-// Show Week Graph, hide others
-$(document).ready(function() {
-  $("#current_week_selector").click(function(){
-    $("#year_mileage_graph").hide('slow');
-    $("#month_mileage_graph").hide('slow');
-    $("#week_mileage_graph").show('slow');
-    $("#date_range_graph").hide('slow');
-  });
-});
-
-$(document).ready(function() {
-  $("#range_selector").click(function(){
-    $("#year_mileage_graph").hide('slow');
-    $("#month_mileage_graph").hide('slow');
-    $("#week_mileage_graph").hide('slow');
-    $("#date_range_graph").show('slow');
-  });
-});
-
-
-// Load the Visualization API and the corechart package.
-google.charts.load('current', {'packages':['corechart']});
-
-
-// Draw the bar chart for the Anthony's pizza when Charts is loaded.
-google.charts.setOnLoadCallback(drawYearChart);
+// Need to figure out how to change this based on the selected button - pass url variable?
+var DEFAULT_GRAPH_INDEX = 1
+graphSelector = new GraphSelector(graphs, DEFAULT_GRAPH_INDEX);
+//#########################################################################################
+//google.charts.setOnLoadCallback(drawYearChart);
 
 //-----------------------------------------------------------------------------
 function drawYearChart() {
@@ -73,26 +125,45 @@ function drawYearChart() {
   var view = new google.visualization.DataView(data);
   view.setColumns([0, 1, 2])
 
-  // Set chart options
   var options = {'title':'Current Year Mileage',
                  'height':300,
-                'width':"100%",
-                 legend:{position:'none'}
+                'width': graphSelector.getActiveDivWidth(),
+                 'interpolateNulls': true,
+                 'pointShape': 'circle',
+                 'pointSize': 5,
+                 'colors': ['#6b7a8f', '#f7c331'],
+                 'legend':{position:'right'}
                 //  'trendlines': { 0: {} }
                };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('year_mileage_graph'));
+  var chart = new google.visualization.LineChart(document.getElementById('year_mileage_graph'));
   chart.draw(view, options);
 
   var selectHandler = function(e) {
-    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
+    window.location = data.getValue(chart.getSelection()[0]['row'], 6);
   }
   google.visualization.events.addListener(chart, 'select', selectHandler);
+    
+    //create trigger to resizeEnd event     
+    $(window).resize(function() {
+        if(this.resizeTO) clearTimeout(this.resizeTO);
+        this.resizeTO = setTimeout(function() {
+            $(this).trigger('resizeEnd');
+        }, 0);
+    });
+
+    //redraw graph when window resize is completed  
+    $(window).on('resizeEnd', function() {
+        options['width'] = graphSelector.getActiveDivWidth();
+        chart.draw(view, options);
+    });
 }
 
+var LINK_INDEX = 6;
+
 //-----------------------------------------------------------------------------
-google.charts.setOnLoadCallback(drawMonthChart);
+//google.charts.setOnLoadCallback(drawMonthChart);
 
 function drawMonthChart() {
 
@@ -104,27 +175,28 @@ function drawMonthChart() {
   // Set chart options
   var options = {'title':'Current Month Mileage',
                  'height':300,
-                 'width':"100%",
-                 legend:{position:'none'}
+                 'width':graphSelector.getActiveDivWidth(),
+                 'interpolateNulls': true,
+                 'pointShape': 'circle',
+                 'pointSize': 5,
+                 'colors': ['#6b7a8f', '#f7c331'],
+                 'legend':{position:'right'}
                 //  'trendlines': { 0: {} }
               };
+ 
 
-
-  // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));
-  google.visualization.events.addListener(chart, 'select', selectHandler);
-  //google.visualization.events.addListener(chart, 'ready', readyHandler);
-  chart.draw(view, options);
-
-  var selectHandler = function(e) {
-    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
-  }
-  
-  var readyHandler = function() {
-      // Show Month Graph, hide others
-      console.log('here');
+  var selectHandler = function() {
+      var row = chart.getSelection()[0]['row']
+      // this means that we've selected a valid point
+      if (row) {
+          window.location = data.getValue(row, LINK_INDEX);
+      }
   }
     
+  // Instantiate and draw our chart, passing in some options.
+  var chart = new google.visualization.LineChart(document.getElementById('month_mileage_graph'));
+  google.visualization.events.addListener(chart, 'select', selectHandler);
+  chart.draw(view, options);
 
     //create trigger to resizeEnd event     
     $(window).resize(function() {
@@ -136,12 +208,13 @@ function drawMonthChart() {
 
     //redraw graph when window resize is completed  
     $(window).on('resizeEnd', function() {
+        options['width'] = graphSelector.getActiveDivWidth();
         chart.draw(view, options);
     });
 }
 
 //-----------------------------------------------------------------------------
-google.charts.setOnLoadCallback(drawWeekChart);
+//google.charts.setOnLoadCallback(drawWeekChart);
 
 function drawWeekChart() {
 
@@ -153,7 +226,7 @@ function drawWeekChart() {
   // Set chart options
   var options = {'title':'Current Week Mileage',
                  'height':300,
-                 'width':"100%",
+                 'width':graphSelector.getActiveDivWidth(),
                  legend:{position:'none'},
                };
 
@@ -162,16 +235,30 @@ function drawWeekChart() {
   chart.draw(view, options);
 
   var selectHandler = function(e) {
-    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
+    window.location = data.getValue(chart.getSelection()[0]['row'], LINK_INDEX);
   }
   google.visualization.events.addListener(chart, 'select', selectHandler);
+    
+    //create trigger to resizeEnd event     
+    $(window).resize(function() {
+        if(this.resizeTO) clearTimeout(this.resizeTO);
+        this.resizeTO = setTimeout(function() {
+            $(this).trigger('resizeEnd');
+        }, 0);
+    });
+
+    //redraw graph when window resize is completed  
+    $(window).on('resizeEnd', function() {
+        options['width'] = graphSelector.getActiveDivWidth();
+        chart.draw(view, options);
+    });
 }
 
 //-----------------------------------------------------------------------------
-google.charts.setOnLoadCallback(drawRangeChart);
+//google.charts.setOnLoadCallback(drawRangeChart);
 
 function drawRangeChart() {
-
+    if (range_graph_data) {
   // Create the data table.
   var data = google.visualization.arrayToDataTable(range_graph_data);
   var view = new google.visualization.DataView(data);
@@ -180,7 +267,7 @@ function drawRangeChart() {
   // Set chart options
   var options = {'title':'Date Range Graph',
                  'height':300,
-                 'width':"100%",
+                 'width':graphSelector.getActiveDivWidth(),
                  legend:{position:'none'}
                };
 
@@ -189,7 +276,22 @@ function drawRangeChart() {
   chart.draw(view, options);
 
   var selectHandler = function(e) {
-    window.location = data.getValue(chart.getSelection()[0]['row'], 3);
+    window.location = data.getValue(chart.getSelection()[0]['row'], LINK_INDEX);
   }
   google.visualization.events.addListener(chart, 'select', selectHandler);
+    
+    //create trigger to resizeEnd event     
+    $(window).resize(function() {
+        if(this.resizeTO) clearTimeout(this.resizeTO);
+        this.resizeTO = setTimeout(function() {
+            $(this).trigger('resizeEnd');
+        }, 0);
+    });
+
+    //redraw graph when window resize is completed  
+    $(window).on('resizeEnd', function() {
+        options['width'] = graphSelector.getActiveDivWidth();
+        chart.draw(view, options);
+    });
+    }
 }

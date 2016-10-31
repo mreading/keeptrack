@@ -15,7 +15,7 @@ class SignupForm(forms.Form):
     school = forms.CharField(max_length=50, label="School Name")
     gender = forms.CharField(
         widget=forms.Select(
-             choices=[('Men\'s', 'Men\'s'), ('Women\'s', 'Women\'s')]))
+             choices=[('Men\'s', 'Men\'s'), ('Women\'s', 'Women\'s')]), label="Team Gender")
     sport = forms.CharField(
         widget=forms.Select(
             choices=SPORT_CHOICES), label = "Sport")
@@ -44,3 +44,7 @@ class SelectTimePeriodForm(forms.Form):
     team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Team")
     season = forms.TypedChoiceField(choices=seasons, coerce=str2season, 
                                     label="Season")
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=50, label="Username")
+    password = forms.CharField(max_length=50, label="Password", widget=forms.PasswordInput)

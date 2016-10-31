@@ -1,31 +1,61 @@
 {% extends 'log/base.html' %}
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block content %}
   <body>
 
-    {% if form.errors %}
-      <p class="error">Sorry, that's not a valid username or password. Note that username and password are case sensitive</p>
+    {% if wrong %}
+    <div class="alert alert-error">
+        <ul>
+          <li> ERROR: Wrong username or password </li>
+        </ul>
     {% endif %}
 
-      <form action="/log/login/", method="post">
-        {% csrf_token %}
-        <div id="entry_container">
-          <p>
-            <label for="username">User Name: </label>
-            <input type="text" name="username" value="" id="username">
-          </br>
-          </br>
-            <label for="password">Password: </label>
-            <input type="password" name="password" value="" id="password">
-            </br>
-            <input type="submit" value="login">
-            <input type="hidden" name = "next" value="{{ request.GET.next }}" />
-          </p>
-        </div>
-      </form>
+    <form class="form-horizontal" action="/log/login/" method="POST" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+      {% csrf_token %}
+      {{ form.media }}
 
-      <a  class="auth" href="/log/signup/">Signup as Coach</a>
-  </body>
+      <!---------------------------------------------------------
+    	  Code for generating pretty django forms with bootstrap
+    	---------------------------------------------------------->
+      {% if form.errors %}
+          <div class="alert alert-error">
+              <ul>
+                  {% for error in form.non_field_errors %}
+                       <li><strong>{{ error|escape }}</strong></li>
+                  {% endfor %}
+              </ul>
+          </div>
+      {% endif %}
 
-{% endblock %}
+      {% for field in form.visible_fields %}
+          <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+              <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+              <div class="controls">
+                  <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
+                  {{ field|add_class:"form-control" }}
+                  {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+              </div>
+          </div>
+      {% endfor %}
+
+      {% for field in form.hidden_fields %}
+          {{ field }}
+      {% endfor %}
+
+      {% block formsets %}
+          {% for formset in inlines %}
+              {% include "inline_formset.html" with formset=formset %}
+          {% endfor %}
+      {% endblock formsets %}
+      </br>
+
+      <div class="form-actions">
+          <input class="btn btn-primary btn-large" type="submit" value="Log In"/>
+          {% block extra_buttons %}
+          {% endblock extra_buttons %}
+      </div>
+    </form>
+
+    {% endblock %}

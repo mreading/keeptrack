@@ -6,37 +6,33 @@ from .utils import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db import IntegrityError
+
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user:
-            if user.is_authenticated:
-                if user.is_active:
-                    print "logging in!!!"
-                    login(request, user)
-                    return redirect("/log/")
-                    if not request.POST.get('next'):
-                        return redirect("/")
-                    return redirect(request.POST.get('next'))
-                else:
-                    return HttpResponse("user not active")
-            if 'token' in req.COOKIES:
-                try:
-                    invite = Invite.objects.get(cookie=req.COOKIES['token'])
-                except Invite.DoesNotExist:
-                    resp = redirect('/')
-                    resp.delete_cookie('token')
-                    return resp
-                user = authenticate(username=invite.user.username, password='**')
-            if user is None:
-                return redirect('/')
-            else:
-                return HttpResponse("invalid login")
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            username = data['username']
+            password = data['password']
+            user = authenticate(username=username, password=password)
+            if user:
+                if user.is_authenticated:
+                    if user.is_active:
+                        login(request, user)
+                        return redirect("/log/")
+                        if not request.POST.get('next'):
+                            return redirect("/")
+                        return redirect(request.POST.get('next'))
+                    else:
+                        return HttpResponse("user not active")
 
-    return render(request, "log/login.html", {})
+            else:
+                return render(request, "log/login.html", {'form':form, 'wrong':True})
+    else:
+        form = LoginForm()
+        return render(request, "log/login.html", {'form':form})
 
 def logout_view(request):
     logout(request)
@@ -49,7 +45,11 @@ def signup(request):
             data = form.cleaned_data
 
             # Create a user
-            user = User.objects.create_user(data['username'], data['email'], data['password'])
+            try:
+                user = User.objects.create_user(data['username'], data['email'], data['password'])
+            except IntegrityError as e:
+                return render(request, "log/signup.html", {'form':form,
+                    'IE': True})
             user.first_name = data['first_name']
             user.last_name = data['last_name']
 
