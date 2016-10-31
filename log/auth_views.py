@@ -10,7 +10,6 @@ from django.db import IntegrityError
 
 
 def login_view(request):
-    print "LOGIN"
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -29,8 +28,8 @@ def login_view(request):
                     else:
                         return HttpResponse("user not active")
 
-        else:
-            return render(request, "log/login.html", {'form':form})
+            else:
+                return render(request, "log/login.html", {'form':form, 'wrong':True})
     else:
         form = LoginForm()
         return render(request, "log/login.html", {'form':form})
