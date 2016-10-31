@@ -119,7 +119,7 @@ graphSelector = new GraphSelector(graphs, DEFAULT_GRAPH_INDEX);
 
 //-----------------------------------------------------------------------------
 function drawYearChart() {
-
+    if (year_graph_data) {
   // Create the data table.
   var data = google.visualization.arrayToDataTable(year_graph_data);
   var view = new google.visualization.DataView(data);
@@ -158,8 +158,14 @@ function drawYearChart() {
         options['width'] = graphSelector.getActiveDivWidth();
         chart.draw(view, options);
     });
+    }
+    
+    else {
+        $("#year_mileage_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
+    }
 }
 
+// Default Graph to show (must account for date and other items being passed)
 var LINK_INDEX = 6;
 
 //-----------------------------------------------------------------------------
@@ -167,6 +173,8 @@ var LINK_INDEX = 6;
 
 function drawMonthChart() {
 
+    if (month_graph_data) {
+    
   // Create the data table.
   var data = google.visualization.arrayToDataTable(month_graph_data);
   var view = new google.visualization.DataView(data);
@@ -211,13 +219,18 @@ function drawMonthChart() {
         options['width'] = graphSelector.getActiveDivWidth();
         chart.draw(view, options);
     });
+    }
+    
+    else {
+        $("#month_mileage_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
+    }
 }
 
 //-----------------------------------------------------------------------------
 //google.charts.setOnLoadCallback(drawWeekChart);
 
 function drawWeekChart() {
-
+    if (week_graph_data) {
   // Create the data table.
   var data = google.visualization.arrayToDataTable(week_graph_data);
   var view = new google.visualization.DataView(data);
@@ -227,11 +240,15 @@ function drawWeekChart() {
   var options = {'title':'Current Week Mileage',
                  'height':300,
                  'width':graphSelector.getActiveDivWidth(),
-                 legend:{position:'none'},
+                 'interpolateNulls': true,
+                 'pointShape': 'circle',
+                 'pointSize': 5,
+                 'colors': ['#6b7a8f', '#f7c331'],
+                 'legend':{position:'right'}
                };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('week_mileage_graph'));
+  var chart = new google.visualization.LineChart(document.getElementById('week_mileage_graph'));
   chart.draw(view, options);
 
   var selectHandler = function(e) {
@@ -252,7 +269,12 @@ function drawWeekChart() {
         options['width'] = graphSelector.getActiveDivWidth();
         chart.draw(view, options);
     });
+    }
+    else {
+        $("#week_mileage_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
+    }
 }
+    
 
 //-----------------------------------------------------------------------------
 //google.charts.setOnLoadCallback(drawRangeChart);
@@ -268,11 +290,15 @@ function drawRangeChart() {
   var options = {'title':'Date Range Graph',
                  'height':300,
                  'width':graphSelector.getActiveDivWidth(),
-                 legend:{position:'none'}
+                 'interpolateNulls': true,
+                 'pointShape': 'circle',
+                 'pointSize': 5,
+                 'colors': ['#6b7a8f', '#f7c331'],
+                 'legend':{position:'right'}
                };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('date_range_graph'));
+  var chart = new google.visualization.LineChart(document.getElementById('date_range_graph'));
   chart.draw(view, options);
 
   var selectHandler = function(e) {
@@ -293,5 +319,8 @@ function drawRangeChart() {
         options['width'] = graphSelector.getActiveDivWidth();
         chart.draw(view, options);
     });
+    }
+    else {
+        $("#date_range_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
     }
 }

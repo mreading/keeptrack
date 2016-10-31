@@ -1,6 +1,7 @@
 {% extends 'log/base.html' %}
 {% load staticfiles %}
 {% block content %}
+<link rel="stylesheet" type="text/css" href="/static/log/css/calendar.css">
 
 <div id="page">
   <div = class="container-fluid">
@@ -36,9 +37,7 @@
               {% for day in week %}
                 <td class="day">
                 {% for event in day %}
-                  <div class="event">
-                    {{ event.summary }}
-                  </div>
+                  <div class="event well">{{ event.summary }}</div>
                 {% endfor %}
                 </td>
               {% endfor %}

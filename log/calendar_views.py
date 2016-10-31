@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.utils.dateparse import parse_datetime
+from django.core import serializers
+import simplejson as json
 
 # Google Calendar API modules
 import httplib2
@@ -218,10 +220,13 @@ def get_teams_seasons(user_id):
         for season in seasons:
             teams.append(season.team_set.all()[0]) # only one team per season
 
+        # get rid of duplicates
+        teams = list(set(teams))
+
         # get all seasons possible for each team
         seasons = []
         for team in teams:
-            both[team] = team.seasons.all()
+            both[team.__str__()] = serializers.serialize("json", team.seasons.all())
             seasons += team.seasons.all()
 
     return both, teams, seasons
@@ -254,6 +259,9 @@ def calendar(request):
 
 @login_required(login_url='/log/login/')
 def time_period(request):
+    teams_seasons, teams, seasons = get_teams_seasons(request.user.id)
+    teams_seasons = json.dumps(teams_seasons)
+
     if request.method == 'POST':
         form = SelectTimePeriodForm(request.POST)
         if form.is_valid():
@@ -261,6 +269,7 @@ def time_period(request):
 
             team = data['team']
             season = data['season']
+            start, finish = convert_start_end_dates(season.start_date, season.end_date)
 
             # needs to change based on team
             #calendarId = team.calendarId
@@ -270,7 +279,9 @@ def time_period(request):
             return render(request, "log/calendar.html",
                           {"weeks":weeks})
         else:
-            return render(request, "log/select_time_period.html", {'form':form})
+            return render(request, "log/select_time_period.html",
+                          { 'form':form, 'teams_seasons':teams_seasons })
     else:
         form = SelectTimePeriodForm()
-        return render(request, "log/select_time_period.html", {'form':form})
+        return render(request, "log/select_time_period.html",
+                      { 'form':form, 'teams_seasons':teams_seasons })

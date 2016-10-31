@@ -51,21 +51,41 @@
 
 <script>
   function check_field_value() {
+    //dictionary of teams and corresponding seasons
+    var teams_seasons = {{ teams_seasons|safe }};
+
+    // team has been selected
     if($(this).val()) {
-      $('#id_season').show();
-      console.log($('id_season').choices)
+      $('.season').show();
+
+      // get selected team's seasons
+      var team_object = document.getElementById("id_team");
+      var selected_team = team_object.options[team_object.selectedIndex].text;
+      var seasons = JSON.parse(teams_seasons[selected_team]);
+
+      var season_object = document.getElementById("id_season");
+      for(i=0; i < seasons.length; i++){
+        var start_date = seasons[i]["fields"]["start_date"];
+        var end_date = seasons[i]["fields"]["end_date"];
+        var option = document.createElement("option");
+        option.text = start_date + " to " + end_date;
+        option.value = start_date + " to " + end_date;
+        season_object.add(option);
+      }
+
+    // team is no longer selected
     } else {
-      $('#id_season').hide();
+      $('.season').hide();
+      document.getElementById('id_season').options.length = 0;
     }
   }
   $(document).ready(function() {
-        // set things up so my function will be called when field_three changes
+        // set things up so my function will be called when team field changes
         $('#id_team').change(check_field_value);
 
         // set the state based on the initial values
         check_field_value.call($('#id_team').get(0));
     });
-
 </script>
 
 {% endblock %}
