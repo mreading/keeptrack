@@ -80,6 +80,7 @@
 
                 {% if user.coach_set.all %}
                   <li><a href="/log/manage_teams/{{user.id}}">Manage Teams</a></li>
+                  <li><a href="/log/coach/settings/{{ user.id }}">Settings</a></li>
                   <!-- <div class="dropdown-divider"></div> -->
                 {% endif%}
 

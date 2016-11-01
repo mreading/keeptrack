@@ -184,3 +184,7 @@ def add_coach(request, team_id):
 
     form = AddCoachForm()
     return render(request, "log/add_coach.html", {'form': form, 'team_id':team_id})
+
+def settings(request, user_id):
+    coach = Coach.objects.filter(user=user_id)[0]
+    return render(request, "log/coach_settings.html", {'user_id':user_id})

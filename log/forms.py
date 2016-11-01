@@ -2,6 +2,7 @@ from django.forms import *
 from django import forms
 from datetime import datetime
 from .models import *
+from django.contrib.auth.forms import *
 
 SPORT_CHOICES = [('ITF', 'Indoor Track and Field'),
     ('OTF','Outdoor Track and Field'), ('XC', 'Cross Country')]
@@ -43,7 +44,7 @@ class SelectTimePeriodForm(forms.Form):
         seasons.append((season, start + " to " + end),)
 
     team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Team")
-    season = forms.TypedChoiceField(choices=seasons, coerce=str2season, 
+    season = forms.TypedChoiceField(choices=seasons, coerce=str2season,
                                     label="Season")
 
 class LoginForm(forms.Form):
