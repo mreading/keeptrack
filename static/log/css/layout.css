@@ -2,16 +2,10 @@ div.pagetitle {
   padding-left: 5px;
   text-transform: capitalize;
   color: #5a5a5a;
-  font-family: "Abel";
 }
 
-#test {
-  text-align: left;
-  font-size: 200%;
-  color: black;
-  padding-bottom: 5px;
-  font-weight: normal;
-  font-family: "Abel";
+* {
+    font-family: "Abel";
 }
 
 #page {
@@ -27,7 +21,6 @@ div.pagetitle {
   color: black;
 }
 
-#content_container {
-  padding-left: 20px;
-  padding-right: 10px;
+.error {
+    text-align: center;
 }

@@ -1,0 +1,19 @@
+.well {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  display: inline-block;
+  text-align: center;
+}
+
+th {
+  text-align: center;
+}
+
+th:hover {
+    cursor: default;
+}
+
+table {
+  table-layout: fixed;
+}

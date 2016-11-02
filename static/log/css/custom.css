@@ -22,7 +22,6 @@ h1, h2, h3, h4, h5, h6 {
 
 a {
   text-decoration: none;
-  font-family: "Abel";
 
 }
 
@@ -30,8 +29,6 @@ a {
     background-color: var(--color1);
     text-align: center;
     color: aliceblue;
-    font-family: "Abel";
-    font-weight: normal;
     font-size: 125%;
 }
 
@@ -40,10 +37,26 @@ a {
     column-gap: 40px;
 }
 
-h1 {
-    font-family: "Abel";
+.panel-group .panel+.panel {
+    margin-top: 20px;
 }
 
 .jumbotron {
     margin-bottom: 0px;
+}
+
+.auth {
+  padding-left: 20px;
+}
+
+h1 {
+  padding-left: 20px;
+}
+
+.a {
+  padding-left: 20px;
+}
+
+.dropdown-divider {
+  align-items: center;
 }
