@@ -3,6 +3,7 @@ from django import forms
 from datetime import datetime
 from .models import *
 from django.contrib.auth.forms import *
+from django.forms import ModelChoiceField
 
 SPORT_CHOICES = [('ITF', 'Indoor Track and Field'),
     ('OTF','Outdoor Track and Field'), ('XC', 'Cross Country')]
@@ -27,6 +28,29 @@ class AddAthleteForm(forms.Form):
     last_name = forms.CharField(max_length=50, label="Last Name")
     graduation_year = forms.IntegerField(label = "Graduation Year")
     email = forms.EmailField(max_length=100, label="Email")
+
+class AddExistingAthleteForm(forms.Form):
+    athletes = forms.ModelMultipleChoiceField(queryset=Athlete.objects.all(), label="Athletes") #to_field_name
+
+    def __init__(self, *args, **kwargs):
+        season_id = kwargs.pop('season_id', None)
+        coach = kwargs.pop('coach', None)
+        super(AddExistingAthleteForm, self).__init__(*args, **kwargs)
+
+        if coach:
+            teams = coach.teams.all()
+            athletes = Athlete.objects.none()
+            if season_id:
+                curr_season = Season.objects.filter(id = season_id)
+                if curr_season:
+                    curr_season = curr_season[0]
+            for team in teams:
+                print team
+                seasons = team.seasons.all()
+                for season in seasons:
+                    athletes = athletes | season.athlete_set.all()
+            athletes = athletes.exclude(pk__in = curr_season.athlete_set.all())
+            self.fields['athletes'].queryset = athletes
 
 class AddCoachForm(forms.Form):
     first_name = forms.CharField(max_length=50, label="First Name")
