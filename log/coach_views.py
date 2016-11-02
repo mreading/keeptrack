@@ -27,8 +27,6 @@ def create_season(request, user_id, team_id):
 
     if coach:
         coach = coach[0]
-        print "COACH"
-        print coach.teams.all()
         if request.method == 'POST':
             form = NewSeasonForm(request.POST)
             if form.is_valid():
@@ -43,9 +41,9 @@ def create_season(request, user_id, team_id):
                     season = Season.objects.create(year = data['year'],
                         start_date = data['start_date'], end_date = data['end_date'])
                     season.save()
-                    #season.team = team
                     team.seasons.add(season)
                     return redirect("/log/add_athletes/" + str(user.id) + "/" + str(team.id) + "/" + str(season.id) + "/", {})
+                else:
                     return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
 
             return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
@@ -106,9 +104,7 @@ def add_team(request, user_id):
 
 @login_required(login_url='/log/login/')
 def add_athletes(request, user_id, team_id, season_id):
-    print "IN add_athletes"
     coach_user = User.objects.get(id=user_id)
-
     if request.method == 'POST':
         form = AddAthleteForm(request.POST)
         if form.is_valid():
@@ -137,7 +133,6 @@ def add_athletes(request, user_id, team_id, season_id):
 
             athlete.save()
             user.athlete = athlete
-
 
         else:
             return render(request, "log/add_athletes.html", {'form':form, 'coach': coach_user, "user_id": user_id,
@@ -188,3 +183,24 @@ def add_coach(request, team_id):
 def settings(request, user_id):
     coach = Coach.objects.filter(user=user_id)[0]
     return render(request, "log/coach_settings.html", {'user_id':user_id})
+
+def add_existing_athletes(request, user_id, team_id, season_id):
+    coach_user = User.objects.get(id=user_id)
+    coach = Coach.objects.filter(user=user_id)[0]
+    if request.method == 'POST':
+        form = AddExistingAthleteForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+
+            for athlete in data['athletes']:
+                season = Season.objects.get(id = season_id)
+                athlete.seasons.add(season)
+
+            return redirect("/log/manage_teams/" + str(user_id) + "/", {})
+
+        else:
+            return render(request, "log/add_existing_athletes.html", {'form':form, 'coach': coach_user, "user_id": user_id,
+            "team_id": team_id, "season_id":season_id})
+
+    form = AddExistingAthleteForm(season_id = season_id, coach = coach)
+    return render(request, "log/add_existing_athletes.html", {'form': form, 'user_id': user_id, 'team_id': team_id, 'season_id': season_id})

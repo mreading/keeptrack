@@ -41,6 +41,9 @@ class Athlete(models.Model):
     graduation_year = models.PositiveIntegerField()
     log_private = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.user.first_name + ' ' + self.user.last_name
+
 class Coach(models.Model):
     """ Brett Hull """
     teams = models.ManyToManyField(Team)
