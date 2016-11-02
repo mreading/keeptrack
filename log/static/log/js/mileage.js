@@ -30,7 +30,7 @@ class GraphSelector {
     constructor(graphList, currentGraphIndex = 0) {
         this.graphList = graphList;
         this.currentGraphIndex = currentGraphIndex;
-        
+
         var thisGraph = this
         google.charts.setOnLoadCallback(function() {
             $(document).ready(function() {
@@ -38,14 +38,14 @@ class GraphSelector {
             });
         });
     }
-    
+
     getActiveDivWidth() {
         return document.getElementById(this.graphList[this.currentGraphIndex].graphID.slice(1)).offsetWidth
     }
-    
+
     initiateDefaultGraph() {
         this.initiateButtons();
-        
+
         // hide non-active graphs - should be done sooner!
         var numGraphs = this.graphList.length;
         for (var nthGraph = 0; nthGraph < numGraphs; nthGraph++) {
@@ -54,47 +54,47 @@ class GraphSelector {
                 $(currentGraphID).hide();
             }
         }
-        
+
         // draw default
         this.graphList[this.currentGraphIndex].drawFunc();
     }
-    
+
     initiateButtons() {
         var thisGraph = this;
-        
+
         var numGraphs = this.graphList.length;
         function buttonCallback(index) {
             return function() {
-                thisGraph.setGraph(index);   
+                thisGraph.setGraph(index);
             }
         }
-        
+
         for (var nthGraph = 0; nthGraph < numGraphs; nthGraph++) {
             var buttonID = this.graphList[nthGraph].buttonID;
             $(buttonID).click(buttonCallback(nthGraph));
         }
-        
+
         this.setActiveButton(this.currentGraphIndex);
     }
-    
+
     setActiveButton(index) {
-        
+
         var buttonID = this.graphList[index].buttonID;
         $(buttonID).addClass('active');
     }
-    
+
     setGraph(index) {
         if (this.currentGraphIndex != index) {
             var prevGraphID = this.graphList[this.currentGraphIndex].graphID;
             var prevButtonID = this.graphList[this.currentGraphIndex].buttonID;
-            
+
             $(prevGraphID).hide('slow', this.graphList[index].drawFunc());
             var currentGraphID = this.graphList[index].graphID;
-            $(currentGraphID).show('slow');  
-            
+            $(currentGraphID).show('slow');
+
             this.currentGraphIndex = index;
             var currentButtonID = this.graphList[this.currentGraphIndex].buttonID;
-            
+
             $(prevButtonID).removeClass('active');
             $(currentButtonID).addClass('active');
         }
@@ -137,15 +137,15 @@ function drawYearChart() {
                };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.LineChart(document.getElementById('year_mileage_graph'));
+  var chart = new google.visualization.ColumnChart(document.getElementById('year_mileage_graph'));
   chart.draw(view, options);
 
   var selectHandler = function(e) {
     window.location = data.getValue(chart.getSelection()[0]['row'], 6);
   }
   google.visualization.events.addListener(chart, 'select', selectHandler);
-    
-    //create trigger to resizeEnd event     
+
+    //create trigger to resizeEnd event
     $(window).resize(function() {
         if(this.resizeTO) clearTimeout(this.resizeTO);
         this.resizeTO = setTimeout(function() {
@@ -153,13 +153,13 @@ function drawYearChart() {
         }, 0);
     });
 
-    //redraw graph when window resize is completed  
+    //redraw graph when window resize is completed
     $(window).on('resizeEnd', function() {
         options['width'] = graphSelector.getActiveDivWidth();
         chart.draw(view, options);
     });
     }
-    
+
     else {
         $("#year_mileage_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
     }
@@ -174,7 +174,7 @@ var LINK_INDEX = 6;
 function drawMonthChart() {
 
     if (month_graph_data) {
-    
+
   // Create the data table.
   var data = google.visualization.arrayToDataTable(month_graph_data);
   var view = new google.visualization.DataView(data);
@@ -191,7 +191,7 @@ function drawMonthChart() {
                  'legend':{position:'right'}
                 //  'trendlines': { 0: {} }
               };
- 
+
 
   var selectHandler = function() {
       var row = chart.getSelection()[0]['row']
@@ -200,13 +200,13 @@ function drawMonthChart() {
           window.location = data.getValue(row, LINK_INDEX);
       }
   }
-    
+
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.LineChart(document.getElementById('month_mileage_graph'));
+  var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));
   google.visualization.events.addListener(chart, 'select', selectHandler);
   chart.draw(view, options);
 
-    //create trigger to resizeEnd event     
+    //create trigger to resizeEnd event
     $(window).resize(function() {
         if(this.resizeTO) clearTimeout(this.resizeTO);
         this.resizeTO = setTimeout(function() {
@@ -214,13 +214,13 @@ function drawMonthChart() {
         }, 0);
     });
 
-    //redraw graph when window resize is completed  
+    //redraw graph when window resize is completed
     $(window).on('resizeEnd', function() {
         options['width'] = graphSelector.getActiveDivWidth();
         chart.draw(view, options);
     });
     }
-    
+
     else {
         $("#month_mileage_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
     }
@@ -248,15 +248,15 @@ function drawWeekChart() {
                };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.LineChart(document.getElementById('week_mileage_graph'));
+  var chart = new google.visualization.ColumnChart(document.getElementById('week_mileage_graph'));
   chart.draw(view, options);
 
   var selectHandler = function(e) {
     window.location = data.getValue(chart.getSelection()[0]['row'], LINK_INDEX);
   }
   google.visualization.events.addListener(chart, 'select', selectHandler);
-    
-    //create trigger to resizeEnd event     
+
+    //create trigger to resizeEnd event
     $(window).resize(function() {
         if(this.resizeTO) clearTimeout(this.resizeTO);
         this.resizeTO = setTimeout(function() {
@@ -264,7 +264,7 @@ function drawWeekChart() {
         }, 0);
     });
 
-    //redraw graph when window resize is completed  
+    //redraw graph when window resize is completed
     $(window).on('resizeEnd', function() {
         options['width'] = graphSelector.getActiveDivWidth();
         chart.draw(view, options);
@@ -274,7 +274,7 @@ function drawWeekChart() {
         $("#week_mileage_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
     }
 }
-    
+
 
 //-----------------------------------------------------------------------------
 //google.charts.setOnLoadCallback(drawRangeChart);
@@ -298,15 +298,15 @@ function drawRangeChart() {
                };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.LineChart(document.getElementById('date_range_graph'));
+  var chart = new google.visualization.ColumnChart(document.getElementById('date_range_graph'));
   chart.draw(view, options);
 
   var selectHandler = function(e) {
     window.location = data.getValue(chart.getSelection()[0]['row'], LINK_INDEX);
   }
   google.visualization.events.addListener(chart, 'select', selectHandler);
-    
-    //create trigger to resizeEnd event     
+
+    //create trigger to resizeEnd event
     $(window).resize(function() {
         if(this.resizeTO) clearTimeout(this.resizeTO);
         this.resizeTO = setTimeout(function() {
@@ -314,7 +314,7 @@ function drawRangeChart() {
         }, 0);
     });
 
-    //redraw graph when window resize is completed  
+    //redraw graph when window resize is completed
     $(window).on('resizeEnd', function() {
         options['width'] = graphSelector.getActiveDivWidth();
         chart.draw(view, options);
