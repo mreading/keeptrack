@@ -66,7 +66,7 @@ def manage_teams(request, user_id):
     coach = user.coach_set.all()[0]
     teams = coach.teams.all()
 
-    return render(request, "log/manage_teams.html", {'teams': teams})
+    return render(request, "log/manage_teams.html", {'user_id': user_id, 'teams': teams})
 
 @login_required(login_url='/log/login/')
 def add_team(request, user_id):
@@ -183,6 +183,12 @@ def add_coach(request, team_id):
 def settings(request, user_id):
     coach = Coach.objects.filter(user=user_id)[0]
     return render(request, "log/coach_settings.html", {'user_id':user_id})
+
+def all_seasons(request, team_id, user_id):
+    team = Team.objects.filter(id=team_id)[0]
+    seasons = team.seasons.all()
+    print seasons
+    return render(request, "log/all_seasons.html", {'user_id':user_id, 'team':team, 'seasons': seasons})
 
 def add_existing_athletes(request, user_id, team_id, season_id):
     coach_user = User.objects.get(id=user_id)

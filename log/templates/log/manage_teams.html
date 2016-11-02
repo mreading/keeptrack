@@ -7,7 +7,7 @@
   <div class="panel-group">
     {% for t in teams %}
         <div class="panel panel-default">
-            <div class="panel-heading">{{ t }}</div>
+            <div class="panel-heading"><a href= "/log/all_seasons/{{user_id}}/{{t.id}}">{{ t }}</a></div>
             <div class="panel-body">
             <a href="/log/add_coach/{{t.id}}/"> ADD ADDITIONAL COACH </a>
 
