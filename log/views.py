@@ -14,4 +14,20 @@ def index(request):
 
 def settings(request):
     return render(request, "log/settings.html", {})
- 
+
+def submit_bug(request):
+    bugs = Bug.objects.all()
+    user = request.user
+    if request.method == 'POST':
+        # note the request.FILES parameter, an xml file of workout data
+        form = AddBugForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            bug = Bug(description=data['description'])
+            bug.save()
+    form = AddBugForm()
+    context = {
+        'form':form,
+        'bugs':bugs
+    }
+    return render(request, "log/bug_submission.html", context)

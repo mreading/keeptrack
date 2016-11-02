@@ -74,3 +74,6 @@ class SelectTimePeriodForm(forms.Form):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=50, label="Username")
     password = forms.CharField(max_length=50, label="Password", widget=forms.PasswordInput)
+
+class AddBugForm(forms.Form):
+    description = forms.CharField(max_length=1000, widget=Textarea)

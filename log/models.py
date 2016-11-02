@@ -157,3 +157,9 @@ class Comment(models.Model):
     position = models.IntegerField()
     private = models.BooleanField()
     poster = models.ForeignKey(User)
+
+class Bug(models.Model):
+    description = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.description
