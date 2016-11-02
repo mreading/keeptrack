@@ -31,11 +31,10 @@ class SplitDurationWidget(forms.MultiWidget):
     """--------------------------------------------------------------------
     A Widget that splits duration input into four number input boxes.
     --------------------------------------------------------------------"""
-    def __init__(self, attrs={'cols':5}):
-        widgets = (forms.NumberInput(attrs=attrs),
-                   forms.NumberInput(attrs=attrs),
-                   forms.NumberInput(attrs=attrs),
-                   forms.NumberInput(attrs=attrs))
+    def __init__(self, attrs={'size':3}):
+        widgets = (forms.TextInput(attrs=attrs),
+                   forms.TextInput(attrs=attrs),
+                   forms.TextInput(attrs=attrs))
         super(SplitDurationWidget, self).__init__(widgets, attrs)
 
     def decompress(self, value):
@@ -45,8 +44,8 @@ class SplitDurationWidget(forms.MultiWidget):
                 hours = d.seconds // 3600
                 minutes = (d.seconds % 3600) // 60
                 seconds = d.seconds % 60
-                return [int(d.days), int(hours), int(minutes), int(seconds)]
-        return [0, 1, 0, 0]
+                return [0, int(hours), int(minutes), int(seconds)]
+        return [0, 0, 0]
 
 class MultiValueDurationField(forms.MultiValueField):
     widget = SplitDurationWidget
@@ -57,7 +56,6 @@ class MultiValueDurationField(forms.MultiValueField):
          forms.IntegerField(),
          forms.IntegerField(),
          forms.IntegerField(),
-         forms.IntegerField(),
         )
         super(MultiValueDurationField, self).__init__(
             fields=fields,
@@ -65,12 +63,11 @@ class MultiValueDurationField(forms.MultiValueField):
             )
 
     def compress(self, data_list):
-        if len(data_list) == 4:
+        if len(data_list) == 3:
             return timedelta(
-                days=int(data_list[0]),
-                hours=int(data_list[1]),
-                minutes=int(data_list[2]),
-                seconds=int(data_list[3]))
+                hours=int(data_list[0]),
+                minutes=int(data_list[1]),
+                seconds=int(data_list[2]))
         else:
             return timedelta(0)
 
@@ -153,7 +150,7 @@ class AddRepForm(forms.Form):
     duration = MultiValueDurationField()
     # duration = forms.DurationField()
     # goal_pace = forms.DurationField(optional=True)
-    rep_rest = forms.DurationField()
+    rep_rest =  MultiValueDurationField()
 
 class AddIntervalForm(forms.Form):
     """--------------------------------------------------------------------
