@@ -3,56 +3,67 @@
 
 {% block content %}
 
-  <form method="post", name='intervalform'>
-      {% csrf_token %}
+<div class="container-fluid">
+  <h2>Add Interval Workout</h2>
+  <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">Add Interval Run</div>
+        <div class="panel-body">
 
-      <label>Date</label>
-      {{ IntervalForm.date }}
+          <form method="post", name='intervalform'>
+              {% csrf_token %}
 
-      <div>
-      <label>Warm up</label>
-      {{ IntervalForm.warmup }}
-      {{ IntervalForm.wu_units }}
+              <label>Date</label>
+              {{ IntervalForm.date }}
+
+              <div>
+              <label>Warm up</label>
+              {{ IntervalForm.warmup }}
+              {{ IntervalForm.wu_units }}
+              </div>
+              <div>
+              {{ rep_formset.management_form }}
+              <label>Add Repeats</label>
+              {% for rep_form in rep_formset %}
+                  <div class="link-formset">
+                    <label>Distance</label>
+                      {{ rep_form.rep_distance }}
+                      {{ rep_form.rep_units }}
+
+                    <label>Time (HMS)</label>
+                      {{ rep_form.duration }}
+
+                    <label>Rest (HMS)</label>
+                      {{ rep_form.rep_rest }}
+
+                  </div>
+              {% endfor %}
+              </div>
+
+              <div>
+                <label>Cool Down</label>
+                {{ IntervalForm.cooldown }}
+                {{ IntervalForm.cd_units }}
+              </div>
+
+              <label>Comments</label>
+              {{ IntervalForm.comments }}
+
+              <input type="submit" value="Save Workout" class="button"/>
+          </form>
+
+          <!-- Include formset plugin - including jQuery dependency -->
+          <script type="text/javascript" src="/static/log/js/dynamic_reps.js"></script>
+          <script>
+              $('.link-formset').formset({
+                  addText: 'Add Repeat',
+                  deleteText: 'Remove'
+              });
+
+          </script>
+        </div>
       </div>
-      <div>
-      {{ rep_formset.management_form }}
-      <label>Add Repeats</label>
-      {% for rep_form in rep_formset %}
-          <div class="link-formset">
-            <label>Distance</label>
-              {{ rep_form.rep_distance }}
-              {{ rep_form.rep_units }}
-
-            <label>Time (HMS)</label>
-              {{ rep_form.duration }}
-
-            <label>Rest (HMS)</label>
-              {{ rep_form.rep_rest }}
-
-          </div>
-      {% endfor %}
-      </div>
-
-      <div>
-        <label>Cool Down</label>
-        {{ IntervalForm.cooldown }}
-        {{ IntervalForm.cd_units }}
-      </div>
-
-      <label>Comments</label>
-      {{ IntervalForm.comments }}
-
-      <input type="submit" value="Save Workout" class="button"/>
-  </form>
-
-  <!-- Include formset plugin - including jQuery dependency -->
-  <script type="text/javascript" src="/static/log/js/dynamic_reps.js"></script>
-  <script>
-      $('.link-formset').formset({
-          addText: 'Add Repeat',
-          deleteText: 'Remove'
-      });
-
-  </script>
-
+    </div>
+  </div>
+</div>
 {% endblock %}
