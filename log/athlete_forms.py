@@ -31,11 +31,10 @@ class SplitDurationWidget(forms.MultiWidget):
     """--------------------------------------------------------------------
     A Widget that splits duration input into four number input boxes.
     --------------------------------------------------------------------"""
-    def __init__(self, attrs=None):
-        widgets = (forms.NumberInput(attrs=attrs),
-                   forms.NumberInput(attrs=attrs),
-                   forms.NumberInput(attrs=attrs),
-                   forms.NumberInput(attrs=attrs))
+    def __init__(self, attrs={'size':3}):
+        widgets = (forms.TextInput(attrs=attrs),
+                   forms.TextInput(attrs=attrs),
+                   forms.TextInput(attrs=attrs))
         super(SplitDurationWidget, self).__init__(widgets, attrs)
 
     def decompress(self, value):
@@ -45,20 +44,15 @@ class SplitDurationWidget(forms.MultiWidget):
                 hours = d.seconds // 3600
                 minutes = (d.seconds % 3600) // 60
                 seconds = d.seconds % 60
-                return [int(d.days), int(hours), int(minutes), int(seconds)]
-        return [0, 1, 0, 0]
+                return [0, int(hours), int(minutes), int(seconds)]
+        return [0, 0, 0]
 
 class MultiValueDurationField(forms.MultiValueField):
-    """--------------------------------------------------------------------
-    Not currently in use. But If we can't find a widget for entering durations
-    this could be more useful.
-    --------------------------------------------------------------------"""
     widget = SplitDurationWidget
 
     def __init__(self, *args, **kwargs):
         fields = (
             #use a numberinput widget to set the width of the input fields
-         forms.IntegerField(),
          forms.IntegerField(),
          forms.IntegerField(),
          forms.IntegerField(),
@@ -69,12 +63,11 @@ class MultiValueDurationField(forms.MultiValueField):
             )
 
     def compress(self, data_list):
-        if len(data_list) == 4:
+        if len(data_list) == 3:
             return timedelta(
-                days=int(data_list[0]),
-                hours=int(data_list[1]),
-                minutes=int(data_list[2]),
-                seconds=int(data_list[3]))
+                hours=int(data_list[0]),
+                minutes=int(data_list[1]),
+                seconds=int(data_list[2]))
         else:
             return timedelta(0)
 
@@ -154,9 +147,10 @@ class AddRepForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     rep_units = forms.ChoiceField(choices=unit_choices, initial='Meters')
-    duration = MultiValueDurationField()   
+    duration = MultiValueDurationField()
+    # duration = forms.DurationField()
     # goal_pace = forms.DurationField(optional=True)
-    rep_rest = forms.DurationField()
+    rep_rest =  MultiValueDurationField()
 
 class AddIntervalForm(forms.Form):
     """--------------------------------------------------------------------
@@ -197,22 +191,22 @@ class BaseAddRepFormSet(BaseFormSet):
         --------------------------------------------------------------------"""
         if any(self.errors):
             return
-        rep_durations = []
+        durations = []
         rep_rests = []
         duplicates = False
 
         for form in self.forms:
             if form.cleaned_data:
-                rep_duration = form.cleaned_data['duration']
+                duration = form.cleaned_data['duration']
                 rep_rest = form.cleaned_data['rep_rest']
 
-                # Check that all links have both an rep_duration and rep_rest
-                if rep_rest and not rep_duration:
+                # Check that all links have both an duration and rep_rest
+                if rep_rest and not duration:
                     raise forms.ValidationError(
-                        'All links must have an rep_duration.',
-                        code='missing_rep_duration'
+                        'All links must have an duration.',
+                        code='missing_duration'
                     )
-                elif rep_duration and not rep_rest:
+                elif duration and not rep_rest:
                     raise forms.ValidationError(
                         'All links must have a rep_rest.',
                         code='missing_rep_rest'
