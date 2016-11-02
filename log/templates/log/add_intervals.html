@@ -9,24 +9,37 @@
     <div class="panel panel-default">
       <div class="panel-heading">Add Interval Run</div>
         <div class="panel-body">
-
-          <form method="post", name='intervalform'>
+          <form class="form-horizontal" method="post", name='intervalform'>
               {% csrf_token %}
 
-              <label>Date</label>
-              {{ IntervalForm.date }}
+              <div class="control-group date">
+                <label class="control-label">Date</label>
+                <div class="controls">
+                  {{ IntervalForm.date|add_class:"form-control" }}
+                </div>
+              </div>
+
+              <div class="control-group date">
+                <label class="control-label">Warm Up</label>
+                <div class="controls">
+                  {{ IntervalForm.warmup|add_class:"form-control" }}
+                </div>
+              </div>
+
+              <div class="control-group date">
+                <label class="control-label">Warm Up Units</label>
+                <div class="controls">
+                  {{ IntervalForm.wu_units|add_class:"form-control" }}
+                </div>
+              </div>
 
               <div>
-              <label>Warm up</label>
-              {{ IntervalForm.warmup }}
-              {{ IntervalForm.wu_units }}
-              </div>
-              <div>
-              {{ rep_formset.management_form }}
-              <label>Add Repeats</label>
-              {% for rep_form in rep_formset %}
+                {{ rep_formset.management_form }}
+                <label>Add Repeats</label>
+                {% for rep_form in rep_formset %}
                   <div class="link-formset">
                     <label>Distance</label>
+
                       {{ rep_form.rep_distance }}
                       {{ rep_form.rep_units }}
 
@@ -37,17 +50,29 @@
                       {{ rep_form.rep_rest }}
 
                   </div>
-              {% endfor %}
+                {% endfor %}
               </div>
 
-              <div>
-                <label>Cool Down</label>
-                {{ IntervalForm.cooldown }}
-                {{ IntervalForm.cd_units }}
+              <div class="control-group date">
+                <label class="control-label">Cool Down</label>
+                <div class="controls">
+                  {{ IntervalForm.cd_units|add_class:"form-control" }}
+                </div>
               </div>
 
-              <label>Comments</label>
-              {{ IntervalForm.comments }}
+              <div class="control-group date">
+                <label class="control-label">Cool Down Units</label>
+                <div class="controls">
+                  {{ IntervalForm.cd_units|add_class:"form-control" }}
+                </div>
+              </div>
+
+              <div class="control-group date">
+                <label class="control-label">Description</label>
+                <div class="controls">
+                  {{ IntervalForm.comments|add_class:"form-control" }}
+                </div>
+              </div>
 
               <input type="submit" value="Save Workout" class="button"/>
           </form>
@@ -59,7 +84,6 @@
                   addText: 'Add Repeat',
                   deleteText: 'Remove'
               });
-
           </script>
         </div>
       </div>

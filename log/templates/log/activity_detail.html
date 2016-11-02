@@ -2,9 +2,16 @@
 {% load staticfiles %}
 
 {% block content %}
-  <div class="module_container">
-    <div class="module_container">
-      <div>
+<div class="container-fluid">
+  <h2>
+    Activity Detail
+  </h2>
+  <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {{ activity.date | date:"l" }} {{ activity.date }}
+      </div>
+      <div class="panel-body">
         <div style="float:right;">
           <a href="/log/athlete/edit_activity/{{ activity.id }}">
             <div class="btn">
@@ -17,127 +24,108 @@
             </div>
           </a>
         </div>
-        <div>
-          <h3>{{ activity.date | date:"l" }} {{ activity.date }}</h3>
-        </div>
+
+        {% ifequal activity.act_type "NormalRun" %}
+          <div class="activity_detail_container">
+            <h5> {{ workout.distance }} {{ workout.units }} in {{ workout.duration }} </h5>
+          </div>
+        {% endifequal %}
+
+        {% ifequal activity.act_type "IntervalRun" %}
+          <h2 id='test'> Interval Run </h2>
+          <div class="activity_detail_container">
+            <h4>Warm up</h4>
+            <p> {{ workout.warmup }} {{ workout.wu_units }}</p>
+            <h4>Cool Down</h4>
+            <p> {{ workout.cooldown }} {{ workout.cd_units }}</p>
+            <h4>Total Distance</h4>
+            <p> {{ workout.distance }} Miles</p>
+
+            <table>
+              <tr>
+                <th>Distance</th>
+                <th>Time</th>
+                <th>Rest</th>
+                <th>Goal Pace</th>
+              </tr>
+              {% for rep in reps %}
+                <tr>
+                  <td>{{ rep.distance }}</td>
+                  <td>{{ rep.duration }}</td>
+                  <td>{{ rep.rest }}</td>
+                  <td>{{ rep.goal_pace }}</td>
+                </tr>
+              {% endfor %}
+            </table>
+          </div>
+
+          <!--  Load the ajax api -->
+          <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+          <script type="text/javascript">
+            var interval_graph_data = {{ interval_graph_data|safe }}
+          </script>
+
+          <script type="text/javascript" src="{% static 'log/js/interval_run_detail.js' %}"></script>
+          <div id='interval_graph'>
+          </div>
+        {% endifequal %}
+
+        {% ifequal activity.act_type "CrossTrain" %}
+          <div .class="activity_detail_container">
+            <div .class="activity_detail_container">
+              <h2 id='test'> {{ workout.distance }} {{ workout.units }} in {{ workout.duration }} ({{ workout.sport }})</h2>
+            </div>
+          </div>
+        {% endifequal %}
+
+        {% ifequal activity.act_type "Event" %}
+          <div .class="activity_detail_container">
+            {{ workout.distance }}
+            {{ workout.duration }}
+            more stuff about the meet here
+          </div>
+        {% endifequal %}
+
+        {{ activity.comment }}
+
       </div>
 
-
-
-
-      {% ifequal activity.act_type "NormalRun" %}
-        <div class="activity_detail_container">
-          <h5> {{ workout.distance }} {{ workout.units }} in {{ workout.duration }} </h5>
-        </div>
-      {% endifequal %}
-
-
-
-
-
-      {% ifequal activity.act_type "IntervalRun" %}
-        <h2 id='test'> Interval Run </h2>
-        <div class="activity_detail_container">
-          <h4>Warm up</h4>
-          <p> {{ workout.warmup }} {{ workout.wu_units }}</p>
-          <h4>Cool Down</h4>
-          <p> {{ workout.cooldown }} {{ workout.cd_units }}</p>
-          <h4>Total Distance</h4>
-          <p> {{ workout.distance }} Miles</p>
-
-          <table>
-            <tr>
-              <th>Distance</th>
-              <th>Time</th>
-              <th>Rest</th>
-              <th>Goal Pace</th>
-            </tr>
-            {% for rep in reps %}
-              <tr>
-                <td>{{ rep.distance }}</td>
-                <td>{{ rep.duration }}</td>
-                <td>{{ rep.rest }}</td>
-                <td>{{ rep.goal_pace }}</td>
-              </tr>
-            {% endfor %}
-          </table>
-        </div>
-
-        <!--  Load the ajax api -->
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        <script type="text/javascript">
-          var interval_graph_data = {{ interval_graph_data|safe }}
-        </script>
-
-        <script type="text/javascript" src="{% static 'log/js/interval_run_detail.js' %}"></script>
-        <div id='interval_graph'>
-        </div>
-      {% endifequal %}
-
-
-
-
-
-
-
-      {% ifequal activity.act_type "CrossTrain" %}
-        <div .class="activity_detail_container">
-          <div .class="activity_detail_container">
-            <h2 id='test'> {{ workout.distance }} {{ workout.units }} in {{ workout.duration }} ({{ workout.sport }})</h2>
-          </div>
-        </div>
-      {% endifequal %}
-
-
-
-
-
-      {% ifequal activity.act_type "Event" %}
-        <div .class="activity_detail_container">
-          {{ workout.distance }}
-          {{ workout.duration }}
-          more stuff about the meet here
-        </div>
-      {% endifequal %}
-
-
-
-
-      {{ activity.comment }}
-
     </div>
-    <div class='module_container'>
-      {% if comments %}
-        <div id='thread_container'>
-          <h3>Comments</h3>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Comments
+      </div>
+      <div class="panel-body">
+        {% if comments %}
           {% for comment in comments %}
             <div class='comment_container'>
               <h5 style="color:#6b7a8f">{{ comment.poster }}</h5>
               <p style="margin-left:10px;">{{ comment.text }} <p>
             </div>
           {% endfor %}
-        </div>
-      {% endif %}
-      <form action="/log/athlete/activity_detail/{{ activity.id }}/" method="post" autocomplete="off">
-        {% csrf_token %}
-        {{ commentform.errors }}
-        {{ commentform.non_field_errors }}
-        {{ commentform.text }}
-        <input type="submit" value="Post comment" />
-      </form>
+        {% endif %}
+        <form action="/log/athlete/activity_detail/{{ activity.id }}/" method="post" autocomplete="off">
+          {% csrf_token %}
+          {{ commentform.errors }}
+          {{ commentform.non_field_errors }}
+          {{ commentform.text }}
+          <input type="submit" value="Post comment" />
+        </form>
+      </div>
     </div>
   </div>
+</div>
+
   <script>
    $(document).ready(function() {
      $('.btn').bind("mouseover", function(){
          var color = $(this).css("background-color");
-
          $(this).css("background", "#dcc7aa");
-
          $(this).bind("mouseout", function(){
              $(this).css("background", color);
          })
      })
   })
   </script>
+
 {% endblock %}
