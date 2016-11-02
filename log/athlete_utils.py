@@ -71,14 +71,14 @@ def build_graph_data(dates, activities, week_name_labels=False):
     #graph data is expected to be of the form [[x-axis data, y-axis data], ...]
     # where x axis is a date string and y axis is floating point number representing distance
     graph_data = [['Date', 'Miles', {'role':'style'}, 'Link']]
-    
+
     graph_data2 = [['Date', 'NormalRun', 'IntervalRun', 'CrossTrain', 'Event', {'role':'style'}, 'Link']]
     ##MAYBE PASS LEGEND HERE???
     #??????????????????????????????????????????????????????//
     #????
     #????????????????????????////
     validPoint=False
-    
+
     p = 0
     i = 0
     while i < len(dates):
@@ -99,12 +99,12 @@ def build_graph_data(dates, activities, week_name_labels=False):
                 'color:'+colors[activities[p].act_type],
                 '/log/athlete/activity_detail/'+str(activities[p].id),
             ])
-            
+
             graph_data2.append([str(w_date), None, None, None, None, 'color:'+colors[activities[p].act_type],
                 '/log/athlete/activity_detail/'+str(activities[p].id),])
             graph_data2[len(graph_data2)-1][graph_data2[0].index(activities[p].act_type)] = distance
-            
-            
+
+
             p += 1
             if p < len(activities) and dates[i] == activities[p].date:
                 i = i
@@ -117,7 +117,7 @@ def build_graph_data(dates, activities, week_name_labels=False):
             graph_data.append(
             [str(w_date), None, 'color:'+colors['OffDay'], 'nothing']
             )
-            
+
             graph_data2.append([str(w_date), None, None, 0, 0, 'color:'+colors['OffDay'],
                 'nothing'])
             i += 1
@@ -170,6 +170,7 @@ def create_run(run_type, activity, data):
             duration=data['duration'],
             units=data['units'],
         )
+        run.set_pace()
     elif run_type == "IntervalRun":
         # Not implemented because it is handled in a seperate view
         pass
@@ -196,6 +197,7 @@ def create_run(run_type, activity, data):
             units=data['units'],
             gender=data['gender']
         )
+        run.set_pace()
     run.save()
 
 def set_total_distance(interval_run):

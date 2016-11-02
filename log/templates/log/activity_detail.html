@@ -25,12 +25,6 @@
           </a>
         </div>
 
-        {% ifequal activity.act_type "NormalRun" %}
-          <div class="activity_detail_container">
-            <h5> {{ workout.distance }} {{ workout.units }} in {{ workout.duration }} </h5>
-          </div>
-        {% endifequal %}
-
         {% ifequal activity.act_type "IntervalRun" %}
           <h2 id='test'> Interval Run </h2>
           <div class="activity_detail_container">
@@ -70,6 +64,14 @@
           </div>
         {% endifequal %}
 
+        {% ifequal activity.act_type "NormalRun" %}
+          <div class="activity_detail_container">
+            <h4> Distance: {{ workout.distance }} {{ workout.units }} </h4>
+            <h4> Time: {{ workout.duration }} </h4>
+            <h4> Pace: {{ workout.pace }} Min/Mile </h4>
+          </div>
+        {% endifequal %}
+
         {% ifequal activity.act_type "CrossTrain" %}
           <div .class="activity_detail_container">
             <div .class="activity_detail_container">
@@ -86,8 +88,10 @@
           </div>
         {% endifequal %}
 
-        {{ activity.comment }}
-
+        <div>
+          <h4>Comments</h4>
+          {{ activity.comment }} 
+        </div>
       </div>
 
     </div>
