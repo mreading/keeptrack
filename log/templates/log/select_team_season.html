@@ -1,0 +1,97 @@
+{% extends 'log/base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+
+{% if not teams %}
+  <h3>You are not part of any team.</h3>
+
+{% else %}
+  <form class="form-horizontal" action="/log/calendar/select_team_season/" method="POST"
+   {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+    {% csrf_token %}
+    {{ form.media }}
+
+    <!---------------------------------------------------------
+  	  Code for generating pretty django forms with bootstrap
+  	---------------------------------------------------------->
+    {% if form.errors %}
+        <div class="alert alert-error">
+            <ul>
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% for field in form.visible_fields %}
+        <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+            <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+            <div class="controls">
+                <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
+                {{ field|add_class:"form-control" }}
+                {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
+    {% for field in form.hidden_fields %}
+        {{ field }}
+    {% endfor %}
+
+    {% block formsets %}
+        {% for formset in inlines %}
+            {% include "inline_formset.html" with formset=formset %}
+        {% endfor %}
+    {% endblock formsets %}
+    </br>
+
+    <div class="form-actions">
+        <input class="btn btn-primary btn-large" type="submit" value="Done"/>
+        {% block extra_buttons %}
+        {% endblock extra_buttons %}
+    </div>
+  </form>
+
+  <script>
+    function check_field_value() {
+      //dictionary of teams and corresponding seasons
+      var t2s_map = {{ t2s_map|safe }};
+
+      // clean out season dropdown
+      document.getElementById('id_season').options.length = 0;
+
+      // team has been selected
+      if($(this).val()) {
+        $('.season').show();
+
+        //get selected team's seasons
+        var team_object = document.getElementById("id_team");
+        var selected_team = team_object.options[team_object.selectedIndex].text;
+        var seasons = JSON.parse(t2s_map[selected_team]);
+
+        // for each season add season object to season field
+        var season_object = document.getElementById("id_season");
+        for(i=0; i < seasons.length; i++){
+          var option = document.createElement("option");
+          option.text = seasons[i]["fields"]["year"];
+          option.value = seasons[i]["pk"];
+          season_object.add(option);
+        }
+
+      // team is no longer selected
+      } else {
+        $('.season').hide();
+      }
+    }
+    $(document).ready(function() {
+          // set things up so function will be called when team field changes
+          $('#id_team').change(check_field_value);
+
+          // set the state based on the initial values
+          check_field_value.call($('#id_team').get(0));
+      });
+  </script>
+{% endif %}
+
+{% endblock %}

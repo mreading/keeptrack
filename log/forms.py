@@ -57,19 +57,23 @@ class AddCoachForm(forms.Form):
     last_name = forms.CharField(max_length=50, label="Last Name")
     email = forms.EmailField(max_length=100, label="Email")
 
-def str2season(string):
-    return Season.objects.filter(start_date=string[:10])
-
-class SelectTimePeriodForm(forms.Form):
-    seasons = []
-    for season in Season.objects.all():
-        start = season.start_date.strftime("%Y-%m-%d")
-        end = season.end_date.strftime("%Y-%m-%d")
-        seasons.append((season, start + " to " + end),)
-
+class SelectTeamSeasonForm(forms.Form):
     team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Team")
-    season = forms.TypedChoiceField(choices=seasons, coerce=str2season,
-                                    label="Season")
+    season = forms.ModelChoiceField(queryset=Season.objects.all(),
+        label="Season")
+
+    def __init__(self, *args, **kwargs):
+        teams = kwargs.pop("teams", None)
+        seasons = kwargs.pop("seasons", None)
+        super(SelectTeamSeasonForm, self).__init__(*args, **kwargs)
+
+        if teams != None:
+            self.fields['team'].queryset = teams
+            self.fields['season'].queryset = seasons
+
+class SelectDateRangeForm(forms.Form):
+    start_date = forms.DateField(widget=forms.SelectDateWidget(), label="Start Date")
+    end_date = forms.DateField(widget=forms.SelectDateWidget(), label="End Date")
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=50, label="Username")
