@@ -268,7 +268,14 @@ def time_period(request):
             data = form.cleaned_data
 
             team = data['team']
-            season = data['season']
+            seasons = data['season']
+
+            # get correct season
+            for a_season in seasons:
+                if a_season.team_set.all()[0] == team:
+                    season = a_season
+                    break
+
             start, finish = convert_start_end_dates(season.start_date, season.end_date)
 
             # needs to change based on team

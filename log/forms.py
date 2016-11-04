@@ -32,7 +32,7 @@ class AddCoachForm(forms.Form):
     email = forms.EmailField(max_length=100, label="Email")
 
 def str2season(string):
-    return Season.objects.filter(start_date=string[:10])[0]
+    return Season.objects.filter(start_date=string[:10])
 
 class SelectTimePeriodForm(forms.Form):
     seasons = []
@@ -42,7 +42,7 @@ class SelectTimePeriodForm(forms.Form):
         seasons.append((season, start + " to " + end),)
 
     team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Team")
-    season = forms.TypedChoiceField(choices=seasons, coerce=str2season, 
+    season = forms.TypedChoiceField(choices=seasons, coerce=str2season,
                                     label="Season")
 
 class LoginForm(forms.Form):
