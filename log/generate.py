@@ -143,7 +143,7 @@ def generate_xtrain_workout(athlete, date):
 def generate_workout_data(athlete):
     #get dates for last 7 days
     dates = []
-    for i in range(100):
+    for i in range(300):
         dates.append(datetime.date.today() - datetime.timedelta(i))
 
     #set the type of workouts to generate
@@ -198,15 +198,15 @@ def generate_athletes(season):
         ('Erich', 'Wohl', 2018),
         ('Andrew', 'Sinclair', 2018),
         ('Colin', 'Horgan', 2019),
-        # ('Reilly', 'Shew', 2019),
-        # ('Ben', 'Stoller', 2019),
-        # ('Bryce', 'Murdick', 2020),
-        # ('Jacob', 'Colangelo', 2020),
-        # ('Matthew', 'Reading', 2020),
-        # ('Christopher', 'Skeldon', 2020),
-        # ('Conor', 'Courtney', 2020),
-        # ('Francis', 'Zuroski', 2020),
-        # ('Andrew', 'Wheeler', 2020),
+        ('Reilly', 'Shew', 2019),
+        ('Ben', 'Stoller', 2019),
+        ('Bryce', 'Murdick', 2020),
+        ('Jacob', 'Colangelo', 2020),
+        ('Matthew', 'Reading', 2020),
+        ('Christopher', 'Skeldon', 2020),
+        ('Conor', 'Courtney', 2020),
+        ('Francis', 'Zuroski', 2020),
+        ('Andrew', 'Wheeler', 2020),
     ]
 
     for info in seed_info:
