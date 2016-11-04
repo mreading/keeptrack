@@ -189,6 +189,7 @@ function drawMonthChart() {
                  'pointSize': 5,
                  'colors': ['#6b7a8f', '#f7c331'],
                  'legend':{position:'right'}
+                 'isStacked':true,
                 //  'trendlines': { 0: {} }
               };
 

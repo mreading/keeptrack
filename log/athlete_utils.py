@@ -121,6 +121,9 @@ def build_graph_data(dates, activities, week_name_labels=False):
             graph_data2.append([str(w_date), None, None, 0, 0, 'color:'+colors['OffDay'],
                 'nothing'])
             i += 1
+
+    print graph_data
+    print graph_data2
     if not validPoint:
         return False
     return graph_data2

@@ -1,17 +1,79 @@
 {% extends 'log/base.html' %}
+{% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block content %}
   Team Stats
-  <div id="page">
-    <div class="module_container">
-      Mileage
-      -graph here-
-    </div>
-    <div class="module_container">
-      More stuff
-    </div>
-    <div class="module_container">
-      more graphs
+  <div>
+    <div class="page_title" style="display:inline-block">
+      <h2>Team Stats</h2>
     </div>
   </div>
+
+  <div class="container-fluid">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">Mileage</div>
+                <div class="panel-body">
+                    <form class="form-horizontal" action="/log/team_stats/" method="POST" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+                      {% csrf_token %}
+                      {{ form.media }}
+
+                      <!---------------------------------------------------------
+                          Code for generating pretty django forms with bootstrap
+                        ---------------------------------------------------------->
+                      {% if form.errors %}
+                          <div class="alert alert-error">
+                              <ul>
+                                  {% for error in form.non_field_errors %}
+                                       <li><strong>{{ error|escape }}</strong></li>
+                                  {% endfor %}
+                              </ul>
+                          </div>
+                      {% endif %}
+
+                      {% for field in form.visible_fields %}
+                          <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+                              <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                              <div class="controls">
+                                  <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
+                                  {{ field|add_class:"form-control" }}
+                                  {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+                              </div>
+                          </div>
+                      {% endfor %}
+
+                      {% for field in form.hidden_fields %}
+                          {{ field }}
+                      {% endfor %}
+
+                      {% block formsets %}
+                          {% for formset in inlines %}
+                              {% include "inline_formset.html" with formset=formset %}
+                          {% endfor %}
+                      {% endblock formsets %}
+                      </br>
+
+                      <div class="form-actions">
+                          <input class="btn btn-primary btn-large" type="submit" value="Show Mileage"/>
+                          {% block extra_buttons %}
+                          {% endblock extra_buttons %}
+                      </div>
+                    </form>
+
+                    <!--Load the script with the actual mileage graph in it -->
+
+                    <!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> -->
+                    <script type="text/javascript">
+                        var mileage_data = {{ mileage_data|safe }}
+                    </script>
+                    <script type="text/javascript" src="{% static 'log/js/stats.js' %}"></script>
+
+                    <!--Div that will hold the bar chart-->
+                    <div id="mileage_graph" class="graph"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
