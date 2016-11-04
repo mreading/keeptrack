@@ -8,6 +8,10 @@ from .models import *
 from datetime import date
 from django.forms.formsets import BaseFormSet
 
+class WearForm(forms.Form):
+    town = forms.CharField(max_length=100, label="Town Name")
+    state = forms.CharField(max_length=50, label="State Abbr")
+
 class SettingsForm(forms.Form):
     log_private = forms.BooleanField(initial=False, required=False)
 

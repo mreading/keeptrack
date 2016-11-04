@@ -17,6 +17,20 @@ from r2win_import import *
 import json
 import datetime
 
+def wear(request):
+    if request.method == 'POST':
+        form = WearForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            context = wear_help(data['town']+", "+data['state'])
+            if not context:
+                form = WearForm
+                return render(request, 'log/wear.html', {'form':form, 'error':'Your town and/or state was invalid'})
+            return render(request, 'log/wear.html', context)
+    else:
+        form = WearForm()
+        return render(request, 'log/wear.html', {'form': form})
+
 @login_required(login_url='/log/login/')
 def delete_activity(request, activity_id):
     # FIXME have to make sure athlete is the one deleting the workout

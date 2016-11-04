@@ -6,6 +6,90 @@ from .utils import *
 from .models import *
 from .athlete_forms import *
 
+from forecastiopy import *
+from geopy.geocoders import Nominatim
+
+def wear_help(location):
+
+    geolocator = Nominatim()
+    location = geolocator.geocode(location)
+    if location == None:
+        return None
+    lat = location.latitude
+    lon = location.longitude
+
+    fio = ForecastIO.ForecastIO("31d0c8f0c1036505d4f8541000fcc555", latitude=lat, longitude=lon)
+    current = FIOCurrently.FIOCurrently(fio)
+
+    # for use in debugging.
+    #for item in current.get().keys():
+    #    print item + ' : ' + unicode(current.get()[item])
+
+    tights_CO = 45
+    temp = current.temperature
+    #------------------------tights-----------------------------
+    #adjust for wind
+    if current.windSpeed > 5 and current.windSpeed < 10:
+        tights_CO -= 5
+    elif current.windSpeed > 10:
+        tights_CO -= 10
+
+    #calculate tights
+    if temp > tights_CO:
+        tights = "No tights today."
+    else:
+        tights = "Wear tights."
+
+    #----------------------tops--------------------------------
+    tops = ""
+    adj_temp = temp - current.windSpeed
+
+    if .85 < current.precipProbability <= 1 and current.icon == "rain":
+        if adj_temp > 48:
+            tops = "it will probably rain, but it is too warm to matter."
+        else:
+            tops = "It will probably rain, and it's pretty cold. Throw a windbreaker on top."
+
+    if adj_temp > 60:
+        tops += "Don't wear any shirt. It's time to get ur tan on."
+    elif adj_temp > 48:
+        tops += "A T-shirt will probably do it"
+    elif adj_temp > 40:
+        tops += "A long sleeve will work just fine."
+    elif adj_temp > 34:
+        tops += "It's a two shirt kind of day."
+    elif adj_temp > 24:
+        tops += "T-shirt, long sleeve, jacket."
+    else:
+        tops += "Wear at least two layers on top, one of which should be substantial. "
+
+    #------------------------hat/glasses--------------------------
+    if adj_temp < 30:
+        hat = "Wear a winter hat."
+    else:
+        hat = "It's pretty cloudy. No need for a baseball hat or sunglasses."
+        if current.cloudCover < .3:
+            if current.windSpeed > 10:
+                hat = "A hat might blow off today, but sunglasses are a good idea"
+            else:
+                hat = "Hats and sunglasses should be worn today"
+
+    if current.icon == "snow":
+        tops += " It is snowing, so glasses and gloves are the move"
+
+    #-----------------------storm warning------------------------
+    storm = "Unavailable"
+    if "nearestStormDistance" in current.get().keys():
+        storm = "Just so you know, the nearest storm is {0} miles away".format(current.nearestStormDistance)
+
+    return {
+        'location': location,
+        'tights': tights,
+        'tops': tops,
+        'hat': hat,
+        'storm': storm
+    }
+
 def get_prs(athlete):
     activities = Activity.objects.filter(act_type='Event', athlete=athlete)
     events = [Event.objects.filter(activity=a)[0] for a in activities]
