@@ -24,32 +24,32 @@
               <!--Load the script with the actual mileage graph in it -->
               <script type="text/javascript">
                 var show_range_graph_first = {{ show_range_first|safe }};
-                
+
                 {% if year_graph_data %}
                 var year_graph_data = {{ year_graph_data|safe }}
                 {% else %}
                 var year_graph_data = null;
                 {% endif %}
-                
+
                 {% if month_graph_data %}
                 var month_graph_data = {{ month_graph_data|safe }}
                 {% else %}
                 var month_graph_data = null;
                 {% endif %}
-   
+
                 {% if week_graph_data %}
                 var week_graph_data = {{ week_graph_data|safe }}
                 {% else %}
                 var week_graph_data = null;
                 {% endif %}
-                
+
                 {% if range_graph_data %}
                 var range_graph_data = {{ range_graph_data|safe }}
                 {% else %}
                 var range_graph_data = null;
                 {% endif %}
             </script>
-          
+
               <script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
 
               <!--Div that will hold the bar chart-->
@@ -77,23 +77,50 @@
       <div class="panel-heading">Workout History</div>
       <div class="panel-body">
         <h3>Workout History</h3>
-        {% for r in all_runs %}
-          <div>
-          <a href="/log/athlete/activity_detail/{{ r.activity_id }}">
-            <div class="run_detail btn">
-              {{ r }} {{ r.activity.date }}
-            </div>
-          </a>
-          <!-- <a href="/log/athlete/delete_activity/{{ r.activity_id }}">
-            <div class='delete_run, btn'>DELETE</div>
-          </a> -->
-          {% if can_edit %}
-            <a href="/log/athlete/edit_activity/{{ r.activity_id }}">
-              <div class='edit_run btn'>EDIT</div>
-            </a>
-          {% endif %}
-          </div>
-        {% endfor %}
+        <table>
+          <tr>
+            <th><h4>Date</h4></th>
+            <th><h4>Distance</h4></th>
+            <th><h4>Type</h4></th>
+            {% if can_edit %}
+              <th><h4>Actions</h4></th>
+            {% endif %}
+
+          </tr>
+          {% for r in all_runs %}
+            <!-- <a href="/log/athlete/activity_detail/{{ r.activity_id }}"> -->
+            <tr class="clickable-row" data-href="/log/athlete/activity_detail/{{ r.activity_id }}">
+              <td>
+                {{ r.activity.date|date:"l" }} {{ r.activity.date }}
+              </td>
+              <td>
+                {{ r.distance }}
+              </td>
+              <td>
+                {% ifequal r.activity.act_type "IntervalRun" %}
+                  Interval Workout
+                {% endifequal %}
+
+                {% ifequal r.activity.act_type "Event" %}
+                  Race
+                {% endifequal %}
+
+                {% ifequal r.activity.act_type "NormalRun" %}
+                  Normal Run
+                {% endifequal %}
+
+                {% ifequal r.activity.act_type "CrossTrain" %}
+                  Cross Train
+                {% endifequal %}
+              </td>
+              {% if can_edit %}
+                  <td><a href="/log/athlete/edit_activity/{{ r.activity_id }}">EDIT</a></td>
+              {% endif %}
+              </div>
+            </tr>
+          <!-- </a> -->
+          {% endfor %}
+        </table>
         </div>
     </div>
     <div class="panel panel-default">
@@ -112,4 +139,22 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  jQuery(document).ready(function($) {
+      $(".clickable-row").click(function() {
+          window.document.location = $(this).data("href");
+      });
+  });
+
+  $(document).ready(function() {
+    $('.clickable-row').bind("mouseover", function(){
+        var color = $(this).css("background-color");
+        $(this).css("background", "#dcc7aa");
+        $(this).bind("mouseout", function(){
+            $(this).css("background", color);
+        })
+    })
+ })
+</script>
 {% endblock %}

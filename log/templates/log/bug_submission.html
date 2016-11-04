@@ -1,15 +1,15 @@
 {% extends 'log/base.html' %}
 {% load staticfiles %}
 {% load widget_tweaks %}
-
 {% block content %}
+
 <div class="container-fluid">
-  <h2>Add Run</h2>
+  <h2>Help us improve KeepTrack </h2>
   <div class="panel-group">
     <div class="panel panel-default">
-      <div class="panel-heading">Add a Run</div>
+      <div class="panel-heading">Submit A Bug!</div>
       <div class="panel-body">
-        <form action="/log/athlete/add/{{ run_type }}/" method="post" autocomplete="off">
+        <form action="/log/submit_bug/" method="post" autocomplete="off">
           {% csrf_token %}
           {{ form.media }}
           {% if form.errors %}
@@ -45,13 +45,26 @@
           </br>
 
           <div class="form-actions">
-              <input class="btn btn-primary btn-large" type="submit" value="Add Run"/>
+              <input class="btn btn-primary btn-large" type="submit" value="Submit Bug"/>
               {% block extra_buttons %}
               {% endblock extra_buttons %}
           </div>
         </form>
       </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Current Bugs
+      </div>
+      <div class="panel-body">
+        {% for bug in bugs %}
+          <div style="border:1px solid black;border-radius:5px;margin:10px;padding:5px;">
+            {{ bug }}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   </div>
 </div>
-</div>
+
 {% endblock %}

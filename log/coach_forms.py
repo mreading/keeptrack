@@ -22,10 +22,3 @@ class NewTeamForm(forms.Form):
     sport = forms.CharField(
         widget=forms.Select(
             choices=SPORT_CHOICES), label = "Sport")
-
-
-class InviteForm(forms.Form):
-    username = forms.CharField(max_length=20)
-    first_name = forms.CharField(max_length=40)
-    last_name = forms.CharField(max_length=40)
-    email = forms.EmailField()

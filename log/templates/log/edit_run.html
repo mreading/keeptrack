@@ -1,69 +1,102 @@
 {% extends 'log/base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
-  {% if rep_formset %}
-    <form method="post", name='intervalform' action="/log/athlete/edit_activity/{{ activity.id }}/">
-        {% csrf_token %}
+<div class="container-fluid">
+  <h2>Edit</h2>
+  <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">Edit</div>
+        <div class="panel-body">
+          {% if rep_formset %}
+            <form method="post", name='intervalform' action="/log/athlete/edit_activity/{{ activity.id }}/">
+                {% csrf_token %}
 
-        {{ IntervalForm.errors }}
-        {{ rep_formset.errors }}
+                <div class="control-group date">
+                  <label class="control-label">Date</label>
+                  <div class="controls">
+                    {{ IntervalForm.date|add_class:"form-control" }}
+                  </div>
+                </div>
 
-        <label>Date</label>
-        {{ IntervalForm.date }}
+                <div class="control-group date">
+                  <label class="control-label">Warm Up</label>
+                  <div class="controls">
+                    {{ IntervalForm.warmup|add_class:"form-control" }}
+                  </div>
+                </div>
 
-        <div>
-        <label>Warm up</label>
-        {{ IntervalForm.warmup }}
-        {{ IntervalForm.wu_units }}
-        </div>
-        <div>
-        {{ rep_formset.management_form }}
-        <label>Add Repeats</label>
-        {% for rep_form in rep_formset %}
-            <div class="link-formset">
-              <label>Distance</label>
-                {{ rep_form.errors }}
-                {{ rep_form.rep_distance }}
-                {{ rep_form.rep_units }}
+                <div class="control-group date">
+                  <label class="control-label">Warm Up Units</label>
+                  <div class="controls">
+                    {{ IntervalForm.wu_units|add_class:"form-control" }}
+                  </div>
+                </div>
 
-              <label>Time</label>
-                {{ rep_form.rep_duration }}
+                <div>
+                  {{ rep_formset.management_form }}
+                  <label>Add Repeats</label>
+                  {% for rep_form in rep_formset %}
+                    <div class="link-formset">
+                      <label>Distance</label>
 
-              <label>Rest</label>
-                {{ rep_form.rep_rest }}
+                        {{ rep_form.rep_distance }}
+                        {{ rep_form.rep_units }}
 
-            </div>
-        {% endfor %}
-        </div>
+                      <label>Time (HMS)</label>
+                        {{ rep_form.duration }}
 
-        <div>
-          <label>Cool Down</label>
-          {{ IntervalForm.cooldown }}
-          {{ IntervalForm.cd_units }}
-        </div>
+                      <label>Rest (HMS)</label>
+                        {{ rep_form.rep_rest }}
 
-        <label>Comments</label>
-        {{ IntervalForm.comments }}
+                    </div>
+                  {% endfor %}
+                </div>
 
-        <input type="submit" value="Update Run" class="button"/>
-    </form>
+                <div class="control-group date">
+                  <label class="control-label">Cool Down</label>
+                  <div class="controls">
+                    {{ IntervalForm.cd_units|add_class:"form-control" }}
+                  </div>
+                </div>
 
-    <!-- Include formset plugin - including jQuery dependency -->
-    <script type="text/javascript" src="/static/log/js/dynamic_reps.js"></script>
-    <script>
-        $('.link-formset').formset({
-            addText: 'Add Repeat',
-            deleteText: 'Remove'
-        });
+                <div class="control-group date">
+                  <label class="control-label">Cool Down Units</label>
+                  <div class="controls">
+                    {{ IntervalForm.cd_units|add_class:"form-control" }}
+                  </div>
+                </div>
 
-    </script>
-  {% else %}
-    <form action="/log/athlete/edit_activity/{{ activity.id }}/" method="post" autocomplete="off">
-      {% csrf_token %}
-      {{ form.errors }}
-      {{ form.non_field_errors }}
-      {{ form.as_p }}
-      <input type="submit" value="Update Run" />
-    </form>
-  {% endif %}
-{% endblock %}
+                <div class="control-group date">
+                  <label class="control-label">Description</label>
+                  <div class="controls">
+                    {{ IntervalForm.comments|add_class:"form-control" }}
+                  </div>
+                </div>
+
+                <input type="submit" value="Update Workout" class="button"/>
+              </form>
+
+            <!-- Include formset plugin - including jQuery dependency -->
+            <script type="text/javascript" src="/static/log/js/dynamic_reps.js"></script>
+            <script>
+                $('.link-formset').formset({
+                    addText: 'Add Repeat',
+                    deleteText: 'Remove'
+                });
+
+            </script>
+          {% else %}
+            <form action="/log/athlete/edit_activity/{{ activity.id }}/" method="post" autocomplete="off">
+              {% csrf_token %}
+              {{ form.errors }}
+              {{ form.non_field_errors }}
+              {{ form.as_p }}
+              <input type="submit" value="Update Run" />
+            </form>
+          {% endif %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>

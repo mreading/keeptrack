@@ -143,19 +143,21 @@
 
                 // this is how you get the data before the form has been submitted.
                 // console.log(document.intervalform['form-0-rep_distance'].value)
-                console.log(document.intervalform);
                 row.insertBefore($(buttonRow)).show();
                 row.find('input,select,textarea,label').each(function() {
-                    console.log(options.prefix)
                     updateElementIndex($(this), options.prefix, formCount);
                 });
                 $('#id_' + options.prefix + '-TOTAL_FORMS').val(formCount + 1);
                 // If a post-add callback was supplied, call it with the added form:
-                console.log(formCount)
+
                 // When adding a rep, let the initial values be those of the previous rep
                 document.intervalform['form-'+(formCount).toString()+'-rep_distance'].value = document.intervalform['form-'+(formCount-1)+'-rep_distance'].value;
-                document.intervalform['form-'+(formCount).toString()+'-duration'].value = document.intervalform['form-'+(formCount-1)+'-duration'].value;
-                document.intervalform['form-'+(formCount).toString()+'-rep_rest'].value = document.intervalform['form-'+(formCount-1)+'-rep_rest'].value;
+                document.intervalform['form-'+(formCount).toString()+'-duration_0'].value = document.intervalform['form-'+(formCount-1)+'-duration_0'].value;
+                document.intervalform['form-'+(formCount).toString()+'-duration_1'].value = document.intervalform['form-'+(formCount-1)+'-duration_1'].value;
+                document.intervalform['form-'+(formCount).toString()+'-duration_2'].value = document.intervalform['form-'+(formCount-1)+'-duration_2'].value;
+                document.intervalform['form-'+(formCount).toString()+'-rep_rest_0'].value = document.intervalform['form-'+(formCount-1)+'-rep_rest_0'].value;
+                document.intervalform['form-'+(formCount).toString()+'-rep_rest_1'].value = document.intervalform['form-'+(formCount-1)+'-rep_rest_1'].value;
+                document.intervalform['form-'+(formCount).toString()+'-rep_rest_2'].value = document.intervalform['form-'+(formCount-1)+'-rep_rest_2'].value;                
                 document.intervalform['form-'+(formCount).toString()+'-rep_units'].value = document.intervalform['form-'+(formCount-1)+'-rep_units'].value;
                 if (options.added) options.added(row);
                 return false;

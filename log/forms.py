@@ -2,6 +2,8 @@ from django.forms import *
 from django import forms
 from datetime import datetime
 from .models import *
+from django.contrib.auth.forms import *
+from django.forms import ModelChoiceField
 
 SPORT_CHOICES = [('ITF', 'Indoor Track and Field'),
     ('OTF','Outdoor Track and Field'), ('XC', 'Cross Country')]
@@ -13,6 +15,7 @@ class SignupForm(forms.Form):
     password = forms.CharField(max_length=30, label="Password")
     email = forms.EmailField(max_length=100, label="Email")
     school = forms.CharField(max_length=50, label="School Name")
+
     gender = forms.CharField(
         widget=forms.Select(
              choices=[('Men\'s', 'Men\'s'), ('Women\'s', 'Women\'s')]), label="Team Gender")
@@ -25,6 +28,29 @@ class AddAthleteForm(forms.Form):
     last_name = forms.CharField(max_length=50, label="Last Name")
     graduation_year = forms.IntegerField(label = "Graduation Year")
     email = forms.EmailField(max_length=100, label="Email")
+
+class AddExistingAthleteForm(forms.Form):
+    athletes = forms.ModelMultipleChoiceField(queryset=Athlete.objects.all(), label="Athletes") #to_field_name
+
+    def __init__(self, *args, **kwargs):
+        season_id = kwargs.pop('season_id', None)
+        coach = kwargs.pop('coach', None)
+        super(AddExistingAthleteForm, self).__init__(*args, **kwargs)
+
+        if coach:
+            teams = coach.teams.all()
+            athletes = Athlete.objects.none()
+            if season_id:
+                curr_season = Season.objects.filter(id = season_id)
+                if curr_season:
+                    curr_season = curr_season[0]
+            for team in teams:
+                print team
+                seasons = team.seasons.all()
+                for season in seasons:
+                    athletes = athletes | season.athlete_set.all()
+            athletes = athletes.exclude(pk__in = curr_season.athlete_set.all())
+            self.fields['athletes'].queryset = athletes
 
 class AddCoachForm(forms.Form):
     first_name = forms.CharField(max_length=50, label="First Name")
@@ -48,3 +74,6 @@ class SelectTimePeriodForm(forms.Form):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=50, label="Username")
     password = forms.CharField(max_length=50, label="Password", widget=forms.PasswordInput)
+
+class AddBugForm(forms.Form):
+    description = forms.CharField(max_length=1000, widget=Textarea)

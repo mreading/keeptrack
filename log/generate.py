@@ -47,6 +47,7 @@ def generate_meet(athlete, date):
         duration=duration,
         place=randrange(1, 300)
     )
+    event.set_pace()
     event.save()
 
 def add_rep(interval_run, position):
@@ -113,7 +114,7 @@ def generate_normal_workout(athlete, date):
         units = choice(['Kilometers', 'Miles']),
         duration = timedelta(minutes=minutes)
     )
-
+    normal_run.set_pace()
     normal_run.save()
 
 def generate_xtrain_workout(athlete, date):

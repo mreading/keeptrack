@@ -44,3 +44,19 @@ a {
 .jumbotron {
     margin-bottom: 0px;
 }
+
+.auth {
+  padding-left: 20px;
+}
+
+h1 {
+  padding-left: 20px;
+}
+
+.a {
+  padding-left: 20px;
+}
+
+.dropdown-divider {
+  align-items: center;
+}

@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from .forms import *
 from .utils import *
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import IntegrityError
@@ -72,5 +72,16 @@ def signup(request):
         form = SignupForm()
         return render(request, "log/signup.html", {'form':form})
 
-def AcceptInvite(request, key):
-    return render(request, "log/settings.html", {})
+def change_password(request, user_id):
+    if request.method == 'POST':
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            data = form.cleaned_data
+            return redirect("/log/", {})
+        else:
+            return render(request, "log/change_password.html", {'form':form, 'user_id':user_id})
+    else:
+        form = PasswordChangeForm(user=request.user)
+        return render(request, "log/change_password.html", {'form':form, 'user_id':user_id})
