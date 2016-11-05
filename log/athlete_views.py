@@ -19,18 +19,10 @@ import datetime
 
 @login_required(login_url='/log/login/')
 def wear(request):
-    if request.method == 'POST':
-        form = WearForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            context = wear_help(data['town']+", "+data['state'])
-            if not context:
-                form = WearForm
-                return render(request, 'log/wear.html', {'form':form, 'error':'Your town and/or state was invalid'})
-            return render(request, 'log/wear.html', context)
-    else:
-        form = WearForm()
-        return render(request, 'log/wear.html', {'form': form})
+    athlete = Athlete.objects.get(user=request.user)
+    context = wear_help(athlete.default_location)
+    return render(request, 'log/wear.html', context)
+
 
 @login_required(login_url='/log/login/')
 def delete_activity(request, activity_id):
@@ -158,7 +150,7 @@ def edit_xtrain(request, activity_id):
             activity.date=data['date']
             activity.save()
             xtrain.save()
-            return redirect("/log/athlete"+str(request.user.id), {})
+            return redirect("/log/athlete/"+str(request.user.id), {})
 
     # Bind the old data to the form so that it can be updated
     # NOTE for a modelform you could bind the data in one line, but
@@ -596,10 +588,12 @@ def settings(request, user_id):
         if form.is_valid():
             data = form.cleaned_data
             athlete.log_private = data['log_private']
+            athlete.default_location = data['location']
             athlete.save()
             return redirect("/log/athlete/{}/".format(athlete.user.id))
     form = SettingsForm()
     form.fields['log_private'].initial=athlete.log_private
+    form.fields['default_location'].initial=athlete.default_location
     context = {
         'form':form
     }

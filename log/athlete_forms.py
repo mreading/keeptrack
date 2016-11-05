@@ -14,6 +14,7 @@ class WearForm(forms.Form):
 
 class SettingsForm(forms.Form):
     log_private = forms.BooleanField(initial=False, required=False)
+    default_location = forms.CharField(label="Default Location eg. Kirkland, NY")
 
 class R2WImportForm(forms.Form):
     log = forms.FileField()
