@@ -81,6 +81,7 @@
           <tr>
             <th><h4>Date</h4></th>
             <th><h4>Distance</h4></th>
+            <th><h4>Pace</h4></th>
             <th><h4>Type</h4></th>
             {% if can_edit %}
               <th><h4>Actions</h4></th>
@@ -95,6 +96,23 @@
               </td>
               <td>
                 {{ r.distance }}
+              </td>
+              <td>
+                {% ifequal r.activity.act_type "IntervalRun" %}
+                    -
+                {% endifequal %}
+
+                {% ifequal r.activity.act_type "Event" %}
+                  {{ r.pace }}
+                {% endifequal %}
+
+                {% ifequal r.activity.act_type "NormalRun" %}
+                  {{ r.pace }}
+                {% endifequal %}
+
+                {% ifequal r.activity.act_type "CrossTrain" %}
+                    -
+                {% endifequal %}
               </td>
               <td>
                 {% ifequal r.activity.act_type "IntervalRun" %}
@@ -155,7 +173,7 @@
             $(this).css("background", color);
         })
     })
-    
+
     $(".clickable-row").hover(function() {
             $(this).css({"cursor": "pointer"});
     });

@@ -17,6 +17,7 @@ from r2win_import import *
 import json
 import datetime
 
+@login_required(login_url='/log/login/')
 def wear(request):
     if request.method == 'POST':
         form = WearForm(request.POST)
