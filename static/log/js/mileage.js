@@ -189,7 +189,6 @@ function drawMonthChart() {
                  'pointSize': 5,
                  'colors': ['#6b7a8f', '#f7c331'],
                  'legend':{position:'right'}
-                 'isStacked':true,
                 //  'trendlines': { 0: {} }
               };
 
@@ -299,7 +298,7 @@ function drawRangeChart() {
                };
 
   // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.LineChart(document.getElementById('date_range_graph'));
+  var chart = new google.visualization.ColumnChart(document.getElementById('date_range_graph'));
   chart.draw(view, options);
 
   var selectHandler = function(e) {
