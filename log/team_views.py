@@ -93,7 +93,7 @@ def team(request):
     meetData = []
 
     for meet in meets:
-        row = [str(meet.location), 1, 1, 1, 1]
+        row = [str(meet.location)]
         meetData.append(row)
 
     for athlete in athletes:

@@ -104,8 +104,8 @@ function drawTable2() {
     Adding columns, then providing rows for these columns
     --------------------------------------------------------------------*/
     data.addColumn('string', 'Location');
-    data.addColumn('string', 'Date');
-    data.addColumn('number', 'Distance');
+    // data.addColumn('string', 'Date');
+    // data.addColumn('number', 'Distance');
     // data.addColumn('number', 'Mileage (last 7 days)');
     data.addRows(meetData);
 

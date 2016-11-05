@@ -292,7 +292,10 @@ def athlete(request, user_id):
     #Make sure that if this log is private, only the athlete and the coach can see it
     can_view, can_edit = athlete_privacy(request.user, athlete.user)
     if not can_view:
-        return HttpResponse("{0}'s log is private.".format(athlete.user.first_name))
+        context = {
+            'name':athlete.user.first_name
+        }
+        return render(request, "log/forbidden.html", context)
 
     activities = Activity.objects.filter(athlete=athlete).order_by('date')
 
