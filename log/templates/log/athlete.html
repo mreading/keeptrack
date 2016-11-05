@@ -2,76 +2,70 @@
 {% load staticfiles %}
 
 {% block content %}
-  <div>
-    <div class="page_title" style="display:inline-block">
-      <h2>{{ athlete_user.first_name }} {{ athlete_user.last_name}}</h2>
+    <div>
+        <div class="page_title" style="display:inline-block">
+            <h2>{{ athlete_user.first_name }} {{ athlete_user.last_name}}</h2>
+        </div>
     </div>
-  </div>
-  <div id="page">
+<div id="page">
 
 <div class="container-fluid">
-  <div class="panel-group">
-    <div class="panel panel-default">
-      <div class="panel-heading">Mileage</div>
-      <div class="panel-body">
-            <div id= "mileage_options">
-            <div class="graph_option btn" id="current_year_selector">Year</div>
-            <div class="graph_option btn" id="current_month_selector">Month</div>
-            <div class="graph_option btn" id="current_week_selector">Week</div>
-            <div class="graph_option btn" id="range_selector">Range</div>
-          </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+          <div class="panel-heading">Mileage</div>
+            <div class="panel-body">
+                <div id= "mileage_options">
+                    <div class="graph_option btn" id="current_year_selector">Year</div>
+                    <div class="graph_option btn" id="current_month_selector">Month</div>
+                    <div class="graph_option btn" id="current_week_selector">Week</div>
+                    <div class="graph_option btn" id="range_selector">Range</div>
+                </div>
 
-              <!--Load the script with the actual mileage graph in it -->
-              <script type="text/javascript">
-                var show_range_graph_first = {{ show_range_first|safe }};
+                <!--Load the script with the actual mileage graph in it -->
+                <script type="text/javascript">
+                    var show_range_graph_first = {{ show_range_first|safe }};
 
-                {% if year_graph_data %}
-                var year_graph_data = {{ year_graph_data|safe }}
-                {% else %}
-                var year_graph_data = null;
-                {% endif %}
+                    {% if year_graph_data %}
+                    var year_graph_data = {{ year_graph_data|safe }}
+                    {% else %}
+                    var year_graph_data = null;
+                    {% endif %}
 
-                {% if month_graph_data %}
-                var month_graph_data = {{ month_graph_data|safe }}
-                {% else %}
-                var month_graph_data = null;
-                {% endif %}
+                    {% if month_graph_data %}
+                    var month_graph_data = {{ month_graph_data|safe }}
+                    {% else %}
+                    var month_graph_data = null;
+                    {% endif %}
 
-                {% if week_graph_data %}
-                var week_graph_data = {{ week_graph_data|safe }}
-                {% else %}
-                var week_graph_data = null;
-                {% endif %}
+                    {% if week_graph_data %}
+                    var week_graph_data = {{ week_graph_data|safe }}
+                    {% else %}
+                    var week_graph_data = null;
+                    {% endif %}
 
-                {% if range_graph_data %}
-                var range_graph_data = {{ range_graph_data|safe }}
-                {% else %}
-                var range_graph_data = null;
-                {% endif %}
-            </script>
+                    {% if range_graph_data %}
+                    var range_graph_data = {{ range_graph_data|safe }}
+                    {% else %}
+                    var range_graph_data = null;
+                    {% endif %}
+                </script>
 
-              <script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
+                <script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
 
-              <!--Div that will hold the bar chart-->
-            <div id="year_mileage_graph" class="graph"></div>
-            <div id="month_mileage_graph" style="width: 100%"></div>
-            <div id="week_mileage_graph" style="width: 100%"></div>
-            <div id="date_range_graph" style="width: 100%">
-              <form action="/log/athlete/{{ user.id }}/" method='post'>
-                {% csrf_token %}
-                {{ form.errors }}
-                {{ form }}
-                <input type="submit" value="Show Mileage"/>
-              </form>
+                  <!--Div that will hold the bar chart-->
+                <div id="year_mileage_graph" class="graph"></div>
+                <div id="month_mileage_graph" style="width: 100%"></div>
+                <div id="week_mileage_graph" style="width: 100%"></div>
+                <div id="date_range_graph" style="width: 100%">
+                    <form action="/log/athlete/{{ user.id }}/" method='post'>
+                        {% csrf_token %}
+                        {{ form.errors }}
+                        {{ form }}
+                        <input type="submit" value="Show Mileage"/>
+                    </form>
+                </div>
             </div>
-            <div id='run_legend'>
-              <div class='legend' id='legend_normal'>Normal</div>
-              <div class='legend' id='legend_interval'>Interval</div>
-              <div class='legend' id='legend_cross'>Cross</div>
-              <div class='legend' id='legend_event'>Event</div>
-            </div>
-            </div>
-    </div>
+        </div>
     </div>
     <div class="panel panel-default">
       <div class="panel-heading">Workout History</div>

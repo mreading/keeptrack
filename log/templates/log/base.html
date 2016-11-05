@@ -48,12 +48,12 @@
           {% if user.coach_set.all %}
             <li><a href="/log/team/">Home</a></li>
             <li><a href="/log/create_announcement">Announce</a></li>
+            <li><a href="/log/team_stats/">Stats</a></li>
           {% endif%}
 
           {% if user.athlete_set.all or user.coach_set.all %}
             <!-- <li><a href="/log/workout_templates/">Workouts</a></li> -->
             <li><a href="/log/calendar/">Calendar</a></li>
-            <li><a href="/log/team_stats/">Stats</a></li>
           {% endif %}
         </ul>
 
