@@ -588,7 +588,7 @@ def settings(request, user_id):
         if form.is_valid():
             data = form.cleaned_data
             athlete.log_private = data['log_private']
-            athlete.default_location = data['location']
+            athlete.default_location = data['default_location']
             athlete.save()
             return redirect("/log/athlete/{}/".format(athlete.user.id))
     form = SettingsForm()
