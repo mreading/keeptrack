@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from .forms import *
 from .utils import *
+from .athlete_utils import *
 from .models import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -63,6 +64,17 @@ def create_announcement(request):
             return redirect("/log", {})
     return render(request, "log/announcement.html", {'form':form})
 
+def get_miles_last_7_days(athlete):
+    activities = list(Activity.objects.filter(
+        athlete=athlete,
+        date__lt=datetime.date.today()+datetime.timedelta(1),
+        date__gt=datetime.date.today()-datetime.timedelta(7),
+        act_type__in=['NormalRun', 'Event', 'IntervalRun'],
+    ))
+
+    distance = sum([get_miles(get_workout_from_activity(a)) for a in activities])
+    return distance
+
 def team(request):
     form = SelectTeamSeasonForm()
     if request.method == 'POST':
@@ -85,7 +97,12 @@ def team(request):
         meetData.append(row)
 
     for athlete in athletes:
-        row = [str(athlete.user.first_name), str(athlete.user.last_name), str(athlete.graduation_year), 1]
+        row = [
+            str(athlete.user.first_name),
+            str(athlete.user.last_name),
+            str(athlete.graduation_year),
+            get_miles_last_7_days(athlete)
+            ]
         userIDs.append(athlete.user.id)
         athleteData.append(row)
 
