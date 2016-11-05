@@ -12,9 +12,36 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 import datetime
 
-"""---------------------------------------------------------------------------
- Context created for team.html
----------------------------------------------------------------------------"""
+def get_current_team_season(user):
+    if user.athlete_set.all():
+        #get the athlete,
+        athlete = list(user.athlete_set.all())[0]
+        print athlete
+        #then the seasons that athlete has participated in,
+        seasons = list(athlete.seasons.filter(
+            start_date__lt=datetime.date.today(),
+            end_date__gt=datetime.date.today()
+        ))
+        if len(seasons) == 0:
+            season = athlete.seasons.order_by('start_date')[0]
+        else:
+            season = seasons[0]
+        team = season.team_set.all()[0]
+
+    else:
+        coach = list(user.coach_set.all())[0]
+        team = list(coach.teams.filter(sport='XC'))[0]
+        seasons = list(team.seasons.filter(
+            start_date__lt=datetime.date.today(),
+            end_date__gt=datetime.date.today()
+        ))
+        if len(seasons) == 0:
+            season = team.seasons.order_by('start_date')[0]
+        else:
+            season = seasons[0]
+
+    return team, season
+
 def create_announcement(request):
     try:
         coach = request.user.coach_set.all()[0]
@@ -37,14 +64,24 @@ def create_announcement(request):
     return render(request, "log/announcement.html", {'form':form})
 
 def team(request):
-    athletes = Athlete.objects.all()
-    meets = Event.objects.all()
+    form = SelectTeamSeasonForm()
+    if request.method == 'POST':
+        form = SelectTeamSeasonForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            team = data['team']
+            season = data['season']
+    else:
+        team, season = get_current_team_season(request.user)
+
+    athletes = season.athlete_set.all()
+    meets = Meet.objects.all()
     userIDs = []
     athleteData = []
     meetData = []
 
     for meet in meets:
-        row = [str(meet.meet.location), str(meet.activity.date), meet.distance, meet.place]
+        row = [str(meet.location), 1, 1, 1, 1]
         meetData.append(row)
 
     for athlete in athletes:
@@ -58,6 +95,8 @@ def team(request):
     )
 
     context = {
+        'title': str(team),
+        'form':form,
         'announcements':announcements,
         'athletes':athletes,
         'athleteData': athleteData,
