@@ -81,3 +81,9 @@ class LoginForm(forms.Form):
 
 class AddBugForm(forms.Form):
     description = forms.CharField(max_length=1000, widget=Textarea)
+
+class AddAnnouncementForm(forms.Form):
+    text = forms.CharField(max_length=2000, widget=Textarea)
+    expiration_date = forms.DateField(widget=forms.SelectDateWidget(), label="Expiration Date")
+    season = forms.ModelChoiceField(queryset=Season.objects.all(),
+        label="Season") #FIXME need to filter season options by teams that the coach coaches. 

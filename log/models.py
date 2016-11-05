@@ -35,6 +35,12 @@ class Team(models.Model):
     def __str__(self):
         return self.school_name + ' ' + self.gender + " " + self.sport
 
+class Announcement(models.Model):
+    text = models.CharField(max_length=2000)
+    expiration_date = models.DateField()
+    season = models.ForeignKey(Season, on_delete=models.CASCADE)
+    posted_date = models.DateField()
+
 class Athlete(models.Model):
     """ ex: Henry Whipple """
     seasons = models.ManyToManyField(Season)

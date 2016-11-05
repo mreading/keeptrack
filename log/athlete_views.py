@@ -541,8 +541,6 @@ def add_intervals(request):
 
             #create a number of reps for the inverval workout
             for i in range(len(rep_formset)):
-                print rep_formset[0].cleaned_data
-                print rep_formset[0].cleaned_data.get('duration')
                 rep = Rep.objects.create(
                     interval_run=interval_workout,
                     distance=round(float(rep_formset[i].cleaned_data.get('rep_distance')), 2),

@@ -206,8 +206,6 @@ def build_graph_data(dates, activities, week_name_labels=False):
                 'nothing'])
             i += 1
 
-    print graph_data
-    print graph_data2
     if not validPoint:
         return False
     return graph_data2
