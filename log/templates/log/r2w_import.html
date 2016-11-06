@@ -1,15 +1,73 @@
 {% extends 'log/base.html' %}
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block content %}
-  <div id="page">
-    <div class="module_container">
-      <form enctype="multipart/form-data" action="/log/athlete/r2w_import/" method='post'>
-        {% csrf_token %}
-        {{ form.errors }}
-        {{ form }}
-        <input type="submit" value="Import" />
-      </form>
+
+<div class="container-fluid">
+  <h2>
+    Import
+  </h2>
+  <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Import Data from Running2Win
+      </div>
+      <h3 style="margin-left:10px">Instructions</h3>
+      <ol>
+          <li>Log in to Running2win</li>
+          <li>Navigate to your running log</li>
+          <li>View the range you would like to export. NOTE: Because running2win is bad, you cannot export to xml more than about 8 months worth of data at one time. The best way to export is to do it in about 6 month segments.</li>
+          <li>Click "Export View to XML"</li>
+          <li>This will download an xml file to your computer</li>
+          <li>Click "Choose file" (below) and navigate to your xml file</li>
+          <li>Click 'Upload'. Process may take 10-20 seconds.</li>
+          <li>Check over your imported data and edit anything that seems amiss. </li>
+      </ol>
+      <div class="panel-body">
+        <form enctype="multipart/form-data" action="/log/athlete/r2w_import/" method="post" autocomplete="off">
+            {% csrf_token %}
+            {{ form.media }}
+            {% if form.errors %}
+                <div class="alert alert-error">
+                    <ul>
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {% for field in form.visible_fields %}
+                <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+                    <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                    <div class="controls">
+                        <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
+                        {{ field|add_class:"form-control" }}
+                        {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% for field in form.hidden_fields %}
+                {{ field }}
+            {% endfor %}
+
+            {% block formsets %}
+                {% for formset in inlines %}
+                    {% include "inline_formset.html" with formset=formset %}
+                {% endfor %}
+            {% endblock formsets %}
+            </br>
+
+            <div class="form-actions">
+                <input class="btn btn-primary btn-large" type="submit" value="Import"/>
+                {% block extra_buttons %}
+                {% endblock extra_buttons %}
+            </div>
+        </form>
+      </div>
     </div>
   </div>
+</div>
 {% endblock %}

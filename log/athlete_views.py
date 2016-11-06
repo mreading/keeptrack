@@ -56,6 +56,7 @@ def edit_interval_run(request, activity_id):
             i_run.save()
             activity.coment = data['comments']
             activity.date = data['date']
+            activity.user_label=data['user_label']
             activity.save()
 
             # The ordering of reps is probably messed up, so delete them all
@@ -99,6 +100,7 @@ def edit_interval_run(request, activity_id):
     IntervalForm.fields['cd_units'].initial=i_run.cd_units
     IntervalForm.fields['date'].initial=activity.date
     IntervalForm.fields['comments'].initial=activity.comment
+    IntervalForm.fields['user_label'].initial=activity.user_label
 
     # Set the inital data for the formset just the same way as the previsou form
     AddRepFormSet = formset_factory(
@@ -148,6 +150,7 @@ def edit_xtrain(request, activity_id):
             xtrain.sport=data['sport']
             activity.comment=data['comments']
             activity.date=data['date']
+            activity.user_label=data['user_label']
             activity.save()
             xtrain.save()
             return redirect("/log/athlete/"+str(request.user.id), {})
@@ -163,6 +166,7 @@ def edit_xtrain(request, activity_id):
     form.fields['sport'].initial=xtrain.sport
     form.fields['duration'].initial=xtrain.duration
     form.fields['comments'].initial=activity.comment
+    form.fields['user_label'].initial=activity.user_label
 
     context = {
         'form':form,
@@ -192,8 +196,10 @@ def edit_race(request, activity_id):
             event.meet.save()
             activity.date=data['date']
             activity.comment=data['comments']
+            activity.user_label=data['user_label']
             activity.save()
             event.save()
+            event.set_pace()
             # redirect back to the athlete's home page
             return redirect("/log/athlete/"+str(request.user.id), {})
 
@@ -210,6 +216,7 @@ def edit_race(request, activity_id):
     form.fields['comments'].initial=activity.comment
     form.fields['location'].initial=event.meet.location
     form.fields['place'].initial=event.place
+    form.fields['user_label'].initial=activity.user_label
 
     #return the rendered template
     return render(request, "log/edit_run.html", {'form':form, 'activity':activity})
@@ -233,7 +240,9 @@ def edit_normal(request, activity_id):
             normal_run.units=data['units']
             activity.comment=data['comments']
             activity.date=data['date']
+            activity.user_label=data['user_label']
             activity.save()
+            normal_run.set_pace()
             normal_run.save()
             return redirect("/log/athlete/"+str(request.user.id), {})
     # Bind the old data to the form for editing.
@@ -243,6 +252,7 @@ def edit_normal(request, activity_id):
     form.fields['units'].initial=normal_run.units
     form.fields['duration'].initial=normal_run.duration
     form.fields['comments'].initial=activity.comment
+    form.fields['user_label'].initial=activity.user_label
 
     context = {
         'form':form,
@@ -431,7 +441,8 @@ def add(request, run_type):
                 athlete=athlete,
                 date=data['date'],
                 act_type=run_type,
-                comment=data['comments']
+                comment=data['comments'],
+                user_label=data['user_label']
             )
             activity.save()
             # create an associated thread for comments
@@ -517,7 +528,8 @@ def add_intervals(request):
                 athlete=athlete,
                 date=interval_data['date'],
                 comment=interval_data['comments'],
-                act_type='IntervalRun'
+                act_type='IntervalRun',
+                user_label=interval_data['user_label']
             )
             activity.save()
             thread = Thread.objects.create(activity=activity)

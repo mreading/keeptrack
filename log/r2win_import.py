@@ -153,7 +153,8 @@ def django_ify(workout, athlete):
         athlete=athlete,
         date=workout.date,
         comment = workout.comments,
-        act_type = run_type
+        act_type = run_type,
+        user_label=workout.run_type
     )
     activity.save()
     thread = Thread.objects.create(activity=activity)

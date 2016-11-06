@@ -91,9 +91,9 @@ class AddNormalForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     units = forms.ChoiceField(choices=unit_choices)
-
     duration = MultiValueDurationField(label="Duration (H, M, S)")
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
+    user_label = forms.CharField(max_length=35, initial="Normal Run")
 
 class AddXTrainForm(forms.Form):
     """--------------------------------------------------------------------
@@ -114,6 +114,7 @@ class AddXTrainForm(forms.Form):
     duration = MultiValueDurationField(label="Duration (H, M, S)")
     sport = forms.CharField(max_length=20)
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
+    user_label = forms.CharField(max_length=35, initial="Cross Train")
 
 class AddEventForm(forms.Form):
     """--------------------------------------------------------------------
@@ -139,7 +140,7 @@ class AddEventForm(forms.Form):
     ]
     gender = forms.ChoiceField(choices=gender_choices)
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
-
+    user_label = forms.CharField(max_length=35, initial="Race")
 
 class AddRepForm(forms.Form):
     """--------------------------------------------------------------------
@@ -187,6 +188,7 @@ class AddIntervalForm(forms.Form):
             initial=date.today,
             widget=forms.widgets.DateInput(attrs={'type': 'date'})
         )
+        self.fields['user_label'] = forms.CharField(max_length=35, initial="Intervals")
 
 class BaseAddRepFormSet(BaseFormSet):
     def clean(self):

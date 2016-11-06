@@ -109,21 +109,7 @@
                 {% endifequal %}
               </td>
               <td>
-                {% ifequal r.activity.act_type "IntervalRun" %}
-                  Interval Workout
-                {% endifequal %}
-
-                {% ifequal r.activity.act_type "Event" %}
-                  Race
-                {% endifequal %}
-
-                {% ifequal r.activity.act_type "NormalRun" %}
-                  Normal Run
-                {% endifequal %}
-
-                {% ifequal r.activity.act_type "CrossTrain" %}
-                  Cross Train
-                {% endifequal %}
+                {{ r.activity.user_label }}
               </td>
               {% if can_edit %}
                   <td><a href="/log/athlete/edit_activity/{{ r.activity_id }}">EDIT</a></td>
@@ -133,6 +119,7 @@
           <!-- </a> -->
           {% endfor %}
         </table>
+        <div style="background-color:#286090" class="btn" id="show-all">Show All</div>
         </div>
     </div>
     <div class="panel panel-default">
@@ -153,6 +140,12 @@
 </div>
 
 <script type="text/javascript">
+    $("table > tbody > tr").hide().slice(0, 20).show();
+    $("#show-all").on("click", function() {
+      console.log("huh?");
+      $("tbody > tr", $(this).prev()).show();
+    });
+
   jQuery(document).ready(function($) {
       $(".clickable-row").click(function() {
           window.document.location = $(this).data("href");

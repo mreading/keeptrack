@@ -26,7 +26,8 @@ def generate_meet(athlete, date):
         athlete=athlete,
         date=date,
         comment="What a race!",
-        act_type="Event"
+        act_type="Event",
+        user_label="Race"
     )
     activity.save()
 
@@ -68,7 +69,8 @@ def generate_interval_workout(athlete, date):
         athlete=athlete,
         date=date,
         comment="Here is a comment about how this interval workout went",
-        act_type='IntervalRun'
+        act_type='IntervalRun',
+        user_label='Interval Workout'
     )
     activity.save()
     thread = Thread.objects.create(activity=activity)
@@ -99,7 +101,8 @@ def generate_normal_workout(athlete, date):
         athlete=athlete,
         date=date,
         comment="Here is a comment about this normal run.",
-        act_type='NormalRun'
+        act_type='NormalRun',
+        user_label='Normal Run'
     )
     activity.save()
     thread = Thread.objects.create(activity=activity)
@@ -123,7 +126,8 @@ def generate_xtrain_workout(athlete, date):
         athlete=athlete,
         date=date,
         comment="Here is a comment about this cross training activity",
-        act_type='CrossTrain'
+        act_type='CrossTrain',
+        user_label='Cross Training'
     )
     activity.save()
     thread = Thread.objects.create(activity=activity)

@@ -62,7 +62,7 @@ class Activity(models.Model):
     date = models.DateField()
     comment = models.CharField(max_length=1500, null=True)
     act_type = models.CharField(max_length=20, default='NormalRun')
-    #duration
+    user_label = models.CharField(max_length=35, default="Normal Run")
     #weather
     #gpx file
 
