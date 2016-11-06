@@ -49,7 +49,7 @@ class SplitDurationWidget(forms.MultiWidget):
                 hours = d.seconds // 3600
                 minutes = (d.seconds % 3600) // 60
                 seconds = d.seconds % 60
-                return [0, int(hours), int(minutes), int(seconds)]
+                return [int(hours), int(minutes), int(seconds)]
         return [0, 0, 0]
 
 class MultiValueDurationField(forms.MultiValueField):

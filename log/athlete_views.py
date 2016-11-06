@@ -362,8 +362,8 @@ def athlete(request, user_id):
     #------------------ Get PR's of athlete -----------------------------------
     prs = list(get_prs(athlete).values())
 
-    if len(all_runs) > 20:
-        all_runs = all_runs[:19]
+    # if len(all_runs) > 20:
+    #     all_runs = all_runs[:19]
 
     context = {
         'can_edit':can_edit,

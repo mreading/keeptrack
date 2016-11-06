@@ -65,7 +65,7 @@ def get_team_mileage_data(season):
     data[0].insert(0, 'Date')
 
     countable_run_types = ["NormalRun", "IntervalRun", "Event"]
-    for d in curr_month:
+    for d in curr_season:
         distances_for_day = [str(d)]
         for a in athletes:
             activities = list(Activity.objects.filter(
@@ -78,12 +78,11 @@ def get_team_mileage_data(season):
 
             athlete_distance_for_day = 0
             for activity in activities:
-                athlete_distance_for_day += get_workout_from_activity(activity).distance
+                athlete_distance_for_day += get_miles(get_workout_from_activity(activity))
 
             distances_for_day.append(athlete_distance_for_day)
 
         data.append(distances_for_day)
-    print data
     return data
 
 
