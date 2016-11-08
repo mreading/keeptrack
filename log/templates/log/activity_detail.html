@@ -66,30 +66,38 @@
 
         {% ifequal activity.act_type "NormalRun" %}
           <div class="activity_detail_container">
-            <h4> Distance: {{ workout.distance }} {{ workout.units }} </h4>
-            <h4> Time: {{ workout.duration }} </h4>
-            <h4> Pace: {{ workout.pace }} Min/Mile </h4>
+            <h4> Distance</h4>
+            <p> {{ workout.distance }} {{ workout.units }} </p>
+            <h4> Time </h4>
+            <p>{{ workout.duration }} </p>
+            <h4> Pace </h4>
+            <p> {{ workout.pace }} Min/Mile </p>
           </div>
         {% endifequal %}
 
         {% ifequal activity.act_type "CrossTrain" %}
           <div .class="activity_detail_container">
-            <div .class="activity_detail_container">
-              <h2 id='test'> {{ workout.distance }} {{ workout.units }} in {{ workout.duration }} ({{ workout.sport }})</h2>
-            </div>
+              <h4>Sport</h4>
+              {{ workout.sport }}
+              <h4>Distance</h4>
+              {{ workout.distance }} {{ workout.units }}
+              <h4>Time</h4>
+              {{ workout.duration }}
           </div>
         {% endifequal %}
 
         {% ifequal activity.act_type "Event" %}
           <div .class="activity_detail_container">
-            {{ workout.distance }}
-            {{ workout.duration }}
+            <h4> Distance </h4>
+            <p>{{ workout.distance }} {{ workout.units }}</p>
+            <h4> Time </h4>
+            <p> {{ workout.duration }} </p>
           </div>
         {% endifequal %}
 
         <div>
           <h4>Comments</h4>
-          {{ activity.comment }}
+          <p> {{ activity.comment }} </p>
         </div>
       </div>
 
