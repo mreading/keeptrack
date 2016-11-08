@@ -44,7 +44,7 @@ def create_season(request, user_id, team_id):
                     team.seasons.add(season)
                     return redirect("/log/add_athletes/" + str(user.id) + "/" + str(team.id) + "/" + str(season.id) + "/", {})
                 else:
-                    return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
+                    return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team, 'season_aa': True})
 
             return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
 
@@ -159,12 +159,6 @@ def add_coach(request, team_id):
             user.first_name = data['first_name']
             user.last_name = data['last_name']
             user.save()
-
-            # athlete = Athlete.objects.create(
-            #     user_id=user.id,
-            #     graduation_year=data['graduation_year'],
-            #     #Probably other stuff here
-            #     )
 
             coach = Coach.objects.create(
                 user_id = user.id,

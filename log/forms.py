@@ -48,7 +48,8 @@ class AddExistingAthleteForm(forms.Form):
                 print team
                 seasons = team.seasons.all()
                 for season in seasons:
-                    athletes = athletes | season.athlete_set.all()
+                    new_athletes = season.athlete_set.all().exclude(pk__in = athletes)
+                    athletes = athletes | new_athletes
             athletes = athletes.exclude(pk__in = curr_season.athlete_set.all())
             self.fields['athletes'].queryset = athletes
 
@@ -86,4 +87,4 @@ class AddAnnouncementForm(forms.Form):
     text = forms.CharField(max_length=2000, widget=Textarea)
     expiration_date = forms.DateField(widget=forms.SelectDateWidget(), label="Expiration Date")
     season = forms.ModelChoiceField(queryset=Season.objects.all(),
-        label="Season") #FIXME need to filter season options by teams that the coach coaches. 
+        label="Season") #FIXME need to filter season options by teams that the coach coaches.

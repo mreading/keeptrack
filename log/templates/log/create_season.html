@@ -5,7 +5,15 @@
 
 {% block content %}
 
-    <p> Add a season for {{team}} </p>
+    <h1> Add a season for {{team}} </h1>
+
+    {% if season_aa %}
+      <div class="alert alert-error">
+          <ul>
+            <li>Season already added for selected year</li>
+          </ul>
+      </div>
+    {% endif %}
 
     <form action="/log/create_season/{{user.id}}/{{team.id}}", method="post" autocomplete="off">
         {% csrf_token %}

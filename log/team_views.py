@@ -32,6 +32,7 @@ def get_current_team_season(user):
     else:
         coach = list(user.coach_set.all())[0]
         team = list(coach.teams.filter(sport='XC'))[0]
+
         seasons = list(team.seasons.filter(
             start_date__lt=datetime.date.today(),
             end_date__gt=datetime.date.today()
