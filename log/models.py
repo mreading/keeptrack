@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from datetime import timedelta
 from datetime import date
+from .utils import *
 
 class Season(models.Model):
     """ ex: 2017 (athletes participate in seasons)"""
@@ -34,12 +35,19 @@ class Team(models.Model):
     def __str__(self):
         return self.school_name + ' ' + self.gender + " " + self.sport
 
+class Announcement(models.Model):
+    text = models.CharField(max_length=2000)
+    expiration_date = models.DateField()
+    season = models.ForeignKey(Season, on_delete=models.CASCADE)
+    posted_date = models.DateField()
+
 class Athlete(models.Model):
     """ ex: Henry Whipple """
     seasons = models.ManyToManyField(Season)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     graduation_year = models.PositiveIntegerField()
     log_private = models.BooleanField(default=True)
+    default_location = models.CharField(max_length=50)
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
@@ -54,7 +62,7 @@ class Activity(models.Model):
     date = models.DateField()
     comment = models.CharField(max_length=1500, null=True)
     act_type = models.CharField(max_length=20, default='NormalRun')
-    #duration
+    user_label = models.CharField(max_length=35, default="Normal Run")
     #weather
     #gpx file
 
@@ -77,6 +85,7 @@ class Event(models.Model):
     units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     duration = models.DurationField()
     place = models.PositiveIntegerField()
+    pace = models.DurationField(null=True)
 
     def __str__(self):
         return "{0} {1} race at {2}".format(
@@ -84,6 +93,17 @@ class Event(models.Model):
             self.units[:-1],
             self.meet.location
         )
+
+    def set_pace(self):
+        num_miles = 0
+        if self.units == 'Miles':
+            num_miles = self.distance
+        elif self.units == 'Kilometers':
+            num_miles = kilometers_to_miles(self.distance)
+        elif self.units == 'Meters':
+            num_miles = kilometers_to_miles(self.distance)
+
+        self.pace = timedelta(seconds=int(self.duration.total_seconds() / num_miles))
 
 class NormalRun(models.Model):
     activity = models.ForeignKey(Activity)
@@ -95,12 +115,24 @@ class NormalRun(models.Model):
     ]
     units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
     duration = models.DurationField(null=True)
+    pace = models.DurationField(null=True)
     #shoe
     #surface
     #route
 
     def __str__(self):
         return str(self.distance) + ' Mile Normal Run'
+
+    def set_pace(self):
+        num_miles = 0
+        if self.units == 'Miles':
+            num_miles = self.distance
+        elif self.units == 'Kilometers':
+            num_miles = kilometers_to_miles(self.distance)
+        elif self.units == 'Meters':
+            num_miles = kilometers_to_miles(self.distance)
+
+        self.pace = timedelta(seconds=int(self.duration.total_seconds() / num_miles))
 
 class CrossTrain(models.Model):
     activity = models.ForeignKey(Activity)

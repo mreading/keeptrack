@@ -6,6 +6,90 @@ from .utils import *
 from .models import *
 from .athlete_forms import *
 
+from forecastiopy import *
+from geopy.geocoders import Nominatim
+
+def wear_help(location):
+
+    geolocator = Nominatim()
+    location = geolocator.geocode(location)
+    if location == None:
+        return None
+    lat = location.latitude
+    lon = location.longitude
+
+    fio = ForecastIO.ForecastIO("31d0c8f0c1036505d4f8541000fcc555", latitude=lat, longitude=lon)
+    current = FIOCurrently.FIOCurrently(fio)
+
+    # for use in debugging.
+    #for item in current.get().keys():
+    #    print item + ' : ' + unicode(current.get()[item])
+
+    tights_CO = 45
+    temp = current.temperature
+    #------------------------tights-----------------------------
+    #adjust for wind
+    if current.windSpeed > 5 and current.windSpeed < 10:
+        tights_CO -= 5
+    elif current.windSpeed > 10:
+        tights_CO -= 10
+
+    #calculate tights
+    if temp > tights_CO:
+        tights = "No tights today."
+    else:
+        tights = "Wear tights."
+
+    #----------------------tops--------------------------------
+    tops = ""
+    adj_temp = temp - current.windSpeed
+
+    if .85 < current.precipProbability <= 1 and current.icon == "rain":
+        if adj_temp > 48:
+            tops = "it will probably rain, but it is too warm to matter."
+        else:
+            tops = "It will probably rain, and it's pretty cold. Throw a windbreaker on top."
+
+    if adj_temp > 60:
+        tops += "Don't wear any shirt. It's time to get ur tan on."
+    elif adj_temp > 48:
+        tops += "A T-shirt will probably do it"
+    elif adj_temp > 40:
+        tops += "A long sleeve will work just fine."
+    elif adj_temp > 34:
+        tops += "It's a two shirt kind of day."
+    elif adj_temp > 24:
+        tops += "T-shirt, long sleeve, jacket."
+    else:
+        tops += "Wear at least two layers on top, one of which should be substantial. "
+
+    #------------------------hat/glasses--------------------------
+    if adj_temp < 30:
+        hat = "Wear a winter hat."
+    else:
+        hat = "It's pretty cloudy. No need for a baseball hat or sunglasses."
+        if current.cloudCover < .3:
+            if current.windSpeed > 10:
+                hat = "A hat might blow off today, but sunglasses are a good idea"
+            else:
+                hat = "Hats and sunglasses should be worn today"
+
+    if current.icon == "snow":
+        tops += " It is snowing, so glasses and gloves are the move"
+
+    #-----------------------storm warning------------------------
+    storm = "Unavailable"
+    if "nearestStormDistance" in current.get().keys():
+        storm = "Just so you know, the nearest storm is {0} miles away".format(current.nearestStormDistance)
+
+    return {
+        'location': location,
+        'tights': tights,
+        'tops': tops,
+        'hat': hat,
+        'storm': storm
+    }
+
 def get_prs(athlete):
     activities = Activity.objects.filter(act_type='Event', athlete=athlete)
     events = [Event.objects.filter(activity=a)[0] for a in activities]
@@ -71,14 +155,14 @@ def build_graph_data(dates, activities, week_name_labels=False):
     #graph data is expected to be of the form [[x-axis data, y-axis data], ...]
     # where x axis is a date string and y axis is floating point number representing distance
     graph_data = [['Date', 'Miles', {'role':'style'}, 'Link']]
-    
+
     graph_data2 = [['Date', 'NormalRun', 'IntervalRun', 'CrossTrain', 'Event', {'role':'style'}, 'Link']]
     ##MAYBE PASS LEGEND HERE???
     #??????????????????????????????????????????????????????//
     #????
     #????????????????????????////
     validPoint=False
-    
+
     p = 0
     i = 0
     while i < len(dates):
@@ -99,12 +183,12 @@ def build_graph_data(dates, activities, week_name_labels=False):
                 'color:'+colors[activities[p].act_type],
                 '/log/athlete/activity_detail/'+str(activities[p].id),
             ])
-            
+
             graph_data2.append([str(w_date), None, None, None, None, 'color:'+colors[activities[p].act_type],
                 '/log/athlete/activity_detail/'+str(activities[p].id),])
             graph_data2[len(graph_data2)-1][graph_data2[0].index(activities[p].act_type)] = distance
-            
-            
+
+
             p += 1
             if p < len(activities) and dates[i] == activities[p].date:
                 i = i
@@ -117,10 +201,11 @@ def build_graph_data(dates, activities, week_name_labels=False):
             graph_data.append(
             [str(w_date), None, 'color:'+colors['OffDay'], 'nothing']
             )
-            
+
             graph_data2.append([str(w_date), None, None, 0, 0, 'color:'+colors['OffDay'],
                 'nothing'])
             i += 1
+
     if not validPoint:
         return False
     return graph_data2
@@ -170,6 +255,7 @@ def create_run(run_type, activity, data):
             duration=data['duration'],
             units=data['units'],
         )
+        run.set_pace()
     elif run_type == "IntervalRun":
         # Not implemented because it is handled in a seperate view
         pass
@@ -196,6 +282,7 @@ def create_run(run_type, activity, data):
             units=data['units'],
             gender=data['gender']
         )
+        run.set_pace()
     run.save()
 
 def set_total_distance(interval_run):

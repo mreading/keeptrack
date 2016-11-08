@@ -42,16 +42,18 @@
           {% if user.athlete_set.all %}
             <li><a href="/log/athlete/{{ user.id }}/">Home</a></li>
             <li><a href="/log/team/">Team</a></li>
+            <li><a href="/log/wear/">Wardrobe</a></li>
           {% endif%}
 
           {% if user.coach_set.all %}
             <li><a href="/log/team/">Home</a></li>
+            <li><a href="/log/create_announcement">Announce</a></li>
+            <li><a href="/log/team_stats/">Stats</a></li>
           {% endif%}
 
           {% if user.athlete_set.all or user.coach_set.all %}
             <!-- <li><a href="/log/workout_templates/">Workouts</a></li> -->
             <li><a href="/log/calendar/">Calendar</a></li>
-            <li><a href="/log/team_stats/">Stats</a></li>
           {% endif %}
         </ul>
 
@@ -100,6 +102,8 @@
     <div class="footer">
       <a id="github_link" href="https://github.com/jhpierce/keeptrack">GITHUB</a>
       <p> Hamilton College Computer Science Department </p>
+      <!-- <a style="color:white;" id="github_link" href="https://github.com/jhpierce/keeptrack">GITHUB</a> -->
+      <a style="color:white;" href="/log/submit_bug">Submit a Bug</a>
     </div>
   </body>
 </div>

@@ -8,8 +8,13 @@ from .models import *
 from datetime import date
 from django.forms.formsets import BaseFormSet
 
+class WearForm(forms.Form):
+    town = forms.CharField(max_length=100, label="Town Name")
+    state = forms.CharField(max_length=50, label="State Abbr")
+
 class SettingsForm(forms.Form):
     log_private = forms.BooleanField(initial=False, required=False)
+    default_location = forms.CharField(label="Default Location eg. Kirkland, NY")
 
 class R2WImportForm(forms.Form):
     log = forms.FileField()
@@ -44,7 +49,7 @@ class SplitDurationWidget(forms.MultiWidget):
                 hours = d.seconds // 3600
                 minutes = (d.seconds % 3600) // 60
                 seconds = d.seconds % 60
-                return [0, int(hours), int(minutes), int(seconds)]
+                return [int(hours), int(minutes), int(seconds)]
         return [0, 0, 0]
 
 class MultiValueDurationField(forms.MultiValueField):
@@ -53,7 +58,7 @@ class MultiValueDurationField(forms.MultiValueField):
     def __init__(self, *args, **kwargs):
         fields = (
             #use a numberinput widget to set the width of the input fields
-         forms.IntegerField(),
+         forms.IntegerField(label="Hours"),
          forms.IntegerField(),
          forms.IntegerField(),
         )
@@ -86,9 +91,9 @@ class AddNormalForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     units = forms.ChoiceField(choices=unit_choices)
-
-    duration = MultiValueDurationField()
+    duration = MultiValueDurationField(label="Duration (H, M, S)")
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
+    user_label = forms.CharField(max_length=35, initial="Normal Run")
 
 class AddXTrainForm(forms.Form):
     """--------------------------------------------------------------------
@@ -106,9 +111,10 @@ class AddXTrainForm(forms.Form):
         ('Laps', 'Laps'),
     ]
     units = forms.ChoiceField(choices=unit_choices)
-    duration = MultiValueDurationField()
+    duration = MultiValueDurationField(label="Duration (H, M, S)")
     sport = forms.CharField(max_length=20)
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
+    user_label = forms.CharField(max_length=35, initial="Cross Train")
 
 class AddEventForm(forms.Form):
     """--------------------------------------------------------------------
@@ -125,7 +131,7 @@ class AddEventForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     units = forms.ChoiceField(choices=unit_choices)
-    duration = MultiValueDurationField()
+    duration = MultiValueDurationField(label="Duration (H, M, S)")
     location = forms.CharField(max_length=100)
     place = forms.IntegerField()
     gender_choices = [
@@ -134,7 +140,7 @@ class AddEventForm(forms.Form):
     ]
     gender = forms.ChoiceField(choices=gender_choices)
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
-
+    user_label = forms.CharField(max_length=35, initial="Race")
 
 class AddRepForm(forms.Form):
     """--------------------------------------------------------------------
@@ -147,10 +153,10 @@ class AddRepForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     rep_units = forms.ChoiceField(choices=unit_choices, initial='Meters')
-    duration = MultiValueDurationField()
+    duration = MultiValueDurationField(label="Duration (H, M, S)")
     # duration = forms.DurationField()
     # goal_pace = forms.DurationField(optional=True)
-    rep_rest =  MultiValueDurationField()
+    rep_rest =  MultiValueDurationField(label="Duration (H, M, S)")
 
 class AddIntervalForm(forms.Form):
     """--------------------------------------------------------------------
@@ -182,6 +188,7 @@ class AddIntervalForm(forms.Form):
             initial=date.today,
             widget=forms.widgets.DateInput(attrs={'type': 'date'})
         )
+        self.fields['user_label'] = forms.CharField(max_length=35, initial="Intervals")
 
 class BaseAddRepFormSet(BaseFormSet):
     def clean(self):

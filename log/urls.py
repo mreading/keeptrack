@@ -40,5 +40,8 @@ urlpatterns = [
     url(r'^add_athletes/(?P<user_id>[0-9]+)/(?P<team_id>[0-9]+)/(?P<season_id>[0-9]+)/$', coach_views.add_existing_athletes, name='add_existing_athletes'),
     url(r'^add_coach/(?P<team_id>[0-9]+)/$', coach_views.add_coach, name='add_coach'),
     url(r'^calendar/select_time_period/$', calendar_views.time_period, name='time_period'),
+    url(r'^calendar/select_team_season/$', calendar_views.team_season, name='team_season'),
     url(r'^submit_bug/$', views.submit_bug, name='submit_bug'),
+    url(r'^wear/$', athlete_views.wear, name="wear"),
+    url(r'^create_announcement/$', team_views.create_announcement, name='create_announcement'),
  ]

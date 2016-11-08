@@ -10,7 +10,10 @@ from django.contrib.auth.models import User
 
 @login_required(login_url='/log/login/')
 def index(request):
-    return team(request)
+    if list(request.user.coach_set.all()):
+        return team(request)
+    else:
+        return redirect("/log/athlete/"+str(request.user.id), {})
 
 def settings(request):
     return render(request, "log/settings.html", {})

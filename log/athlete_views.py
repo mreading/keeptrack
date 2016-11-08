@@ -18,6 +18,13 @@ import json
 import datetime
 
 @login_required(login_url='/log/login/')
+def wear(request):
+    athlete = Athlete.objects.get(user=request.user)
+    context = wear_help(athlete.default_location)
+    return render(request, 'log/wear.html', context)
+
+
+@login_required(login_url='/log/login/')
 def delete_activity(request, activity_id):
     # FIXME have to make sure athlete is the one deleting the workout
     # Just get the activity by it's id and then delete it
@@ -49,6 +56,7 @@ def edit_interval_run(request, activity_id):
             i_run.save()
             activity.coment = data['comments']
             activity.date = data['date']
+            activity.user_label=data['user_label']
             activity.save()
 
             # The ordering of reps is probably messed up, so delete them all
@@ -92,6 +100,7 @@ def edit_interval_run(request, activity_id):
     IntervalForm.fields['cd_units'].initial=i_run.cd_units
     IntervalForm.fields['date'].initial=activity.date
     IntervalForm.fields['comments'].initial=activity.comment
+    IntervalForm.fields['user_label'].initial=activity.user_label
 
     # Set the inital data for the formset just the same way as the previsou form
     AddRepFormSet = formset_factory(
@@ -141,9 +150,10 @@ def edit_xtrain(request, activity_id):
             xtrain.sport=data['sport']
             activity.comment=data['comments']
             activity.date=data['date']
+            activity.user_label=data['user_label']
             activity.save()
             xtrain.save()
-            return redirect("/log/athlete"+str(request.user.id), {})
+            return redirect("/log/athlete/"+str(request.user.id), {})
 
     # Bind the old data to the form so that it can be updated
     # NOTE for a modelform you could bind the data in one line, but
@@ -156,6 +166,7 @@ def edit_xtrain(request, activity_id):
     form.fields['sport'].initial=xtrain.sport
     form.fields['duration'].initial=xtrain.duration
     form.fields['comments'].initial=activity.comment
+    form.fields['user_label'].initial=activity.user_label
 
     context = {
         'form':form,
@@ -185,8 +196,10 @@ def edit_race(request, activity_id):
             event.meet.save()
             activity.date=data['date']
             activity.comment=data['comments']
+            activity.user_label=data['user_label']
             activity.save()
             event.save()
+            event.set_pace()
             # redirect back to the athlete's home page
             return redirect("/log/athlete/"+str(request.user.id), {})
 
@@ -203,6 +216,7 @@ def edit_race(request, activity_id):
     form.fields['comments'].initial=activity.comment
     form.fields['location'].initial=event.meet.location
     form.fields['place'].initial=event.place
+    form.fields['user_label'].initial=activity.user_label
 
     #return the rendered template
     return render(request, "log/edit_run.html", {'form':form, 'activity':activity})
@@ -226,7 +240,9 @@ def edit_normal(request, activity_id):
             normal_run.units=data['units']
             activity.comment=data['comments']
             activity.date=data['date']
+            activity.user_label=data['user_label']
             activity.save()
+            normal_run.set_pace()
             normal_run.save()
             return redirect("/log/athlete/"+str(request.user.id), {})
     # Bind the old data to the form for editing.
@@ -236,6 +252,7 @@ def edit_normal(request, activity_id):
     form.fields['units'].initial=normal_run.units
     form.fields['duration'].initial=normal_run.duration
     form.fields['comments'].initial=activity.comment
+    form.fields['user_label'].initial=activity.user_label
 
     context = {
         'form':form,
@@ -277,7 +294,10 @@ def athlete(request, user_id):
     #Make sure that if this log is private, only the athlete and the coach can see it
     can_view, can_edit = athlete_privacy(request.user, athlete.user)
     if not can_view:
-        return HttpResponse("{0}'s log is private.".format(athlete.user.first_name))
+        context = {
+            'name':athlete.user.first_name
+        }
+        return render(request, "log/forbidden.html", context)
 
     activities = Activity.objects.filter(athlete=athlete).order_by('date')
 
@@ -352,8 +372,8 @@ def athlete(request, user_id):
     #------------------ Get PR's of athlete -----------------------------------
     prs = list(get_prs(athlete).values())
 
-    if len(all_runs) > 20:
-        all_runs = all_runs[:19]
+    # if len(all_runs) > 20:
+    #     all_runs = all_runs[:19]
 
     context = {
         'can_edit':can_edit,
@@ -421,7 +441,8 @@ def add(request, run_type):
                 athlete=athlete,
                 date=data['date'],
                 act_type=run_type,
-                comment=data['comments']
+                comment=data['comments'],
+                user_label=data['user_label']
             )
             activity.save()
             # create an associated thread for comments
@@ -507,7 +528,8 @@ def add_intervals(request):
                 athlete=athlete,
                 date=interval_data['date'],
                 comment=interval_data['comments'],
-                act_type='IntervalRun'
+                act_type='IntervalRun',
+                user_label=interval_data['user_label']
             )
             activity.save()
             thread = Thread.objects.create(activity=activity)
@@ -526,8 +548,6 @@ def add_intervals(request):
 
             #create a number of reps for the inverval workout
             for i in range(len(rep_formset)):
-                print rep_formset[0].cleaned_data
-                print rep_formset[0].cleaned_data.get('duration')
                 rep = Rep.objects.create(
                     interval_run=interval_workout,
                     distance=round(float(rep_formset[i].cleaned_data.get('rep_distance')), 2),
@@ -580,10 +600,12 @@ def settings(request, user_id):
         if form.is_valid():
             data = form.cleaned_data
             athlete.log_private = data['log_private']
+            athlete.default_location = data['default_location']
             athlete.save()
             return redirect("/log/athlete/{}/".format(athlete.user.id))
     form = SettingsForm()
     form.fields['log_private'].initial=athlete.log_private
+    form.fields['default_location'].initial=athlete.default_location
     context = {
         'form':form
     }

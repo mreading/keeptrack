@@ -48,22 +48,6 @@ def get_credentials():
         print('Storing credentials to ' + credential_path)
     return credentials
 
-def print_all_calendars():
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    service = discovery.build('calendar', 'v3', http=http)
-
-    # all user calendar
-    page_token = None
-    while True:
-        calendar_list = service.calendarList().list(pageToken=page_token).execute()
-        for calendar_list_entry in calendar_list['items']:
-            print calendar_list_entry['summary']
-            print calendar_list_entry['id']
-        page_token = calendar_list.get('nextPageToken')
-        if not page_token:
-            break
-
 def create_calendar(name):
     # permissions only for viewing - not managing (FIX THIS)
     credentials = get_credentials()
@@ -200,49 +184,52 @@ def get_current_team_season(seasons):
     return None, None
 
 def get_teams_seasons(user_id):
-    both = {}
     try: # Coach logged in
         # find all teams the coach controls
         teams = Coach.objects.get(user=user_id).teams.all()
 
         # get all seasons possible for each team
-        seasons = []
+        seasons = Season.objects.none()
         for team in teams:
-            both[team] = team.seasons.all()
-            seasons += team.seasons.all()
+            seasons = seasons | team.seasons.all()
 
     except: # Atlete logged in
         # get all seasons athelete belongs to
         seasons = Athlete.objects.get(user=user_id).seasons.all()
 
         # find all teams the athlete is apart of based on seasons
-        teams = []
+        teams = Team.objects.none()
         for season in seasons:
-            teams.append(season.team_set.all()[0]) # only one team per season
+            teams = teams | season.team_set.all()
 
         # get rid of duplicates
-        teams = list(set(teams))
+        teams.distinct()
 
         # get all seasons possible for each team
-        seasons = []
+        seasons = Season.objects.none()
         for team in teams:
-            both[team.__str__()] = serializers.serialize("json", team.seasons.all())
-            seasons += team.seasons.all()
+            seasons = seasons | team.seasons.all()
 
-    return both, teams, seasons
+    return teams, seasons
+
+def get_ready_javascript(teams):
+    t2s_map = {}
+    for team in teams:
+        t2s_map[team.__str__()] = serializers.serialize("json", team.seasons.all())
+
+    return json.dumps(t2s_map)
 
 @login_required(login_url='/log/login/')
 def calendar(request):
     # get teams and seasons related to current user
-    teams_seasons, teams, seasons = get_teams_seasons(request.user.id)
+    teams, seasons = get_teams_seasons(request.user.id)
 
     # get the current season and team
     team, season = get_current_team_season(seasons)
 
     # no current team/season
     if not team:
-        return render(request, "log/calendar.html",
-                      {"weeks":[], "teams_seasons":teams_seasons})
+        return render(request, "log/calendar.html", {"weeks":[]})
 
     # needs to change based on team
     #calendarId = team.calendarId
@@ -254,21 +241,49 @@ def calendar(request):
     # get event data for season
     weeks = range_weeks(start, finish, calendarId)
 
-    return render(request, "log/calendar.html",
-                  {"weeks":weeks, "teams_seasons":teams_seasons})
+    return render(request, "log/calendar.html", {"weeks":weeks})
 
 @login_required(login_url='/log/login/')
 def time_period(request):
-    teams_seasons, teams, seasons = get_teams_seasons(request.user.id)
-    teams_seasons = json.dumps(teams_seasons)
+    if request.method == 'POST':
+        form = SelectDateRangeForm(request.POST)
+        if form.is_valid():
+
+            # get data from form
+            data = form.cleaned_data
+            start_date = data['start_date']
+            end_date = data['end_date']
+
+            # get start and end dates of season
+            start, finish = convert_start_end_dates(start_date, end_date)
+
+            # needs to change based on team
+            #calendarId = team.calendarId
+            calendarId = 'primary'
+
+            weeks = range_weeks(start, finish, calendarId)
+            return render(request, "log/calendar.html", {"weeks":weeks})
+        else:
+            return render(request, "log/select_time_period.html", {'form':form})
+    else:
+        form = SelectDateRangeForm()
+        return render(request, "log/select_time_period.html", {'form':form})
+
+@login_required(login_url='/log/login/')
+def team_season(request):
+    teams, seasons = get_teams_seasons(request.user.id)
+    t2s_map = get_ready_javascript(teams)
 
     if request.method == 'POST':
-        form = SelectTimePeriodForm(request.POST)
+        form = SelectTeamSeasonForm(request.POST)
         if form.is_valid():
-            data = form.cleaned_data
 
+            # get data from form
+            data = form.cleaned_data
             team = data['team']
             season = data['season']
+
+            # get start and end dates of season
             start, finish = convert_start_end_dates(season.start_date, season.end_date)
 
             # needs to change based on team
@@ -276,12 +291,11 @@ def time_period(request):
             calendarId = 'primary'
 
             weeks = range_weeks(start, finish, calendarId)
-            return render(request, "log/calendar.html",
-                          {"weeks":weeks})
+            return render(request, "log/calendar.html", {"weeks":weeks})
         else:
             return render(request, "log/select_time_period.html",
-                          { 'form':form, 'teams_seasons':teams_seasons })
+                {'form':form, 't2s_map':t2s_map, 'teams':teams})
     else:
-        form = SelectTimePeriodForm()
-        return render(request, "log/select_time_period.html",
-                      { 'form':form, 'teams_seasons':teams_seasons })
+        form = SelectTeamSeasonForm(teams=teams, seasons=seasons)
+        return render(request, "log/select_team_season.html",
+            {'form':form, 't2s_map':t2s_map, 'teams':teams})

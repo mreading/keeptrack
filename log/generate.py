@@ -26,7 +26,8 @@ def generate_meet(athlete, date):
         athlete=athlete,
         date=date,
         comment="What a race!",
-        act_type="Event"
+        act_type="Event",
+        user_label="Race"
     )
     activity.save()
 
@@ -47,6 +48,7 @@ def generate_meet(athlete, date):
         duration=duration,
         place=randrange(1, 300)
     )
+    event.set_pace()
     event.save()
 
 def add_rep(interval_run, position):
@@ -67,7 +69,8 @@ def generate_interval_workout(athlete, date):
         athlete=athlete,
         date=date,
         comment="Here is a comment about how this interval workout went",
-        act_type='IntervalRun'
+        act_type='IntervalRun',
+        user_label='Interval Workout'
     )
     activity.save()
     thread = Thread.objects.create(activity=activity)
@@ -98,7 +101,8 @@ def generate_normal_workout(athlete, date):
         athlete=athlete,
         date=date,
         comment="Here is a comment about this normal run.",
-        act_type='NormalRun'
+        act_type='NormalRun',
+        user_label='Normal Run'
     )
     activity.save()
     thread = Thread.objects.create(activity=activity)
@@ -113,7 +117,7 @@ def generate_normal_workout(athlete, date):
         units = choice(['Kilometers', 'Miles']),
         duration = timedelta(minutes=minutes)
     )
-
+    normal_run.set_pace()
     normal_run.save()
 
 def generate_xtrain_workout(athlete, date):
@@ -122,7 +126,8 @@ def generate_xtrain_workout(athlete, date):
         athlete=athlete,
         date=date,
         comment="Here is a comment about this cross training activity",
-        act_type='CrossTrain'
+        act_type='CrossTrain',
+        user_label='Cross Training'
     )
     activity.save()
     thread = Thread.objects.create(activity=activity)
@@ -142,7 +147,7 @@ def generate_xtrain_workout(athlete, date):
 def generate_workout_data(athlete):
     #get dates for last 7 days
     dates = []
-    for i in range(100):
+    for i in range(300):
         dates.append(datetime.date.today() - datetime.timedelta(i))
 
     #set the type of workouts to generate
@@ -197,19 +202,32 @@ def generate_athletes(season):
         ('Erich', 'Wohl', 2018),
         ('Andrew', 'Sinclair', 2018),
         ('Colin', 'Horgan', 2019),
-        # ('Reilly', 'Shew', 2019),
-        # ('Ben', 'Stoller', 2019),
-        # ('Bryce', 'Murdick', 2020),
-        # ('Jacob', 'Colangelo', 2020),
-        # ('Matthew', 'Reading', 2020),
-        # ('Christopher', 'Skeldon', 2020),
-        # ('Conor', 'Courtney', 2020),
-        # ('Francis', 'Zuroski', 2020),
-        # ('Andrew', 'Wheeler', 2020),
+        ('Reilly', 'Shew', 2019),
+        ('Ben', 'Stoller', 2019),
+        ('Bryce', 'Murdick', 2020),
+        ('Jacob', 'Colangelo', 2020),
+        ('Matthew', 'Reading', 2020),
+        ('Christopher', 'Skeldon', 2020),
+        ('Conor', 'Courtney', 2020),
+        ('Francis', 'Zuroski', 2020),
+        ('Andrew', 'Wheeler', 2020),
     ]
 
     for info in seed_info:
         create_athlete(season, info)
+
+def generate_coaches(team):
+    user = User.objects.create_user(
+        "BrettHull",
+        "BrettHull@hamilton.edu",
+        "iamBrett",
+        is_staff=True,
+        is_superuser=True
+    )
+    user.save()
+    coach = Coach.objects.create(user=user)
+    coach.save()
+    coach.teams.add(team)
 
 def generate():
     team = Team.objects.create(
@@ -227,22 +245,9 @@ def generate():
     )
     team.seasons.add(season)
 
+    generate_coaches(team)
     generate_athletes(season)
 
-    #Generate four superusers, one for each of us.
-    # I commented this out because it doesn't really make
-    # sense for us to develop as anything other than a coach or
-    # an athlete. I gave athletes the ability to be superusers though,
-    # so that if you are logged in as an athlete you can access the admin page
-    # names_passes = [
-    #     ('jack', 'iamjack'),
-    #     ('lexie', 'iamlexie'),
-    #     ('mikey', 'iammikey'),
-    #     ('emily', 'iamemily')
-    # ]
-    #
-    # for name, password in names_passes:
-    #     user = User.objects.create_user(name, name+'@hamilton.edu', 'iam'+name, is_staff=True, is_superuser=True)
 
 def clean_database():
     Activity.objects.all().delete()

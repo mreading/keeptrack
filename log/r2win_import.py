@@ -8,6 +8,52 @@ from .models import *
 # to django. That way, if the format of the xml files ever changes,
 # the change to django won't be as complicated, it will just involve changing
 # this object
+
+class RaceInfo:
+    def __init__(self, info):
+        self.location = ""
+        self.gender = "M"
+        self.distance = ""
+        self.units = ""
+        self.duration =""
+        self.place = ""
+#
+# class Repeat:
+#     def __init__(self, info):
+#         pass
+#
+# def process_set(xmlset):
+#     children = list(xmlset.getchildren())
+#     for child in children:
+#         if child.tag = "Reps":
+#             self.num_reps = int(child.text)
+#         elif child.tag = "Distance":
+#             self.distance = int(child.text.split()[0])
+#             self.units = int(child.text.split()[0])
+#         elif self.
+#
+#
+# class IntervalInfo:
+#     def __init__(self, info):
+#         self.warmup = 0
+#         self.cooldown = 0
+#         self.units = ""
+#         self.wu_units = ""
+#         self.cd_units = ""
+#         self.distance = ""
+#         self.repeats = []
+#         children = list(info.getchildren())
+#         for a in children:
+#             if a.tag == "WarmUp":
+#                 print dir(a)
+#                 # self.warmup = float(a.text)
+#             if a.tag == "CoolDown":
+#                 # self.cooldown = float(a.text)
+#                 pass
+#             if a.tag == "Set":
+#                 self.repeats += process_set(a)
+
+
 class Workout:
     def __init__(self, xml_workout):
         attributes = list(xml_workout)
@@ -57,17 +103,21 @@ class Workout:
             elif a.tag == "TotallyPrivateNotes":
                 self.private_notes = a.text
             elif a.tag == "ShoeName":
-                self.shoe_name = a.text
+                self.shoe_name += str(a.text)
             elif a.tag == "Comments":
-                self.comments = a.text
+                self.comments = str(a.text)
             elif a.tag == "Intervals":
-                print "here are some intervals"
+                # self.intervals = IntervalInfo(a)
+                pass
             elif a.tag == "MaxHeartRate":
                 self.max_hr = int(a.text.split()[0])
             elif a.tag == "HeartRate":
                 self.avg_hr = int(a.text.split()[0])
             elif a.tag == "Difficulty":
                 self.difficulty = a.text
+            elif a.tag == "RaceInformation":
+                for attr in a.getchildren():
+                    self.comments +=str(a.text)
             else:
                 print "unrecognized tag {0}".format(a.tag)
 
@@ -79,10 +129,16 @@ class Workout:
         )
 
 def django_ify(workout, athlete):
+    if workout.total_distance == 0:
+        return
     run_type = ""
     if (workout.run_type == "Normal Run"
         or workout.run_type == "Easy Run"
-        or workout.run_type == "Long Run"):
+        or workout.run_type == "Long Run"
+        or workout.run_type == "wu/cd"
+        or workout.run_type == "Speed Training"
+        or workout.run_type == "Tempo"
+        or workout.run_type == "Fartlek"):
         run_type = "NormalRun"
     elif workout.run_type == "Cross Training/Other":
         run_type = "CrossTrain"
@@ -90,20 +146,22 @@ def django_ify(workout, athlete):
         run_type = "IntervalRun"
     elif workout.run_type == "Race":
         run_type = "Event"
+    else:
+        run_type = "NormalRun"
 
     activity = Activity.objects.create(
         athlete=athlete,
         date=workout.date,
         comment = workout.comments,
-        act_type = run_type
+        act_type = run_type,
+        user_label=workout.run_type
     )
     activity.save()
-
     thread = Thread.objects.create(activity=activity)
     thread.save()
 
     if run_type == "NormalRun":
-        NormalRun.objects.create(
+        run = NormalRun.objects.create(
             activity=activity,
             distance=workout.total_distance,
             units=workout.units,
@@ -112,28 +170,66 @@ def django_ify(workout, athlete):
             #surface
             #route
         )
+        run.set_pace()
+        run.save()
+
     elif run_type == "CrossTrain":
-        CrossTrain.objects.create(
+        run = CrossTrain.objects.create(
             activity=activity,
             distance=workout.total_distance,
             units=workout.units,
             duration=workout.total_time
         )
+        run.save()
+
     elif run_type == "IntervalRun":
-        # IntervalRun.objects.create(
-        #
-        # )
-        activity.delete()
-    elif run_type == "Race":
-        activity.delete()
+        run = IntervalRun.objects.create(
+            activity=activity,
+            warmup=0,
+            cooldown=0,
+            units="Miles",
+            wu_units="Miles",
+            cd_units="Miles",
+            distance=workout.total_distance
+        )
+        run.save()
+        # for interval in workout.intervals:
+        #     rep = Rep.objects.create(
+        #         interval_run = run,
+        #         distance = interval.distance,
+        #         units = interval.units,
+        #         duration = interval.duration,
+        #         goal_pace = interval.goal_pace,
+        #         position = workout.intervals.index(interval),
+        #         rest = interval.rest
+        #     )
+        # rep.save()
+        # run.set_distance()
+
+    elif run_type == "Event":
+        meet = Meet.objects.create(
+            location="test location"
+        )
+        meet.save()
+        event = Event.objects.create(
+            activity=activity,
+            meet=meet,
+            gender="M",
+            distance=workout.total_distance,
+            units=workout.units,
+            duration=workout.total_time,
+            place=0
+        )
+        event.set_pace()
 
 
 def import_from_file(f, athlete):
+    Activity.objects.all().delete()
     tree = ET.parse(f)
     root = tree.getroot()
     all_data = list(root)
     # first three elements are 'member', 'to' and 'from' dates of workouts,
-    # so ignore them using a slice. 
+    # so ignore them using a slice.
     workouts = all_data[3:]
     py_workouts = [Workout(w) for w in workouts]
     print py_workouts

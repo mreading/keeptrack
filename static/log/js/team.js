@@ -16,16 +16,16 @@ function drawTable() {
     data.addColumn('string', 'First');
     data.addColumn('string', 'Last');
     data.addColumn('string', 'Grade');
-    data.addColumn('number', 'Rank');
+    data.addColumn('number', 'Mileage (last 7 days)');
     data.addRows(athleteData);
 
     /*--------------------------------------------------------------------
     Creating table, but not drawing yet
-    --------------------------------------------------------------------*/  
+    --------------------------------------------------------------------*/
     var table = new google.visualization.Table(document.getElementById('athletes'));
 
     /*--------------------------------------------------------------------
-    Adding a 'ready' event listener - this way we know the table has 
+    Adding a 'ready' event listener - this way we know the table has
     loaded before attempting any interactions with it
     --------------------------------------------------------------------*/
     google.visualization.events.addListener(table, 'ready', myReadyHandler);
@@ -48,11 +48,10 @@ function drawTable() {
         IF the table has been sorted, we now have a list of <tr> indices
         ----------------------------------------------------------------*/
         if (sortIndices){
-
             /*----------------------------------------------------------------
             Add id's to all but first row (column names)
             ----------------------------------------------------------------*/
-            $("tr.athlete").not(':first').each(function(index) {
+            $("tr.athlete").each(function(index) {
                 $(this).attr('id', userIDs[sortIndices[index]]);
                 $(this).attr('class', 'athlete');
             });
@@ -63,8 +62,9 @@ function drawTable() {
         ----------------------------------------------------------------*/
         else {
             $("tr").not(':first').each(function(index) {
-                $(this).attr('id', userIDs[index]);  
+                $(this).attr('id', userIDs[index]);
                 $(this).attr('class', 'athlete');
+                console.log($(this));
             });
         }
 
@@ -84,11 +84,13 @@ function drawTable() {
         });
     }
 
+    var cssClassNames = {'headerRow': 'italic-darkblue-font large-font bold-font'};
+
     /*--------------------------------------------------------------------
     Draw the table using the DataTable we created earlier
     --------------------------------------------------------------------*/
-    table.draw(data, {showRowNumber: true, width: '100%'});     
-} 
+    table.draw(data, {'showRowNumber': true, 'width': '100%', 'cssClassNames': cssClassNames});
+}
 
 
 google.charts.setOnLoadCallback(drawTable2);
@@ -102,18 +104,18 @@ function drawTable2() {
     Adding columns, then providing rows for these columns
     --------------------------------------------------------------------*/
     data.addColumn('string', 'Location');
-    data.addColumn('string', 'Date');
-    data.addColumn('number', 'Distance');
-    data.addColumn('number', 'Rank');
+    // data.addColumn('string', 'Date');
+    // data.addColumn('number', 'Distance');
+    // data.addColumn('number', 'Mileage (last 7 days)');
     data.addRows(meetData);
 
     /*--------------------------------------------------------------------
     Creating table, but not drawing yet
-    --------------------------------------------------------------------*/  
+    --------------------------------------------------------------------*/
     var table = new google.visualization.Table(document.getElementById('meets'));
 
     /*--------------------------------------------------------------------
     Draw the table using the DataTable we created earlier
     --------------------------------------------------------------------*/
-    table.draw(data, {showRowNumber: true, width: '100%'});     
-} 
+    table.draw(data, {showRowNumber: true, width: '100%'});
+}
