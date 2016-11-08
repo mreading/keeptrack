@@ -12,6 +12,16 @@
             <form method="post", name='intervalform' action="/log/athlete/edit_activity/{{ activity.id }}/">
                 {% csrf_token %}
 
+                {% if IntervalForm.errors %}
+                    <div class="alert alert-error">
+                        <ul>
+                            {% for error in IntervalForm.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
                 <div class="control-group date">
                   <label class="control-label">Date</label>
                   <div class="controls">
@@ -56,7 +66,7 @@
                 <div class="control-group date">
                   <label class="control-label">Cool Down</label>
                   <div class="controls">
-                    {{ IntervalForm.cd_units|add_class:"form-control" }}
+                    {{ IntervalForm.cooldown|add_class:"form-control" }}
                   </div>
                 </div>
 
@@ -74,7 +84,14 @@
                   </div>
                 </div>
 
-                <input type="submit" value="Update Workout" class="button"/>
+                <div class="control-group date">
+                  <label class="control-label">User Label</label>
+                  <div class="controls">
+                    {{ IntervalForm.user_label|add_class:"form-control" }}
+                  </div>
+                </div>
+
+                <input type="submit" value="Update Workout" class="btn btn-primary btn-large"/>
               </form>
 
             <!-- Include formset plugin - including jQuery dependency -->
