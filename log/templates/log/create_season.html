@@ -1,30 +1,65 @@
 {% extends 'log/base.html' %}
 {% load staticfiles %}
+{% load widget_tweaks %}
+
 
 {% block content %}
 
-    <p> Add a season for {{team}} </p>
+    <h1> Add a season for {{team}} </h1>
 
-    <form action="/log/create_season/{{user.id}}/{{team.id}}", method="POST">
-    {% csrf_token %}
-    <div id="entry_container">
-      {{form.year.label}}
-      </br>
-      {{ form.year }}
-      </br></br>
+    {% if season_aa %}
+      <div class="alert alert-error">
+          <ul>
+            <li>Season already added for selected year</li>
+          </ul>
+      </div>
+    {% endif %}
 
-      {{form.start_date.label}}
-      </br>
-      {{ form.start_date }}
-      </br></br>
+    <form action="/log/create_season/{{user.id}}/{{team.id}}", method="post" autocomplete="off">
+        {% csrf_token %}
+        {{ form.media }}
 
-      {{form.end_date.label}}
-      </br>
-      {{ form.end_date }}
-      </br></br>
+        <!---------------------------------------------------------
+      	  Code for generating pretty django forms with bootstrap
+      	---------------------------------------------------------->
+        {% if form.errors %}
+            <div class="alert alert-error">
+                <ul>
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
 
-      <input type="submit" value="Submit">
-      <input type="hidden" name = "next" value="{{ request.GET.next }}">
+        {% for field in form.visible_fields %}
+            <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+                <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                <div class="controls">
+                    <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
+                    {{ field|add_class:"form-control" }}
+                    {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+                </div>
+            </div>
+        {% endfor %}
+
+        {% for field in form.hidden_fields %}
+            {{ field }}
+        {% endfor %}
+
+        {% block formsets %}
+            {% for formset in inlines %}
+                {% include "inline_formset.html" with formset=formset %}
+            {% endfor %}
+        {% endblock formsets %}
+        </br>
+
+        <div class="form-actions">
+            <input class="btn btn-primary btn-large" type="submit" value="Create Season"/>
+            {% block extra_buttons %}
+            {% endblock extra_buttons %}
+        </div>
+      </form>
 
     </div>
   </form>

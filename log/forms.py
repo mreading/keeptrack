@@ -12,7 +12,7 @@ class SignupForm(forms.Form):
     first_name = forms.CharField(max_length=50, label="First Name")
     last_name = forms.CharField(max_length=50, label="Last Name")
     username = forms.CharField(max_length=100, label="Username")
-    password = forms.CharField(max_length=30, label="Password")
+    password = forms.CharField(max_length=30, label="Password", widget=forms.PasswordInput)
     email = forms.EmailField(max_length=100, label="Email")
     school = forms.CharField(max_length=50, label="School Name")
 
@@ -41,15 +41,15 @@ class AddExistingAthleteForm(forms.Form):
             teams = coach.teams.all()
             athletes = Athlete.objects.none()
             if season_id:
-                curr_season = Season.objects.filter(id = season_id)
-                if curr_season:
-                    curr_season = curr_season[0]
+                curr_season = Season.objects.filter(id = season_id)[0]
             for team in teams:
-                print team
                 seasons = team.seasons.all()
                 for season in seasons:
+                    # new_athletes = season.athlete_set.all().exclude(pk__in = athletes)
+                    # athletes = athletes | season.athlete_set.all().exclude(pk__in = athletes)
                     athletes = athletes | season.athlete_set.all()
-            athletes = athletes.exclude(pk__in = curr_season.athlete_set.all())
+
+            athletes = athletes.exclude(pk__in = curr_season.athlete_set.all()).distinct()
             self.fields['athletes'].queryset = athletes
 
 class AddCoachForm(forms.Form):
@@ -86,4 +86,4 @@ class AddAnnouncementForm(forms.Form):
     text = forms.CharField(max_length=2000, widget=Textarea)
     expiration_date = forms.DateField(widget=forms.SelectDateWidget(), label="Expiration Date")
     season = forms.ModelChoiceField(queryset=Season.objects.all(),
-        label="Season") #FIXME need to filter season options by teams that the coach coaches. 
+        label="Season") #FIXME need to filter season options by teams that the coach coaches.

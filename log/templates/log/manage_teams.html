@@ -5,14 +5,16 @@
  <div class="container-fluid">
      <h2> Manage Teams </h2>
   <div class="panel-group">
-    {% for t in teams %}
+    {% for t, season in team_set %}
+
         <div class="panel panel-default">
-            <div class="panel-heading"><a href= "/log/all_seasons/{{user_id}}/{{t.id}}">{{ t }}</a></div>
+            <div class="panel-heading">{{ t }}</div>
             <div class="panel-body">
             <a href="/log/add_coach/{{t.id}}/"> ADD ADDITIONAL COACH </a>
+            <br>
+            <a href= "/log/all_seasons/{{user_id}}/{{t.id}}"> View all seasons </a>
 
-              {% with season=t.seasons.all|first %}
-              {% if season %}
+            {% if season %}
               <h3> Current Season - {{season.year}} </h3>
               {% for athlete in season.athlete_set.all %}
                 {{athlete.user.first_name}} {{athlete.user.last_name}}
@@ -23,11 +25,10 @@
                 </br>
                   <a href="/log/add_athletes/{{user.id}}/{{t.id}}/{{season.id}}"> Add Existing Athlete </a>
                 </br>
+
                 {% else %}
                 <h3> No Seasons </h3>
                 {% endif %}
-
-              {% endwith %}
 
             </br>
             <a href="/log/create_season/{{user.id}}/{{t.id}}">Add Season</a>

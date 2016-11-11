@@ -14,6 +14,8 @@ from django.forms.formsets import formset_factory
 from django.shortcuts import redirect, render, render_to_response
 from invitations.models import Invitation
 from django.db import IntegrityError
+import datetime
+
 
 import json
 
@@ -44,7 +46,7 @@ def create_season(request, user_id, team_id):
                     team.seasons.add(season)
                     return redirect("/log/add_athletes/" + str(user.id) + "/" + str(team.id) + "/" + str(season.id) + "/", {})
                 else:
-                    return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
+                    return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team, 'season_aa': True})
 
             return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
 
@@ -59,6 +61,19 @@ def create_season(request, user_id, team_id):
     else:
         return render(request, "log/create_season.html")
 
+
+def get_current_season(team):
+    seasons = list(team.seasons.filter(
+        start_date__lt=datetime.date.today(),
+        end_date__gt=datetime.date.today()
+    ))
+    if len(seasons) == 0:
+        season = team.seasons.order_by('start_date')[0]
+    else:
+        season = seasons[0]
+
+    return season
+
 @login_required(login_url='/log/login/')
 def manage_teams(request, user_id):
 
@@ -66,7 +81,11 @@ def manage_teams(request, user_id):
     coach = user.coach_set.all()[0]
     teams = coach.teams.all()
 
-    return render(request, "log/manage_teams.html", {'user_id': user_id, 'teams': teams})
+    team_set = list()
+    for team in teams:
+        team_set.append((team, get_current_season(team)))
+
+    return render(request, "log/manage_teams.html", {'user_id': user_id, 'team_set': team_set, 'coach': coach})
 
 @login_required(login_url='/log/login/')
 def add_team(request, user_id):
@@ -160,12 +179,6 @@ def add_coach(request, team_id):
             user.last_name = data['last_name']
             user.save()
 
-            # athlete = Athlete.objects.create(
-            #     user_id=user.id,
-            #     graduation_year=data['graduation_year'],
-            #     #Probably other stuff here
-            #     )
-
             coach = Coach.objects.create(
                 user_id = user.id,
             )
@@ -186,8 +199,9 @@ def settings(request, user_id):
 
 def all_seasons(request, team_id, user_id):
     team = Team.objects.filter(id=team_id)[0]
-    seasons = team.seasons.all()
-    print seasons
+    # Sort seasons reverse chronologically
+    seasons = team.seasons.order_by('-year')
+    print "seasons: ", seasons
     return render(request, "log/all_seasons.html", {'user_id':user_id, 'team':team, 'seasons': seasons})
 
 def add_existing_athletes(request, user_id, team_id, season_id):
