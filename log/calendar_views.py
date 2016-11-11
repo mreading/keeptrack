@@ -168,7 +168,7 @@ def current_week(calendarId):
     week_start = monday[:11] + "00:00:00" + monday[-6:]
     week_end = change_time(week_start, 7, -1)
 
-    return range_weeks(week_start, week_end, calendarId)
+    return range_weeks(week_start, week_end, calendarId)[0]
 
 def get_current_team_season(seasons):
     # get current date and timezone

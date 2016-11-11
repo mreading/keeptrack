@@ -8,6 +8,7 @@ from .forms import *
 from .utils import *
 from .athlete_utils import *
 from .models import *
+from .calendar_views import current_week
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -111,6 +112,13 @@ def team(request):
         expiration_date__gt=datetime.date.today()
     )
 
+    # getting calendar information for current week
+    #calendarId = team.calendarId
+    calendarId = "primary"
+    week = current_week(calendarId)
+
+    print week
+
     context = {
         'title': str(team),
         'form':form,
@@ -119,5 +127,6 @@ def team(request):
         'athleteData': athleteData,
         'userIDs':userIDs,
         'meetData': meetData,
+        'week': week
     }
     return render(request, "log/team.html", context)

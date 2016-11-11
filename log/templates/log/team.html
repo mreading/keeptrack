@@ -32,10 +32,33 @@ This div holds the entirety of the page
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
+    <div id="calendar" class="panel panel-default">
       <div class="panel-heading">CURRENT WEEK</div>
       <div class="panel-body">
-
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Monday</th>
+              <th>Tuesday</th>
+              <th>Wednesday</th>
+              <th>Thursday</th>
+              <th>Friday</th>
+              <th>Saturday</th>
+              <th>Sunday</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class=week>
+            {% for day in week.1 %}
+              <td class="day">
+              {% for event in day %}
+                <div class="event well">{{ event.summary }}</div>
+              {% endfor %}
+              </td>
+            {% endfor %}
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
