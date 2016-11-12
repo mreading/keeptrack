@@ -118,8 +118,6 @@ def team(request):
     calendarId = "primary"
     week = current_week(calendarId)
 
-    print week
-
     context = {
         'title': str(team),
         'form':form,

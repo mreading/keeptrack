@@ -254,8 +254,7 @@ def calendar(request):
         return render(request, "log/calendar.html", {"weeks":[]})
 
     # needs to change based on team
-    #calendarId = team.calendarId
-    calendarId = 'primary'
+    calendarId = team.calendarId
 
     # convert season dates to datetimes
     start, finish = convert_start_end_dates(season.start_date, season.end_date)
@@ -267,12 +266,15 @@ def calendar(request):
 
 @login_required(login_url='/log/login/')
 def time_period(request):
+    teams, seasons = get_teams_seasons(request.user.id)
+
     if request.method == 'POST':
         form = SelectDateRangeForm(request.POST)
         if form.is_valid():
 
             # get data from form
             data = form.cleaned_data
+            team =data['team']
             start_date = data['start_date']
             end_date = data['end_date']
 
@@ -280,15 +282,14 @@ def time_period(request):
             start, finish = convert_start_end_dates(start_date, end_date)
 
             # needs to change based on team
-            #calendarId = team.calendarId
-            calendarId = 'primary'
+            calendarId = team.calendarId
 
             weeks = range_weeks(start, finish, calendarId)
             return render(request, "log/calendar.html", {"weeks":weeks})
         else:
             return render(request, "log/select_time_period.html", {'form':form})
     else:
-        form = SelectDateRangeForm()
+        form = SelectDateRangeForm(teams=teams)
         return render(request, "log/select_time_period.html", {'form':form})
 
 @login_required(login_url='/log/login/')
@@ -309,8 +310,8 @@ def team_season(request):
             start, finish = convert_start_end_dates(season.start_date, season.end_date)
 
             # needs to change based on team
-            #calendarId = team.calendarId
-            calendarId = 'primary'
+            calendarId = team.calendarId
+            #calendarId = 'primary'
 
             weeks = range_weeks(start, finish, calendarId)
             return render(request, "log/calendar.html", {"weeks":weeks})

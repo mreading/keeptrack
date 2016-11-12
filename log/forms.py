@@ -72,8 +72,16 @@ class SelectTeamSeasonForm(forms.Form):
             self.fields['season'].queryset = seasons
 
 class SelectDateRangeForm(forms.Form):
+    team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Team")
     start_date = forms.DateField(widget=forms.SelectDateWidget(), label="Start Date")
     end_date = forms.DateField(widget=forms.SelectDateWidget(), label="End Date")
+
+    def __init__(self, *args, **kwargs):
+        teams = kwargs.pop("teams", None)
+        super(SelectDateRangeForm, self).__init__(*args, **kwargs)
+
+        if teams != None:
+            self.fields['team'].queryset = teams
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=50, label="Username")
