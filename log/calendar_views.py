@@ -62,6 +62,28 @@ def create_calendar(name):
     new_calendar = service.calendars().insert(body=calendar).execute()
     return new_calendar['id']
 
+def share_calendar(calendarId, email):
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('calendar', 'v3', http=http)
+
+    rule = {
+        'scope': {
+            'type': 'user',
+            'value': email,
+        },
+        'role': 'writer'
+    }
+
+    created_rule = service.acl().insert(calendarId=calendarId, body=rule).execute()
+
+def remove_share(calendarId, email):
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('calendar', 'v3', http=http)
+
+    service.acl().delete(calendarId=calendarId, ruleId="user:"+email).execute()
+
 def change_time(date, days=0, seconds=0, minutes=0, hours=0):
     # convert string to object
     timestamp = parse_datetime(date)
