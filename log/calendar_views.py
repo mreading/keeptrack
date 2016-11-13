@@ -62,6 +62,28 @@ def create_calendar(name):
     new_calendar = service.calendars().insert(body=calendar).execute()
     return new_calendar['id']
 
+def share_calendar(calendarId, email):
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('calendar', 'v3', http=http)
+
+    rule = {
+        'scope': {
+            'type': 'user',
+            'value': email,
+        },
+        'role': 'writer'
+    }
+
+    created_rule = service.acl().insert(calendarId=calendarId, body=rule).execute()
+
+def remove_share(calendarId, email):
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('calendar', 'v3', http=http)
+
+    service.acl().delete(calendarId=calendarId, ruleId="user:"+email).execute()
+
 def change_time(date, days=0, seconds=0, minutes=0, hours=0):
     # convert string to object
     timestamp = parse_datetime(date)
@@ -168,7 +190,7 @@ def current_week(calendarId):
     week_start = monday[:11] + "00:00:00" + monday[-6:]
     week_end = change_time(week_start, 7, -1)
 
-    return range_weeks(week_start, week_end, calendarId)
+    return range_weeks(week_start, week_end, calendarId)[0]
 
 def get_current_team_season(seasons):
     # get current date and timezone
@@ -232,8 +254,7 @@ def calendar(request):
         return render(request, "log/calendar.html", {"weeks":[]})
 
     # needs to change based on team
-    #calendarId = team.calendarId
-    calendarId = 'primary'
+    calendarId = team.calendarId
 
     # convert season dates to datetimes
     start, finish = convert_start_end_dates(season.start_date, season.end_date)
@@ -245,12 +266,15 @@ def calendar(request):
 
 @login_required(login_url='/log/login/')
 def time_period(request):
+    teams, seasons = get_teams_seasons(request.user.id)
+
     if request.method == 'POST':
         form = SelectDateRangeForm(request.POST)
         if form.is_valid():
 
             # get data from form
             data = form.cleaned_data
+            team =data['team']
             start_date = data['start_date']
             end_date = data['end_date']
 
@@ -258,15 +282,14 @@ def time_period(request):
             start, finish = convert_start_end_dates(start_date, end_date)
 
             # needs to change based on team
-            #calendarId = team.calendarId
-            calendarId = 'primary'
+            calendarId = team.calendarId
 
             weeks = range_weeks(start, finish, calendarId)
             return render(request, "log/calendar.html", {"weeks":weeks})
         else:
             return render(request, "log/select_time_period.html", {'form':form})
     else:
-        form = SelectDateRangeForm()
+        form = SelectDateRangeForm(teams=teams)
         return render(request, "log/select_time_period.html", {'form':form})
 
 @login_required(login_url='/log/login/')
@@ -287,8 +310,8 @@ def team_season(request):
             start, finish = convert_start_end_dates(season.start_date, season.end_date)
 
             # needs to change based on team
-            #calendarId = team.calendarId
-            calendarId = 'primary'
+            calendarId = team.calendarId
+            #calendarId = 'primary'
 
             weeks = range_weeks(start, finish, calendarId)
             return render(request, "log/calendar.html", {"weeks":weeks})

@@ -28,6 +28,7 @@ class Team(models.Model):
     sport = models.CharField(choices=sport_choices, max_length=3,
         default = 'Indoor Track and Field')
     seasons = models.ManyToManyField(Season)
+    calendarId = models.CharField(max_length=200)
 
     #conference
     #mascot

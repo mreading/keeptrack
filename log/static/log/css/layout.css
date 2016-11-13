@@ -24,3 +24,23 @@ div.pagetitle {
 .error {
     text-align: center;
 }
+
+.calendar .well {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  display: inline-block;
+  text-align: center;
+}
+
+.calendar th {
+  text-align: center;
+}
+
+.calendar th:hover {
+    cursor: default;
+}
+
+.calendar table {
+  table-layout: fixed;
+}
