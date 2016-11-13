@@ -45,8 +45,6 @@ class AddExistingAthleteForm(forms.Form):
             for team in teams:
                 seasons = team.seasons.all()
                 for season in seasons:
-                    # new_athletes = season.athlete_set.all().exclude(pk__in = athletes)
-                    # athletes = athletes | season.athlete_set.all().exclude(pk__in = athletes)
                     athletes = athletes | season.athlete_set.all()
 
             athletes = athletes.exclude(pk__in = curr_season.athlete_set.all()).distinct()
