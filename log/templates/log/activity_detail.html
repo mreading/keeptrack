@@ -1,5 +1,6 @@
 {% extends 'log/base.html' %}
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block content %}
 <div class="container-fluid">
@@ -110,17 +111,51 @@
         {% if comments %}
           {% for comment in comments %}
             <div class='comment_container'>
-              <h5 style="color:#6b7a8f">{{ comment.poster }}</h5>
+              <h5 style="color:#6b7a8f">{{ comment.poster.first_name }} {{ comment.poster.last_name}}</h5>
               <p style="margin-left:10px;">{{ comment.text }} <p>
             </div>
           {% endfor %}
         {% endif %}
         <form action="/log/athlete/activity_detail/{{ activity.id }}/" method="post" autocomplete="off">
-          {% csrf_token %}
-          {{ commentform.errors }}
-          {{ commentform.non_field_errors }}
-          {{ commentform.text }}
-          <input type="submit" value="Post comment" />
+            {% csrf_token %}
+            {{ commentform.media }}
+            {% if commentform.errors %}
+                <div class="alert alert-error">
+                    <ul>
+                        {% for error in commentform.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            {% for field in commentform.visible_fields %}
+                <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+                    <!-- <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label> -->
+                    <div class="controls">
+                        <!-- |add_class is a widget tweak that helps connects the django commentforms to the bootstrap -->
+                        {{ field|add_class:"form-control" }}
+                        {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+
+            {% for field in commentform.hidden_fields %}
+                {{ field }}
+            {% endfor %}
+
+            {% block formsets %}
+                {% for formset in inlines %}
+                    {% include "inline_formset.html" with formset=formset %}
+                {% endfor %}
+            {% endblock formsets %}
+            </br>
+
+            <div class="form-actions">
+                <input class="btn btn-primary btn-large" type="submit" value="Post Comment"/>
+                {% block extra_buttons %}
+                {% endblock extra_buttons %}
+            </div>
         </form>
       </div>
     </div>
