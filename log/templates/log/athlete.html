@@ -55,13 +55,14 @@
                 <div id="month_mileage_graph" style="width: 100%"></div>
                 <div id="week_mileage_graph" style="width: 100%"></div>
                 <div id="date_range_graph" style="width: 100%">
-                    <form action="/log/athlete/{{ user.id }}/" method='post'>
+                </div>
+                <form action="" id="range_form" method='post'>
                         {% csrf_token %}
                         {{ form.errors }}
                         {{ form }}
-                        <input type="submit" value="Show Mileage"/>
-                    </form>
-                </div>
+                        <button id='select_range'>Show Mileage</button>
+                </form>
+                
             </div>
         </div>
     </div>

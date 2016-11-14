@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -16,6 +16,61 @@ from r2win_import import *
 
 import json
 import datetime
+
+@login_required(login_url='/log/login')
+def test(request):
+    print("TEST WORKING!")
+    print(request.is_ajax())
+    if request.is_ajax():
+        test_items = ['apple', 'banana']
+        data = json.dumps(test_items)
+        return HttpResponse(data, content_type='application/json')
+    else:
+        raise Http404
+        
+@login_required(login_url='/log/login')
+def range_select(request):
+    #print ("RANGE SLEC")
+    #print (request.method) a
+    if request.is_ajax() and request.method == "POST":
+        context = {}
+        date_range_form = DateRangeForm(request.POST)
+        #print("hereeeooo")
+        #print(date_range_form)
+        if date_range_form.is_valid():
+            
+            #UNIVERSALLLLL
+            user = User.objects.get(id="12")
+            athlete = Athlete.objects.get(user=user)
+            
+            activities = Activity.objects.filter(athlete=athlete).order_by('date')
+            
+            runs = []
+            for a in activities:
+                runs += NormalRun.objects.filter(activity=a)
+                runs += IntervalRun.objects.filter(activity=a)
+                runs += Event.objects.filter(activity=a)
+            #gett all dates between
+            data = date_range_form.cleaned_data
+            start_date = data['start_date']
+            end_date = data['end_date']
+
+            #collect the activities between the two dates
+            range_activities = []
+            for r in runs:
+                if r.activity.date >= start_date and r.activity.date <= end_date:
+                    range_activities.append(r.activity)
+
+            #collect all the dates between the start and the end date
+            range_dates = [start_date]
+            while range_dates[-1] <= end_date:
+                range_dates.append(range_dates[-1]+datetime.timedelta(1))
+
+            range_graph_data = build_graph_data(range_dates, range_activities)
+            return HttpResponse(json.dumps(range_graph_data))
+        
+    else:
+        raise Http404
 
 @login_required(login_url='/log/login/')
 def wear(request):
@@ -385,7 +440,8 @@ def athlete(request, user_id):
         'week_graph_data':json.dumps(week_graph_data),
         'athlete_user':user,
     }
-
+    
+    """
     if request.method == 'POST':
         date_range_form = DateRangeForm(request.POST)
         if date_range_form.is_valid():
@@ -411,7 +467,8 @@ def athlete(request, user_id):
             context['show_range_first'] = 'true'
             return render(request, "log/athlete.html", context)
     else:
-        context['form'] = DateRangeForm()
+    """
+    context['form'] = DateRangeForm()
 
     return render(request, "log/athlete.html", context)
 

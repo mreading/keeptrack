@@ -11,6 +11,51 @@ $(document).ready(function() {
            $(this).css("background", color);
        })
    })
+   
+   function getCookie(name) {
+        var cookieValue = null;
+        var i = 0;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (i; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        crossDomain: false, // obviates need for sameOrigin test
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    }); 
+   
+   $("#range_form").submit(function(e) {
+       //need some indication of loading
+       $.ajax({
+           type: "POST",
+           data: $("#range_form").serialize(),
+           url: "/log/ajax/range_select/",
+           success: function(data) {
+               range_graph_data = JSON.parse(data);
+               graphSelector.setGraph(3);
+            }
+       });
+       e.preventDefault();
+   })
 })
 
 
