@@ -114,8 +114,7 @@ def team(request):
     )
 
     # getting calendar information for current week
-    #calendarId = team.calendarId
-    calendarId = "primary"
+    calendarId = team.calendarId
     week = current_week(calendarId)
 
     context = {

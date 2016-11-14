@@ -10,10 +10,11 @@ th {
   text-align: center;
 }
 
-th:hover {
-    cursor: default;
-}
-
 table {
   table-layout: fixed;
+}
+
+table a:hover, th:hover {
+  cursor: default;
+  text-decoration: none;
 }

@@ -126,9 +126,18 @@ def sort_events(events, start, finish):
                     current = timezone.make_aware(current, local_tz)
                     current = current.isoformat()
 
+
                 # event is during the time range
                 if day_start <= current <= day_end:
                     day.append(events[i])
+                    try:
+                        # format start date/time
+                        start = events[i]['start']['dateTime']
+                        start = datetime.datetime.strptime(start[:-6], "%Y-%m-%dT%H:%M:%S")
+                        day[-1]['dateInfo'] = "Starts at " + start.strftime("%I:%M%p")
+                    except:
+                        day[-1]['dateInfo'] = "All Day Event"
+
 
                 # event is after time range so stop looking through events
                 elif day_end < current:
