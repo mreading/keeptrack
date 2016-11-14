@@ -11,6 +11,51 @@ $(document).ready(function() {
            $(this).css("background", color);
        })
    })
+   
+   function getCookie(name) {
+        var cookieValue = null;
+        var i = 0;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (i; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        crossDomain: false, // obviates need for sameOrigin test
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    }); 
+   
+   $("#range_form").submit(function(e) {
+       //need some indication of loading
+       $.ajax({
+           type: "POST",
+           data: $("#range_form").serialize(),
+           url: "/log/ajax/range_select/",
+           success: function(data) {
+               range_graph_data = JSON.parse(data);
+               graphSelector.setGraph(3);
+            }
+       });
+       e.preventDefault();
+   })
 })
 
 
@@ -175,51 +220,51 @@ function drawMonthChart() {
 
     if (month_graph_data) {
 
-  // Create the data table.
-  var data = google.visualization.arrayToDataTable(month_graph_data);
-  var view = new google.visualization.DataView(data);
-  view.setColumns([0, 1, 2])
+      // Create the data table.
+      var data = google.visualization.arrayToDataTable(month_graph_data);
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1, 2])
 
-  // Set chart options
-  var options = {'title':'Current Month Mileage',
-                 'height':300,
-                 'width':graphSelector.getActiveDivWidth(),
-                 'interpolateNulls': true,
-                 'pointShape': 'circle',
-                 'pointSize': 5,
-                 'colors': ['#6b7a8f', '#f7c331'],
-                 'legend':{position:'right'}
-                //  'trendlines': { 0: {} }
-              };
+      // Set chart options
+      var options = {'title':'Current Month Mileage',
+                     'height':300,
+                     'width':graphSelector.getActiveDivWidth(),
+                     'interpolateNulls': true,
+                     'pointShape': 'circle',
+                     'pointSize': 5,
+                     'colors': ['#6b7a8f', '#f7c331'],
+                     'legend':{position:'right'}
+                    //  'trendlines': { 0: {} }
+                  };
 
 
-  var selectHandler = function() {
-      var row = chart.getSelection()[0]['row']
-      // this means that we've selected a valid point
-      if (row) {
-          window.location = data.getValue(row, LINK_INDEX);
+      var selectHandler = function() {
+          var row = chart.getSelection()[0]['row']
+          // this means that we've selected a valid point
+          if (row) {
+              window.location = data.getValue(row, LINK_INDEX);
+          }
       }
-  }
 
-  // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));
-  google.visualization.events.addListener(chart, 'select', selectHandler);
-  chart.draw(view, options);
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));
+      google.visualization.events.addListener(chart, 'select', selectHandler);
+      chart.draw(view, options);
 
-    //create trigger to resizeEnd event
-    $(window).resize(function() {
-        if(this.resizeTO) clearTimeout(this.resizeTO);
-        this.resizeTO = setTimeout(function() {
-            $(this).trigger('resizeEnd');
-        }, 0);
-    });
+        //create trigger to resizeEnd event
+        $(window).resize(function() {
+            if(this.resizeTO) clearTimeout(this.resizeTO);
+            this.resizeTO = setTimeout(function() {
+                $(this).trigger('resizeEnd');
+            }, 0);
+        });
 
-    //redraw graph when window resize is completed
-    $(window).on('resizeEnd', function() {
-        options['width'] = graphSelector.getActiveDivWidth();
-        chart.draw(view, options);
-    });
-    }
+        //redraw graph when window resize is completed
+        $(window).on('resizeEnd', function() {
+            options['width'] = graphSelector.getActiveDivWidth();
+            chart.draw(view, options);
+        });
+        }
 
     else {
         $("#month_mileage_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
@@ -231,45 +276,45 @@ function drawMonthChart() {
 
 function drawWeekChart() {
     if (week_graph_data) {
-  // Create the data table.
-  var data = google.visualization.arrayToDataTable(week_graph_data);
-  var view = new google.visualization.DataView(data);
-  view.setColumns([0, 1, 2])
+      // Create the data table.
+      var data = google.visualization.arrayToDataTable(week_graph_data);
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1, 2])
 
-  // Set chart options
-  var options = {'title':'Current Week Mileage',
-                 'height':300,
-                 'width':graphSelector.getActiveDivWidth(),
-                 'interpolateNulls': true,
-                 'pointShape': 'circle',
-                 'pointSize': 5,
-                 'colors': ['#6b7a8f', '#f7c331'],
-                 'legend':{position:'right'}
-               };
+      // Set chart options
+      var options = {'title':'Current Week Mileage',
+                     'height':300,
+                     'width':graphSelector.getActiveDivWidth(),
+                     'interpolateNulls': true,
+                     'pointShape': 'circle',
+                     'pointSize': 5,
+                     'colors': ['#6b7a8f', '#f7c331'],
+                     'legend':{position:'right'}
+                   };
 
-  // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('week_mileage_graph'));
-  chart.draw(view, options);
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.ColumnChart(document.getElementById('week_mileage_graph'));
+      chart.draw(view, options);
 
-  var selectHandler = function(e) {
-    window.location = data.getValue(chart.getSelection()[0]['row'], LINK_INDEX);
-  }
-  google.visualization.events.addListener(chart, 'select', selectHandler);
+      var selectHandler = function(e) {
+        window.location = data.getValue(chart.getSelection()[0]['row'], LINK_INDEX);
+      }
+      google.visualization.events.addListener(chart, 'select', selectHandler);
 
-    //create trigger to resizeEnd event
-    $(window).resize(function() {
-        if(this.resizeTO) clearTimeout(this.resizeTO);
-        this.resizeTO = setTimeout(function() {
-            $(this).trigger('resizeEnd');
-        }, 0);
-    });
+        //create trigger to resizeEnd event
+        $(window).resize(function() {
+            if(this.resizeTO) clearTimeout(this.resizeTO);
+            this.resizeTO = setTimeout(function() {
+                $(this).trigger('resizeEnd');
+            }, 0);
+        });
 
-    //redraw graph when window resize is completed
-    $(window).on('resizeEnd', function() {
-        options['width'] = graphSelector.getActiveDivWidth();
-        chart.draw(view, options);
-    });
-    }
+        //redraw graph when window resize is completed
+        $(window).on('resizeEnd', function() {
+            options['width'] = graphSelector.getActiveDivWidth();
+            chart.draw(view, options);
+        });
+        }
     else {
         $("#week_mileage_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
     }
@@ -281,45 +326,45 @@ function drawWeekChart() {
 
 function drawRangeChart() {
     if (range_graph_data) {
-  // Create the data table.
-  var data = google.visualization.arrayToDataTable(range_graph_data);
-  var view = new google.visualization.DataView(data);
-  view.setColumns([0, 1, 2])
+      // Create the data table.
+      var data = google.visualization.arrayToDataTable(range_graph_data);
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1, 2])
 
-  // Set chart options
-  var options = {'title':'Date Range Graph',
-                 'height':300,
-                 'width':graphSelector.getActiveDivWidth(),
-                 'interpolateNulls': true,
-                 'pointShape': 'circle',
-                 'pointSize': 5,
-                 'colors': ['#6b7a8f', '#f7c331'],
-                 'legend':{position:'right'}
-               };
+      // Set chart options
+      var options = {'title':'Date Range Graph',
+                     'height':300,
+                     'width':graphSelector.getActiveDivWidth(),
+                     'interpolateNulls': true,
+                     'pointShape': 'circle',
+                     'pointSize': 5,
+                     'colors': ['#6b7a8f', '#f7c331'],
+                     'legend':{position:'right'}
+                   };
 
-  // Instantiate and draw our chart, passing in some options.
-  var chart = new google.visualization.ColumnChart(document.getElementById('date_range_graph'));
-  chart.draw(view, options);
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.ColumnChart(document.getElementById('date_range_graph'));
+      chart.draw(view, options);
 
-  var selectHandler = function(e) {
-    window.location = data.getValue(chart.getSelection()[0]['row'], LINK_INDEX);
-  }
-  google.visualization.events.addListener(chart, 'select', selectHandler);
+      var selectHandler = function(e) {
+        window.location = data.getValue(chart.getSelection()[0]['row'], LINK_INDEX);
+      }
+      google.visualization.events.addListener(chart, 'select', selectHandler);
 
-    //create trigger to resizeEnd event
-    $(window).resize(function() {
-        if(this.resizeTO) clearTimeout(this.resizeTO);
-        this.resizeTO = setTimeout(function() {
-            $(this).trigger('resizeEnd');
-        }, 0);
-    });
+        //create trigger to resizeEnd event
+        $(window).resize(function() {
+            if(this.resizeTO) clearTimeout(this.resizeTO);
+            this.resizeTO = setTimeout(function() {
+                $(this).trigger('resizeEnd');
+            }, 0);
+        });
 
-    //redraw graph when window resize is completed
-    $(window).on('resizeEnd', function() {
-        options['width'] = graphSelector.getActiveDivWidth();
-        chart.draw(view, options);
-    });
-    }
+        //redraw graph when window resize is completed
+        $(window).on('resizeEnd', function() {
+            options['width'] = graphSelector.getActiveDivWidth();
+            chart.draw(view, options);
+        });
+        }
     else {
         $("#date_range_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
     }

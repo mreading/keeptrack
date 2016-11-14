@@ -1,3 +1,3 @@
 $(document).ready(function() {
-  console.log("hello?")
+  $('[data-toggle="popover"]').popover({ trigger: "hover", placement: "bottom"});
 });

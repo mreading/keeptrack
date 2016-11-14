@@ -32,16 +32,22 @@ def get_current_team_season(user):
 
     else:
         coach = list(user.coach_set.all())[0]
-        team = list(coach.teams.filter(sport='XC'))[0]
+        team = list(coach.teams.all())[0]
 
         seasons = list(team.seasons.filter(
             start_date__lt=datetime.date.today(),
             end_date__gt=datetime.date.today()
         ))
+
         if len(seasons) == 0:
-            season = team.seasons.order_by('start_date')[0]
+            season = list(team.seasons.order_by('start_date'))
+            if len(seasons) == 0:
+                return team, None
+            else:
+                season = season[0]
         else:
             season = seasons[0]
+
 
     return team, season
 
@@ -87,6 +93,13 @@ def team(request):
             season = data['season']
     else:
         team, season = get_current_team_season(request.user)
+
+    if season == None: 
+        context = {
+            'form':form,
+            'no_season_alert':'You do not have any seasons set up yet.'
+        }
+        return render(request, "log/team.html", context)
 
     athletes = season.athlete_set.all()
     meets = Meet.objects.all()
