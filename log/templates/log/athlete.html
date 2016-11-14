@@ -2,14 +2,10 @@
 {% load staticfiles %}
 
 {% block content %}
-    <div>
-        <div class="page_title" style="display:inline-block">
-            <h2>{{ athlete_user.first_name }} {{ athlete_user.last_name}}</h2>
-        </div>
-    </div>
 <div id="page">
 
 <div class="container-fluid">
+    <h2>{{ athlete_user.first_name }} {{ athlete_user.last_name}}</h2>
     <div class="panel-group">
         <div class="panel panel-default">
           <div class="panel-heading">Mileage</div>

@@ -12,6 +12,7 @@ $(document).ready(function() {
        })
    })
    
+   // CODE NEEDED FOR FORM SAFETY
    function getCookie(name) {
         var cookieValue = null;
         var i = 0;
