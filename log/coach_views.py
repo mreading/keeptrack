@@ -43,8 +43,20 @@ def create_season(request, user_id, team_id):
                     season = Season.objects.create(year = data['year'],
                         start_date = data['start_date'], end_date = data['end_date'])
                     season.save()
+                    existing_athletes = False;
                     team.seasons.add(season)
-                    return redirect("/log/add_athletes/" + str(user.id) + "/" + str(team.id) + "/" + str(season.id) + "/", {})
+                    for team in coach.teams.all():
+                        for season in team.seasons.all():
+                            print season
+                            print "count: ", season.athlete_set.count()
+                            if season.athlete_set.count() != 0:
+                                existing_athletes = True;
+                                break;
+                    if existing_athletes:
+                        return redirect("/log/add_athletes/" + str(user.id) + "/" + str(team.id) + "/" + str(season.id) + "/", {})
+                    else:
+                        return redirect("/log/add_new_athletes/" + str(user.id) + "/" + str(team.id) + "/" + str(season.id) + "/", {})
+
                 else:
                     return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team, 'season_aa': True})
 
@@ -68,11 +80,12 @@ def get_current_season(team):
         end_date__gt=datetime.date.today()
     ))
     if len(seasons) == 0:
-        season = team.seasons.order_by('start_date')[0]
-    else:
-        season = seasons[0]
+        seasons = team.seasons.order_by('start_date')
 
-    return season
+    if len(seasons) == 0:
+        return None 
+    else:
+        return seasons[0]
 
 @login_required(login_url='/log/login/')
 def manage_teams(request, user_id):

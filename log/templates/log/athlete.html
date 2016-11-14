@@ -50,8 +50,6 @@
                     {% endif %}
                 </script>
 
-                <script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
-
                   <!--Div that will hold the bar chart-->
                 <div id="year_mileage_graph" class="graph"></div>
                 <div id="month_mileage_graph" style="width: 100%"></div>
@@ -166,4 +164,5 @@
     });
  })
 </script>
+<script type="text/javascript" src="{% static 'log/js/mileage.js' %}"></script>
 {% endblock %}
