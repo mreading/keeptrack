@@ -47,8 +47,6 @@ def create_season(request, user_id, team_id):
                     team.seasons.add(season)
                     for team in coach.teams.all():
                         for season in team.seasons.all():
-                            print season
-                            print "count: ", season.athlete_set.count()
                             if season.athlete_set.count() != 0:
                                 existing_athletes = True;
                                 break;
@@ -83,7 +81,7 @@ def get_current_season(team):
         seasons = team.seasons.order_by('start_date')
 
     if len(seasons) == 0:
-        return None 
+        return None
     else:
         return seasons[0]
 
@@ -215,6 +213,10 @@ def all_seasons(request, team_id, user_id):
     # Sort seasons reverse chronologically
     seasons = team.seasons.order_by('-year')
     print "seasons: ", seasons
+    coach_set = team.coach_set.all()
+    for coach_user in coach_set:
+        coach = coach_user.user
+        print coach.first_name, coach.last_name
     return render(request, "log/all_seasons.html", {'user_id':user_id, 'team':team, 'seasons': seasons})
 
 def add_existing_athletes(request, user_id, team_id, season_id):
