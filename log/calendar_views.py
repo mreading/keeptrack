@@ -177,10 +177,14 @@ def range_weeks(start, finish, calendarId):
     service = discovery.build('calendar', 'v3', http=http)
 
     # get list of events within the date range
-    eventsResult = service.events().list(
-        calendarId=calendarId, timeMin=start, timeMax=finish,
-        singleEvents=True, orderBy='startTime').execute()
-    events = eventsResult.get('items', [])
+    try:
+        eventsResult = service.events().list(
+            calendarId=calendarId, timeMin=start, timeMax=finish,
+            singleEvents=True, orderBy='startTime').execute()
+        events = eventsResult.get('items', [])
+    except:
+        print "getting calendar stuff failed"
+        return [None]
 
     # sort events into days and weeks
     # weeks is a list of weeks, week is a list of days, day is a list of events
