@@ -30,7 +30,7 @@ def create_season(request, user_id, team_id):
     if coach:
         coach = coach[0]
         if request.method == 'POST':
-            form = NewSeasonForm(request.POST)
+            form = NewSeasonForm(request.POST, team = team)
             if form.is_valid():
                 data = form.cleaned_data
 
@@ -63,7 +63,7 @@ def create_season(request, user_id, team_id):
             return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
 
         else:
-            form = NewSeasonForm()
+            form = NewSeasonForm(team = team)
             return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
 
     elif athlete:
