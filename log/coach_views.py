@@ -46,15 +46,17 @@ def create_season(request, user_id, team_id):
                     existing_athletes = False;
                     team.seasons.add(season)
                     for team in coach.teams.all():
-                        for season in team.seasons.all():
-                            if season.athlete_set.count() != 0:
+                        for temp_season in team.seasons.all():
+                            if temp_season.athlete_set.count() != 0:
                                 existing_athletes = True;
                                 break;
-                    if existing_athletes:
-                        return redirect("/log/add_athletes/" + str(user.id) + "/" + str(team.id) + "/" + str(season.id) + "/", {})
-                    else:
-                        return redirect("/log/add_new_athletes/" + str(user.id) + "/" + str(team.id) + "/" + str(season.id) + "/", {})
 
+                    if existing_athletes:
+                        form = AddExistingAthleteForm(coach = coach)
+                        return render(request, "log/add_existing_athletes.html", {'form': form, 'user_id': user_id, 'team_id': team_id, 'season_id': season.id})
+                    else:
+                        form = AddAthleteForm()
+                        return render(request, "log/add_athletes.html", {'form': form, 'user_id': user_id, 'team_id': team_id, 'season_id': season.id})
                 else:
                     return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team, 'season_aa': True})
 
@@ -65,7 +67,6 @@ def create_season(request, user_id, team_id):
             return render(request, "log/create_season.html", {'form':form, 'coach': coach, 'team':team})
 
     elif athlete:
-        print "Error: Athlete shouldn't be here"
         return render(request, "log/settings.html")
 
     else:
@@ -109,7 +110,6 @@ def add_team(request, user_id):
     sport_list = []
     for team in teams:
         sport_list.append(team.sport)
-    print sport_list
 
     if request.method == 'POST':
         form = NewTeamForm(request.POST)
@@ -118,7 +118,6 @@ def add_team(request, user_id):
 
             # Create a team, save it to the coach's teams
             if data['sport'] not in sport_list:
-                print (data['sport'], "NOT IN sportlist")
                 team = Team.objects.create(school_name = school, gender = gender, sport = data['sport'])
                 coach.teams.add(team)
                 return redirect("/log/manage_teams/" + str(user.id) + "/", {'full_team': len(sport_list) == 3})
@@ -212,11 +211,9 @@ def all_seasons(request, team_id, user_id):
     team = Team.objects.filter(id=team_id)[0]
     # Sort seasons reverse chronologically
     seasons = team.seasons.order_by('-year')
-    print "seasons: ", seasons
     coach_set = team.coach_set.all()
     for coach_user in coach_set:
         coach = coach_user.user
-        print coach.first_name, coach.last_name
     return render(request, "log/all_seasons.html", {'user_id':user_id, 'team':team, 'seasons': seasons})
 
 def add_existing_athletes(request, user_id, team_id, season_id):
@@ -227,8 +224,8 @@ def add_existing_athletes(request, user_id, team_id, season_id):
         if form.is_valid():
             data = form.cleaned_data
 
+            season = Season.objects.get(id = season_id)
             for athlete in data['athletes']:
-                season = Season.objects.get(id = season_id)
                 athlete.seasons.add(season)
 
             return redirect("/log/manage_teams/" + str(user_id) + "/", {})

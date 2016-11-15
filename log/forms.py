@@ -40,14 +40,16 @@ class AddExistingAthleteForm(forms.Form):
         if coach:
             teams = coach.teams.all()
             athletes = Athlete.objects.none()
-            if season_id:
-                curr_season = Season.objects.filter(id = season_id)[0]
+
             for team in teams:
                 seasons = team.seasons.all()
                 for season in seasons:
                     athletes = athletes | season.athlete_set.all()
 
-            athletes = athletes.exclude(pk__in = curr_season.athlete_set.all()).distinct()
+            if season_id:
+                curr_season = Season.objects.filter(id = season_id)[0]
+                athletes = athletes.exclude(pk__in = curr_season.athlete_set.all())
+            athletes = athletes.distinct()
             self.fields['athletes'].queryset = athletes
 
 class AddCoachForm(forms.Form):
