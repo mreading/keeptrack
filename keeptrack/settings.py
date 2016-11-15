@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'allauth',
     'invitations',
     'widget_tweaks',
+    'axes',
 ]
 
 ACCOUNT_ADAPTER = 'invitations.models.InvitationsAdapter'

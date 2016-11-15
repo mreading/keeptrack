@@ -5,6 +5,7 @@ from .forms import *
 from .utils import *
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages import *
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 
