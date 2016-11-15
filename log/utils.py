@@ -1,3 +1,13 @@
+from django.core.mail import send_mail
+
+def send_announcement(announcement):
+    send_mail(
+        'New Announcement',
+        announcement.text,
+        'jhpierce@hamilton.edu',
+        ['jhpierce@hamilton.edu'],
+        fail_silently=False,
+    )
 #This is the file where commonly used functions go
 def miles_to_kilometers(miles):
     return miles * 1.609344

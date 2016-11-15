@@ -14,42 +14,45 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 import datetime
 
-def get_current_team_season(user):
+def get_team_season(user):
     if user.athlete_set.all():
         #get the athlete,
         athlete = list(user.athlete_set.all())[0]
-        print athlete
-        #then the seasons that athlete has participated in,
+
+        #then the season currently in session
         seasons = list(athlete.seasons.filter(
             start_date__lt=datetime.date.today(),
             end_date__gt=datetime.date.today()
         ))
+
         if len(seasons) == 0:
-            season = athlete.seasons.order_by('start_date')[0]
-        else:
-            season = seasons[0]
+            seasons = list(athlete.seasons.all().order_by('-start_date'))
+
+        if len(seasons) == 0:
+            return None, None
+
+        season = seasons[0]
         team = season.team_set.all()[0]
+        return team, season
 
     else:
+        # Get the coach associated with this user
         coach = list(user.coach_set.all())[0]
-        team = list(coach.teams.all())[0]
 
-        seasons = list(team.seasons.filter(
-            start_date__lt=datetime.date.today(),
-            end_date__gt=datetime.date.today()
-        ))
-
-        if len(seasons) == 0:
-            season = list(team.seasons.order_by('start_date'))
+        # For each team associated with the
+        for team in list(coach.teams.all()):
+            seasons = list(team.seasons.filter(
+                start_date__lt=datetime.date.today(),
+                end_date__gt=datetime.date.today()
+            ))
             if len(seasons) == 0:
-                return team, None
-            else:
-                season = season[0]
-        else:
-            season = seasons[0]
+                seasons = list(team.seasons.all().order_by('-start_date'))
+            if len(seasons) != 0:
+                return team, seasons[0]
 
+        return None, None
 
-    return team, season
+    return None, None
 
 def create_announcement(request):
     try:
@@ -69,6 +72,7 @@ def create_announcement(request):
                 season = data['season'],
             )
             announcement.save()
+            send_announcement(announcement)
             return redirect("/log", {})
     return render(request, "log/announcement.html", {'form':form})
 
@@ -92,24 +96,18 @@ def team(request):
             team = data['team']
             season = data['season']
     else:
-        team, season = get_current_team_season(request.user)
+        team, season = get_team_season(request.user)
 
-    if season == None: 
+    if season == None:
         context = {
             'form':form,
-            'no_season_alert':'You do not have any seasons set up yet.'
+            'no_season_alert':'No seasons to view'
         }
         return render(request, "log/team.html", context)
 
     athletes = season.athlete_set.all()
-    meets = Meet.objects.all()
     userIDs = []
     athleteData = []
-    meetData = []
-
-    for meet in meets:
-        row = [str(meet.location)]
-        meetData.append(row)
 
     for athlete in athletes:
         row = [
@@ -137,7 +135,6 @@ def team(request):
         'athletes':athletes,
         'athleteData': athleteData,
         'userIDs':userIDs,
-        'meetData': meetData,
         'week': week
     }
     return render(request, "log/team.html", context)
