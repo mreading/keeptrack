@@ -16,7 +16,6 @@ function drawWeekChart() {
   //       ['2030', 28, 19, 29, 30, 12, 13]
   //     ]);
   var data = google.visualization.arrayToDataTable(mileage_data);
-
   var options = {
     width: 600,
     height: 400,
@@ -25,7 +24,6 @@ function drawWeekChart() {
     isStacked: true,
   };
   var view = new google.visualization.DataView(data);
-  view.setColumns([0, 1, 2, 3, 4, 5, 6])
 
   // Set chart options
   var options = {'title':'Athlete Mileage',
@@ -57,8 +55,8 @@ function drawWeekChart() {
   });
 
   //redraw graph when window resize is completed
-  $(window).on('resizeEnd', function() {
-      options['width'] = graphSelector.getActiveDivWidth();
-      chart.draw(view, options);
-  });
+  // $(window).on('resizeEnd', function() {
+  //     options['width'] = graphSelector.getActiveDivWidth();
+  //     chart.draw(view, options);
+  // });
 }

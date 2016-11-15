@@ -83,6 +83,7 @@ def get_team_mileage_data(season):
             distances_for_day.append(athlete_distance_for_day)
 
         data.append(distances_for_day)
+
     return data
 
 
