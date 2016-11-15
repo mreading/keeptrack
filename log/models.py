@@ -14,7 +14,8 @@ class Season(models.Model):
     end_date = models.DateField(default = date.today)
 
     def __str__(self):
-        return self.start_date.strftime("%Y-%m-%d") + " to " + self.end_date.strftime("%Y-%m-%d")
+        sport = self.team_set.all()[0].sport
+        return sport + " " + self.start_date.strftime("%Y-%m-%d") + " to " + self.end_date.strftime("%Y-%m-%d")
 
 class Team(models.Model):
     """ ex: Hamilton Men XC """

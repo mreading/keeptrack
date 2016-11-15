@@ -125,8 +125,8 @@ def team(request):
     )
 
     # getting calendar information for current week
-    #calendarId = team.calendarId
-    #week = current_week(calendarId)
+    calendarId = team.calendarId
+    week = current_week(calendarId)
 
     context = {
         'title': str(team),
@@ -135,6 +135,6 @@ def team(request):
         'athletes':athletes,
         'athleteData': athleteData,
         'userIDs':userIDs,
-        #'week': week
+        'week': week
     }
     return render(request, "log/team.html", context)
