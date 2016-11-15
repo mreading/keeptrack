@@ -59,8 +59,7 @@ class AddCoachForm(forms.Form):
 
 class SelectTeamSeasonForm(forms.Form):
     team = forms.ModelChoiceField(queryset=Team.objects.all(), label="Team")
-    season = forms.ModelChoiceField(queryset=Season.objects.all(),
-        label="Season")
+    season = forms.ModelChoiceField(queryset=Season.objects.all(), label="Season")
 
     def __init__(self, *args, **kwargs):
         teams = kwargs.pop("teams", None)
