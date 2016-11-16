@@ -61,10 +61,9 @@ function drawTable() {
         ELSE, sortIndices is NULL and we can just index in order
         ----------------------------------------------------------------*/
         else {
-            $("tr").not(':first').each(function(index) {
+            $("tr.athlete").not(':first').each(function(index) {
                 $(this).attr('id', userIDs[index]);
                 $(this).attr('class', 'athlete');
-                console.log($(this));
             });
         }
 
