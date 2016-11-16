@@ -97,7 +97,9 @@ def manage_teams(request, user_id):
     for team in teams:
         team_set.append((team, get_current_season(team)))
 
-    return render(request, "log/manage_teams.html", {'user_id': user_id, 'team_set': team_set, 'coach': coach})
+    full_set = len(team_set) == 3
+
+    return render(request, "log/manage_teams.html", {'user_id': user_id, 'team_set': team_set, 'coach': coach, 'full_team': full_set})
 
 @login_required(login_url='/log/login/')
 def add_team(request, user_id):
@@ -112,7 +114,7 @@ def add_team(request, user_id):
         sport_list.append(team.sport)
 
     if request.method == 'POST':
-        form = NewTeamForm(request.POST)
+        form = NewTeamForm(request.POST, coach= coach)
         if form.is_valid():
             data = form.cleaned_data
 
@@ -128,7 +130,7 @@ def add_team(request, user_id):
         else:
             return render(request, "log/add_team.html", {'form':form})
     else:
-        form = NewTeamForm()
+        form = NewTeamForm(coach= coach)
         return render(request, "log/add_team.html", {'form':form})
 
 @login_required(login_url='/log/login/')

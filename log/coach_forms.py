@@ -46,6 +46,27 @@ class NewSeasonForm(forms.Form):
             widget=forms.SelectDateWidget(years=YEAR_CHOICES), initial=datetime.date.today, label = "End Date")
 
 class NewTeamForm(forms.Form):
-    sport = forms.CharField(
-        widget=forms.Select(
-            choices=SPORT_CHOICES), label = "Sport")
+    def __init__(self, *args, **kwargs):
+        coach = kwargs.pop("coach", None)
+        super(NewTeamForm, self).__init__(*args, **kwargs)
+
+        # Figure out which teams already exist
+        teams = coach.teams.all()
+        existing_sports = []
+        for team in teams:
+            existing_sports.append(team.sport)
+        print existing_sports
+
+        for sport in existing_sports:
+            print "existing: ", sport
+
+        sports = []
+        for sport in SPORT_CHOICES:
+            print "sport: ", sport[0], " other: "
+            if sport[0] not in existing_sports:
+                sports.append(sport)
+
+        # Set the fields of the form
+        self.fields['sport'] = forms.CharField(
+            widget=forms.Select(
+                choices=sports), label = "Sport")
