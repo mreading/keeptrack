@@ -87,6 +87,7 @@ def get_miles_last_7_days(athlete):
     distance = sum([get_miles(get_workout_from_activity(a)) for a in activities])
     return distance
 
+@login_required(login_url='/log/login')
 def team(request):
     form = SelectTeamSeasonForm()
     if request.method == 'POST':

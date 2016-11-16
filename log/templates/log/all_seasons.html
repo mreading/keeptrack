@@ -8,8 +8,10 @@
   <div class="panel-group">
       {% for s in seasons %}
         <div class="panel panel-default">
+          <div class="panel-heading">{{s.year}}</div>
             <div class="panel-body">
-              <h3> {{s.year}} </h3>
+              <h3> Athletes </h3>
+
               {% for athlete in s.athlete_set.all %}
                 {{athlete.user.first_name}} {{athlete.user.last_name}}
                 </br>

@@ -98,7 +98,9 @@ def manage_teams(request, user_id):
     for team in teams:
         team_set.append((team, get_current_season(team)))
 
-    return render(request, "log/manage_teams.html", {'user_id': user_id, 'team_set': team_set, 'coach': coach})
+    full_set = len(team_set) == 3
+
+    return render(request, "log/manage_teams.html", {'user_id': user_id, 'team_set': team_set, 'coach': coach, 'full_team': full_set})
 
 @login_required(login_url='/log/login/')
 def add_team(request, user_id):
@@ -113,7 +115,7 @@ def add_team(request, user_id):
         sport_list.append(team.sport)
 
     if request.method == 'POST':
-        form = NewTeamForm(request.POST)
+        form = NewTeamForm(request.POST, coach= coach)
         if form.is_valid():
             data = form.cleaned_data
 
@@ -136,7 +138,7 @@ def add_team(request, user_id):
         else:
             return render(request, "log/add_team.html", {'form':form})
     else:
-        form = NewTeamForm()
+        form = NewTeamForm(coach= coach)
         return render(request, "log/add_team.html", {'form':form})
 
 @login_required(login_url='/log/login/')
@@ -179,7 +181,9 @@ def add_athletes(request, user_id, team_id, season_id):
     return render(request, "log/add_athletes.html", {'form': form, 'user_id': user_id, 'team_id': team_id, 'season_id': season_id})
 
 @login_required(login_url='/log/login/')
-def add_coach(request, team_id):
+def add_coach(request, user_id):
+    coach_user = User.objects.get(id=user_id)
+    original_coach = coach_user.coach_set.all()[0]
     if request.method == 'POST':
         form = AddCoachForm(request.POST)
         if form.is_valid():
@@ -192,7 +196,7 @@ def add_coach(request, team_id):
                 user = User.objects.create_user(username, data['email'], password)
             except IntegrityError as e:
                 return render(request, "log/add_coach.html", {'form':form,
-                    'IE': True, "team_id": team_id})
+                    'IE': True, "user_id": user_id})
             user.first_name = data['first_name']
             user.last_name = data['last_name']
             user.save()
@@ -200,19 +204,22 @@ def add_coach(request, team_id):
             coach = Coach.objects.create(
                 user_id = user.id,
             )
-            team = Team.objects.get(id=team_id)
-            coach.teams.add(team)
 
-            # Share calendar with coach
-            share_calendar(team.calendarId, data['email'])
+            teams = original_coach.teams.all()
+            for team in teams:
+                coach.teams.add(team)
 
+                # Share calendar with coach
+                share_calendar(team.calendarId, data['email'])
             coach.save()
 
+            return redirect("/log/manage_teams/" + str(user_id) + "/", {})
+
         else:
-            return render(request, "log/add_coach.html", {'form':form, 'team_id':team_id})
+            return render(request, "log/add_coach.html", {'form':form, 'user_id':user_id})
 
     form = AddCoachForm()
-    return render(request, "log/add_coach.html", {'form': form, 'team_id':team_id})
+    return render(request, "log/add_coach.html", {'form':form, 'user_id':user_id})
 
 def settings(request, user_id):
     coach = Coach.objects.filter(user=user_id)[0]

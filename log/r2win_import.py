@@ -57,12 +57,12 @@ class RaceInfo:
 class Workout:
     def __init__(self, xml_workout):
         attributes = list(xml_workout)
-        self.date = ""
+        self.date = datetime.datetime.today()
         self.time_of_day_description = ""
         self.run_type = ""
         self.total_distance = ""
-        self.total_time = ""
-        self.running_miles = ""
+        self.total_time = datetime.timedelta(0)
+        self.running_miles = 0
         self.terrain = ""
         self.private_notes = ""
         self.shoe_name = ""
