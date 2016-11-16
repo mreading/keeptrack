@@ -205,7 +205,8 @@ def current_week(calendarId):
     week_start = monday[:11] + "00:00:00" + monday[-6:]
     week_end = change_time(week_start, 7, -1)
 
-    return range_weeks(week_start, week_end, calendarId)[0]
+    #return range_weeks(week_start, week_end, calendarId)[0]
+    return []
 
 def get_current_team_season(seasons):
     # get current date and timezone
@@ -275,7 +276,8 @@ def calendar(request):
     start, finish = convert_start_end_dates(season.start_date, season.end_date)
 
     # get event data for season
-    weeks = range_weeks(start, finish, calendarId)
+    #weeks = range_weeks(start, finish, calendarId)
+    weeks = []
 
     return render(request, "log/calendar.html", {"weeks":weeks})
 
@@ -299,7 +301,8 @@ def time_period(request):
             # needs to change based on team
             calendarId = team.calendarId
 
-            weeks = range_weeks(start, finish, calendarId)
+            #weeks = range_weeks(start, finish, calendarId)
+            weeks = []
             return render(request, "log/calendar.html", {"weeks":weeks})
         else:
             return render(request, "log/select_time_period.html", {'form':form})
@@ -327,7 +330,8 @@ def team_season(request):
             # needs to change based on team
             calendarId = team.calendarId
 
-            weeks = range_weeks(start, finish, calendarId)
+            #weeks = range_weeks(start, finish, calendarId)
+            weeks = []
             return render(request, "log/calendar.html", {"weeks":weeks})
         else:
             return render(request, "log/select_time_period.html",

@@ -127,7 +127,8 @@ def team(request):
 
     # getting calendar information for current week
     calendarId = team.calendarId
-    week = current_week(calendarId)
+    #week = current_week(calendarId)
+    week = [None]
 
     context = {
         'title': str(team),
