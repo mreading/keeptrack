@@ -154,9 +154,9 @@ def build_graph_data(dates, activities, week_name_labels=False):
 
     #graph data is expected to be of the form [[x-axis data, y-axis data], ...]
     # where x axis is a date string and y axis is floating point number representing distance
-    graph_data = [['Date', 'Miles', {'role':'style'}, 'Link']]
 
     graph_data2 = [['Date', 'NormalRun', 'IntervalRun', 'CrossTrain', 'Event', {'role':'style'}, 'Link']]
+    # graph_data2.append(['asdf', 1, 1, 1, 1, 'color:#6b7a8f', '/log/athlete/activity_detail/381'])
     ##MAYBE PASS LEGEND HERE???
     #??????????????????????????????????????????????????????//
     #????
@@ -171,21 +171,12 @@ def build_graph_data(dates, activities, week_name_labels=False):
             w_date = activities[p].date
             distance = get_miles(get_workout_from_activity(activities[p]))
 
-            #add distances of other runs
-            if str(w_date) == graph_data[-1][0]:
-                distance += graph_data[-1][1]
-
             if week_name_labels:
                 w_date = w_date.strftime("%A")
-            graph_data.append([
-                str(w_date),
-                distance,
-                'color:'+colors[activities[p].act_type],
-                '/log/athlete/activity_detail/'+str(activities[p].id),
-            ])
 
-            graph_data2.append([str(w_date), None, None, None, None, 'color:'+colors[activities[p].act_type],
+            graph_data2.append([str(w_date), 0, 0, 0, 0, 'color:'+colors[activities[p].act_type],
                 '/log/athlete/activity_detail/'+str(activities[p].id),])
+
             graph_data2[len(graph_data2)-1][graph_data2[0].index(activities[p].act_type)] = distance
 
 
@@ -198,11 +189,8 @@ def build_graph_data(dates, activities, week_name_labels=False):
             w_date = dates[i]
             if week_name_labels:
                 w_date = w_date.strftime("%A")
-            graph_data.append(
-            [str(w_date), None, 'color:'+colors['OffDay'], 'nothing']
-            )
 
-            graph_data2.append([str(w_date), None, None, 0, 0, 'color:'+colors['OffDay'],
+            graph_data2.append([str(w_date), 0, 0, 0, 0, 'color:'+colors['OffDay'],
                 'nothing'])
             i += 1
 
