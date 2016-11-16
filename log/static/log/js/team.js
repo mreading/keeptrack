@@ -55,7 +55,7 @@ function drawTable() {
             /*----------------------------------------------------------------
             Add id's to all but first row (column names)
             ----------------------------------------------------------------*/
-            $("tr.athlete").each(function(index) {
+            $(".google-visualization-table-table tr").not(':first').each(function(index) {
                 $(this).attr('id', userIDs[sortIndices[index]]);
                 $(this).attr('class', 'athlete');
             });
@@ -75,7 +75,6 @@ function drawTable() {
         On hover, suggest clickability
         ----------------------------------------------------------------*/
         $("tr.athlete").hover(function() {
-            console.log('here');
             $(this).css({"cursor": "pointer"});
         });
 
