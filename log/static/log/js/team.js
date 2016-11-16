@@ -1,3 +1,7 @@
+$(document).ready(function() {
+  $('[data-toggle="popover"]').popover({ trigger: "hover", placement: "bottom"});
+});
+
 /*------------------------------------------------------------------------
 {   Loading table packages; drawing table once loaded
 ------------------------------------------------------------------------*/
@@ -61,7 +65,7 @@ function drawTable() {
         ELSE, sortIndices is NULL and we can just index in order
         ----------------------------------------------------------------*/
         else {
-            $("tr.athlete").not(':first').each(function(index) {
+            $(".google-visualization-table-table tr").not(':first').each(function(index) {
                 $(this).attr('id', userIDs[index]);
                 $(this).attr('class', 'athlete');
             });

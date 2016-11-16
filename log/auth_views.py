@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from .forms import *
 from .utils import *
+from .calendar_views import *
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages import *
@@ -54,8 +55,14 @@ def signup(request):
             user.first_name = data['first_name']
             user.last_name = data['last_name']
 
+            # Create calendar for the team
+            calendarId = create_calendar(data['school']+" "+data['gender']+" "+data['sport'])
+
+            # Share calendar with coach
+            share_calendar(calendarId, data['email'])
+
             # Create a team
-            team = Team.objects.create(school_name = data['school'], gender = data['gender'], sport = data['sport'])
+            team = Team.objects.create(school_name = data['school'], gender = data['gender'], sport = data['sport'], calendarId=calendarId)
 
             # Create a coach
             coach = Coach.objects.create(user_id = user.id)

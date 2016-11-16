@@ -37,10 +37,11 @@ div.pagetitle {
   text-align: center;
 }
 
-.calendar th:hover {
-    cursor: default;
-}
-
 .calendar table {
   table-layout: fixed;
+}
+
+.calendar table a:hover, .calendar th:hover {
+  cursor: default;
+  text-decoration: none;
 }

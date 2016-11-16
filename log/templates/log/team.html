@@ -4,8 +4,6 @@ PURPOSE: 			The team page is the home screen for
                     via the 'TEAM' button on the navbar
 CONNECTED FILES:	/log/base.html
 				    /static/log/js/team.js
-				    /static/log/js/tablesorter/jquery-latest.js
-                    /static/log/js/tablesorter/jquery.tablesorter.js
 ----------------------------------------------------------------------------->
 {% extends 'log/base.html' %}
 {% load staticfiles %}
@@ -52,7 +50,7 @@ CONNECTED FILES:	/log/base.html
                                         {% for day in week.1 %}
                                             <td class="day">
                                         {% for event in day %}
-                                            <div class="event well">{{ event.summary }}</div>
+                                            <a class="event well" data-content="{{event.dateInfo}}" data-toggle="popover">{{event.summary}}</a>
                                         {% endfor %}
                                             </td>
                                         {% endfor %}
