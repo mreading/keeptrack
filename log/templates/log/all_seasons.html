@@ -4,7 +4,7 @@
 {% block content %}
 {% if seasons %}
  <div class="container-fluid">
-     <h2> {{team}} - All Seasons </h2>
+     <h2> All Seasons - {{team}} </h2>
   <div class="panel-group">
       {% for s in seasons %}
         <div class="panel panel-default">
@@ -22,19 +22,27 @@
               </div>
             </div>
       {% endfor %}
+      <div class="panel panel-default">
+          <div class="panel-body">
+            <a href="/log/create_season/{{user.id}}/{{team.id}}">Add Season</a> </br>
+            <a href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
+          </div>
         </div>
+    </div>
+  </div>
+
 
     {% else %}
     <div class="container-fluid">
-        <h2> {{team}} - No Seasons </h2>
+      <div class="panel-group">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <h2> {{team}} - No Seasons </h2>
+            <a href="/log/create_season/{{user.id}}/{{team.id}}">Add Season</a> </br>
+            <a href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
+          </div>
+        </div>
+      </div>
     </div>
     {% endif %}
-
-            </br>
-      <a href="/log/create_season/{{user.id}}/{{team.id}}">Add Season</a>
-  </div>
-
-  <a href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
-
-
 {% endblock %}
