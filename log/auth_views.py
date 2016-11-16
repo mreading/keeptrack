@@ -56,10 +56,11 @@ def signup(request):
             user.last_name = data['last_name']
 
             # Create calendar for the team
-            calendarId = create_calendar(data['school']+" "+data['gender']+" "+data['sport'])
+            #calendarId = create_calendar(data['school']+" "+data['gender']+" "+data['sport'])
+            calendarId = "primary"
 
             # Share calendar with coach
-            share_calendar(calendarId, data['email'])
+            #share_calendar(calendarId, data['email'])
 
             # Create a team
             team = Team.objects.create(school_name = data['school'], gender = data['gender'], sport = data['sport'], calendarId=calendarId)
