@@ -16,17 +16,6 @@ from r2win_import import *
 
 import json
 import datetime
-
-@login_required(login_url='/log/login')
-def test(request):
-    print("TEST WORKING!")
-    print(request.is_ajax())
-    if request.is_ajax():
-        test_items = ['apple', 'banana']
-        data = json.dumps(test_items)
-        return HttpResponse(data, content_type='application/json')
-    else:
-        raise Http404
         
 @login_required(login_url='/log/login')
 def range_select(request):
@@ -40,8 +29,7 @@ def range_select(request):
         if date_range_form.is_valid():
             
             #UNIVERSALLLLL
-            user = User.objects.get(id="12")
-            athlete = Athlete.objects.get(user=user)
+            athlete = Athlete.objects.get(user=request.user)
             
             activities = Activity.objects.filter(athlete=athlete).order_by('date')
             
@@ -67,6 +55,7 @@ def range_select(request):
                 range_dates.append(range_dates[-1]+datetime.timedelta(1))
 
             range_graph_data = build_graph_data(range_dates, range_activities)
+            print (range_graph_data)
             return HttpResponse(json.dumps(range_graph_data))
         
     else:
