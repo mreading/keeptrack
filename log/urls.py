@@ -15,6 +15,7 @@ import os
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^help/$', views.help, name='help'),
     url(r'^login/$', watch_login(auth_views.login_view), name='login'),
     url(r'^ajax/range_select/$', athlete_views.range_select, name='test'),
     url(r'^athlete/(?P<user_id>[0-9]+)/$', athlete_views.athlete, name='athlete'),
