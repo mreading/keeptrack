@@ -1,6 +1,7 @@
 // Load the Visualization API and the corechart package.
 google.charts.load('current', {'packages':['corechart']});
 
+var range_index = 3;
 $(document).ready(function() {
    $('.btn').bind("mouseover", function(){
        var color = $(this).css("background-color");
@@ -52,7 +53,7 @@ $(document).ready(function() {
            url: "/log/ajax/range_select/",
            success: function(data) {
                range_graph_data = JSON.parse(data);
-               graphSelector.setGraph(3);
+               graphSelector.setGraph(range_index);
             }
        });
        e.preventDefault();
@@ -134,15 +135,18 @@ class GraphSelector {
             var prevGraphID = this.graphList[this.currentGraphIndex].graphID;
             var prevButtonID = this.graphList[this.currentGraphIndex].buttonID;
 
-            $(prevGraphID).hide('slow', this.graphList[index].drawFunc());
+            $(prevGraphID).hide('slow');
             var currentGraphID = this.graphList[index].graphID;
-            $(currentGraphID).show('slow');
+            $(currentGraphID).show('slow', this.graphList[index].drawFunc());
 
             this.currentGraphIndex = index;
             var currentButtonID = this.graphList[this.currentGraphIndex].buttonID;
 
             $(prevButtonID).removeClass('active');
             $(currentButtonID).addClass('active');
+        }
+        else if (index=range_index) {
+            this.graphList[index].drawFunc();
         }
     }
 }
