@@ -37,12 +37,11 @@
       {% endfor %}
       <div class="panel panel-default">
         <div class="panel-body">
-
           {% if not full_team %}
-            <a href="/log/add_team/{{user.id}}/"> ADD NEW TEAM </a>
+            <a href="/log/add_team/{{user.id}}/"> Add New Team </a>
           </br>
           {% endif %}
-          <a href="/log/add_coach/{{t.id}}/"> Add Additional Coach </a>
+          <a href="/log/add_coach/{{user_id}}/"> Add Additional Coach </a>
         </div>
       </div>
     </div>

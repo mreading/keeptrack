@@ -171,7 +171,9 @@ def add_athletes(request, user_id, team_id, season_id):
     return render(request, "log/add_athletes.html", {'form': form, 'user_id': user_id, 'team_id': team_id, 'season_id': season_id})
 
 @login_required(login_url='/log/login/')
-def add_coach(request, team_id):
+def add_coach(request, user_id):
+    coach_user = User.objects.get(id=user_id)
+    original_coach = coach_user.coach_set.all()[0]
     if request.method == 'POST':
         form = AddCoachForm(request.POST)
         if form.is_valid():
@@ -184,7 +186,7 @@ def add_coach(request, team_id):
                 user = User.objects.create_user(username, data['email'], password)
             except IntegrityError as e:
                 return render(request, "log/add_coach.html", {'form':form,
-                    'IE': True, "team_id": team_id})
+                    'IE': True, "user_id": user_id})
             user.first_name = data['first_name']
             user.last_name = data['last_name']
             user.save()
@@ -192,16 +194,18 @@ def add_coach(request, team_id):
             coach = Coach.objects.create(
                 user_id = user.id,
             )
-            team = Team.objects.get(id=team_id)
-            coach.teams.add(team)
-
+            teams = original_coach.teams.all()
+            for team in teams:
+                coach.teams.add(team)
             coach.save()
 
+            return redirect("/log/manage_teams/" + str(user_id) + "/", {})
+
         else:
-            return render(request, "log/add_coach.html", {'form':form, 'team_id':team_id})
+            return render(request, "log/add_coach.html", {'form':form, 'user_id':user_id})
 
     form = AddCoachForm()
-    return render(request, "log/add_coach.html", {'form': form, 'team_id':team_id})
+    return render(request, "log/add_coach.html", {'form':form, 'user_id':user_id})
 
 def settings(request, user_id):
     coach = Coach.objects.filter(user=user_id)[0]
