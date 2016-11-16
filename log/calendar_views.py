@@ -176,6 +176,8 @@ def range_weeks(start, finish, calendarId):
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
+    print calendarId
+
     # get list of events within the date range
     try:
         eventsResult = service.events().list(
@@ -324,7 +326,6 @@ def team_season(request):
 
             # needs to change based on team
             calendarId = team.calendarId
-            #calendarId = 'primary'
 
             weeks = range_weeks(start, finish, calendarId)
             return render(request, "log/calendar.html", {"weeks":weeks})

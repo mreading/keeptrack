@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .coach_forms import *
 from .forms import *
 from .utils import *
+from .calendar_views import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -118,7 +119,14 @@ def add_team(request, user_id):
 
             # Create a team, save it to the coach's teams
             if data['sport'] not in sport_list:
-                team = Team.objects.create(school_name = school, gender = gender, sport = data['sport'])
+
+                # Create calendar for team
+                calendarId = create_calendar(school+" "+gender+" "+data['sport'])
+
+                # Share calendar with coach
+                share_calendar(calendarId, user.email)
+
+                team = Team.objects.create(school_name = school, gender = gender, sport = data['sport'], calendarId=calendarId)
                 coach.teams.add(team)
                 return redirect("/log/manage_teams/" + str(user.id) + "/", {'full_team': len(sport_list) == 3})
 
@@ -194,6 +202,9 @@ def add_coach(request, team_id):
             )
             team = Team.objects.get(id=team_id)
             coach.teams.add(team)
+
+            # Share calendar with coach
+            share_calendar(team.calendarId, data['email'])
 
             coach.save()
 

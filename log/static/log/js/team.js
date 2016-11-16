@@ -1,3 +1,7 @@
+$(document).ready(function() {
+  $('[data-toggle="popover"]').popover({ trigger: "hover", placement: "bottom"});
+});
+
 /*------------------------------------------------------------------------
 {   Loading table packages; drawing table once loaded
 ------------------------------------------------------------------------*/

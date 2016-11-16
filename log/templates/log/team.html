@@ -52,7 +52,7 @@ CONNECTED FILES:	/log/base.html
                                         {% for day in week.1 %}
                                             <td class="day">
                                         {% for event in day %}
-                                            <div class="event well">{{ event.summary }}</div>
+                                            <a class="event well" data-content="{{event.dateInfo}}" data-toggle="popover">{{event.summary}}</a>
                                         {% endfor %}
                                             </td>
                                         {% endfor %}
