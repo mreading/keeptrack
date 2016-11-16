@@ -11,6 +11,8 @@
         <div class="panel-body">
           <form class="form-horizontal" method="post", name='intervalform'>
               {% csrf_token %}
+              {{ form.media }}
+              {{ IntervalForm.errors }}
 
               <div class="control-group date">
                 <label class="control-label">Date</label>
@@ -56,7 +58,7 @@
               <div class="control-group date">
                 <label class="control-label">Cool Down</label>
                 <div class="controls">
-                  {{ IntervalForm.cd_units|add_class:"form-control" }}
+                  {{ IntervalForm.cooldown|add_class:"form-control" }}
                 </div>
               </div>
 
@@ -68,11 +70,22 @@
               </div>
 
               <div class="control-group date">
+                <label class="control-label">User Label for the run</label>
+                <div class="controls">
+                  {{ IntervalForm.user_label|add_class:"form-control" }}
+                </div>
+              </div>
+
+              <div class="control-group date">
                 <label class="control-label">Description</label>
                 <div class="controls">
                   {{ IntervalForm.comments|add_class:"form-control" }}
                 </div>
               </div>
+
+              {% for field in IntervalForm.hidden_fields %}
+                  {{ field }}
+              {% endfor %}
 
               <input type="submit" value="Save Workout" class="button"/>
           </form>

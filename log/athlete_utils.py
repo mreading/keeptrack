@@ -152,15 +152,7 @@ def build_graph_data(dates, activities, week_name_labels=False):
         'OffDay':'#111111' #immaterial, because days off have no color.
     }
 
-    #graph data is expected to be of the form [[x-axis data, y-axis data], ...]
-    # where x axis is a date string and y axis is floating point number representing distance
-
     graph_data2 = [['Date', 'NormalRun', 'IntervalRun', 'CrossTrain', 'Event', {'role':'style'}, 'Link']]
-    # graph_data2.append(['asdf', 1, 1, 1, 1, 'color:#6b7a8f', '/log/athlete/activity_detail/381'])
-    ##MAYBE PASS LEGEND HERE???
-    #??????????????????????????????????????????????????????//
-    #????
-    #????????????????????????////
     validPoint=False
 
     p = 0
@@ -176,10 +168,7 @@ def build_graph_data(dates, activities, week_name_labels=False):
 
             graph_data2.append([str(w_date), 0, 0, 0, 0, 'color:'+colors[activities[p].act_type],
                 '/log/athlete/activity_detail/'+str(activities[p].id),])
-
             graph_data2[len(graph_data2)-1][graph_data2[0].index(activities[p].act_type)] = distance
-
-
             p += 1
             if p < len(activities) and dates[i] == activities[p].date:
                 i = i
