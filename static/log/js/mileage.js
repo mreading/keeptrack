@@ -1,6 +1,7 @@
 // Load the Visualization API and the corechart package.
 google.charts.load('current', {'packages':['corechart']});
 
+var range_index = 3;
 $(document).ready(function() {
    $('.btn').bind("mouseover", function(){
        var color = $(this).css("background-color");
@@ -11,7 +12,7 @@ $(document).ready(function() {
            $(this).css("background", color);
        })
    })
-   
+
    // CODE NEEDED FOR FORM SAFETY
    function getCookie(name) {
         var cookieValue = null;
@@ -42,8 +43,8 @@ $(document).ready(function() {
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
         }
-    }); 
-   
+    });
+
    $("#range_form").submit(function(e) {
        //need some indication of loading
        $.ajax({
@@ -52,7 +53,7 @@ $(document).ready(function() {
            url: "/log/ajax/range_select/",
            success: function(data) {
                range_graph_data = JSON.parse(data);
-               graphSelector.setGraph(3);
+               graphSelector.setGraph(range_index);
             }
        });
        e.preventDefault();
@@ -134,15 +135,18 @@ class GraphSelector {
             var prevGraphID = this.graphList[this.currentGraphIndex].graphID;
             var prevButtonID = this.graphList[this.currentGraphIndex].buttonID;
 
-            $(prevGraphID).hide('slow', this.graphList[index].drawFunc());
+            $(prevGraphID).hide('slow');
             var currentGraphID = this.graphList[index].graphID;
-            $(currentGraphID).show('slow');
+            $(currentGraphID).show('slow', this.graphList[index].drawFunc());
 
             this.currentGraphIndex = index;
             var currentButtonID = this.graphList[this.currentGraphIndex].buttonID;
 
             $(prevButtonID).removeClass('active');
             $(currentButtonID).addClass('active');
+        }
+        else if (index=range_index) {
+            this.graphList[index].drawFunc();
         }
     }
 }
@@ -165,7 +169,9 @@ graphSelector = new GraphSelector(graphs, DEFAULT_GRAPH_INDEX);
 
 //-----------------------------------------------------------------------------
 function drawYearChart() {
+
     if (year_graph_data) {
+
   // Create the data table.
   var data = google.visualization.arrayToDataTable(year_graph_data);
   var view = new google.visualization.DataView(data);
@@ -219,57 +225,55 @@ var LINK_INDEX = 6;
 
 function drawMonthChart() {
 
-    if (month_graph_data) {
+  if (month_graph_data) {
 
-      // Create the data table.
-      var data = google.visualization.arrayToDataTable(month_graph_data);
-      var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1, 2])
+    // Create the data table.
+    var data = google.visualization.arrayToDataTable(month_graph_data);
+    var view = new google.visualization.DataView(data);
+    view.setColumns([0, 1, 2])
 
-      // Set chart options
-      var options = {'title':'Current Month Mileage',
-                     'height':300,
-                     'width':graphSelector.getActiveDivWidth(),
-                     'interpolateNulls': true,
-                     'pointShape': 'circle',
-                     'pointSize': 5,
-                     'colors': ['#6b7a8f', '#f7c331'],
-                     'legend':{position:'right'}
-                    //  'trendlines': { 0: {} }
-                  };
+    // Set chart options
+    var options = {'title':'Current Month Mileage',
+                   'height':300,
+                   'width':graphSelector.getActiveDivWidth(),
+                   'interpolateNulls': true,
+                   'pointShape': 'circle',
+                   'pointSize': 5,
+                   'colors': ['#6b7a8f', '#f7c331'],
+                   'legend':{position:'right'}
+                  //  'trendlines': { 0: {} }
+                };
 
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));
+    chart.draw(view, options);
 
-      var selectHandler = function() {
-          var row = chart.getSelection()[0]['row']
-          // this means that we've selected a valid point
-          if (row) {
-              window.location = data.getValue(row, LINK_INDEX);
-          }
-      }
-
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.ColumnChart(document.getElementById('month_mileage_graph'));
-      google.visualization.events.addListener(chart, 'select', selectHandler);
-      chart.draw(view, options);
-
-        //create trigger to resizeEnd event
-        $(window).resize(function() {
-            if(this.resizeTO) clearTimeout(this.resizeTO);
-            this.resizeTO = setTimeout(function() {
-                $(this).trigger('resizeEnd');
-            }, 0);
-        });
-
-        //redraw graph when window resize is completed
-        $(window).on('resizeEnd', function() {
-            options['width'] = graphSelector.getActiveDivWidth();
-            chart.draw(view, options);
-        });
+    var selectHandler = function() {
+        var row = chart.getSelection()[0]['row']
+        // this means that we've selected a valid point
+        if (row) {
+            window.location = data.getValue(row, LINK_INDEX);
         }
-
-    else {
-        $("#month_mileage_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
     }
+    google.visualization.events.addListener(chart, 'select', selectHandler);
+
+    //create trigger to resizeEnd event
+    $(window).resize(function() {
+        if(this.resizeTO) clearTimeout(this.resizeTO);
+        this.resizeTO = setTimeout(function() {
+            $(this).trigger('resizeEnd');
+        }, 0);
+    });
+
+    //redraw graph when window resize is completed
+    $(window).on('resizeEnd', function() {
+        options['width'] = graphSelector.getActiveDivWidth();
+        chart.draw(view, options);
+    });
+  }
+  else {
+      $("#month_mileage_graph").html("<br><h4 class='error'>No Miles In This Date Range</h4><br>");
+  }
 }
 
 //-----------------------------------------------------------------------------
