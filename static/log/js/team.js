@@ -1,3 +1,7 @@
+$(document).ready(function() {
+  $('[data-toggle="popover"]').popover({ trigger: "hover", placement: "bottom"});
+});
+
 /*------------------------------------------------------------------------
 {   Loading table packages; drawing table once loaded
 ------------------------------------------------------------------------*/
@@ -51,7 +55,7 @@ function drawTable() {
             /*----------------------------------------------------------------
             Add id's to all but first row (column names)
             ----------------------------------------------------------------*/
-            $("tr.athlete").each(function(index) {
+            $(".google-visualization-table-table tr").not(':first').each(function(index) {
                 $(this).attr('id', userIDs[sortIndices[index]]);
                 $(this).attr('class', 'athlete');
             });
@@ -61,7 +65,7 @@ function drawTable() {
         ELSE, sortIndices is NULL and we can just index in order
         ----------------------------------------------------------------*/
         else {
-            $("tr.athlete").not(':first').each(function(index) {
+            $(".google-visualization-table-table tr").not(':first').each(function(index) {
                 $(this).attr('id', userIDs[index]);
                 $(this).attr('class', 'athlete');
             });
@@ -71,7 +75,6 @@ function drawTable() {
         On hover, suggest clickability
         ----------------------------------------------------------------*/
         $("tr.athlete").hover(function() {
-            console.log('here');
             $(this).css({"cursor": "pointer"});
         });
 

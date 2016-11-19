@@ -4,6 +4,8 @@ from datetime import datetime
 from .models import *
 from django.contrib.auth.forms import *
 from django.forms import ModelChoiceField
+from captcha.fields import CaptchaField
+
 
 SPORT_CHOICES = [('ITF', 'Indoor Track and Field'),
     ('OTF','Outdoor Track and Field'), ('XC', 'Cross Country')]
@@ -22,6 +24,8 @@ class SignupForm(forms.Form):
     sport = forms.CharField(
         widget=forms.Select(
             choices=SPORT_CHOICES), label = "Sport")
+
+    captcha = CaptchaField()
 
 class AddAthleteForm(forms.Form):
     first_name = forms.CharField(max_length=50, label="First Name")
