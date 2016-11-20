@@ -16,6 +16,7 @@ from r2win_import import *
 
 import json
 import datetime
+import os
 
 @login_required(login_url='/log/login')
 def gear(request):
@@ -84,6 +85,8 @@ def range_select(request):
 
 @login_required(login_url='/log/login/')
 def wear(request):
+    print "FINDME"
+    print os.path.expanduser('~')
     athlete = Athlete.objects.get(user=request.user)
     context = wear_help(athlete.default_location)
     return render(request, 'log/wear.html', context)
