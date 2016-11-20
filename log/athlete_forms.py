@@ -99,7 +99,7 @@ class AddNormalForm(forms.Form):
     duration = MultiValueDurationField(label="Duration (H, M, S)")
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
     user_label = forms.CharField(max_length=35, initial="Normal Run")
-    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all())
+    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all(), required=False)
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
@@ -129,7 +129,7 @@ class AddXTrainForm(forms.Form):
     sport = forms.CharField(max_length=20)
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
     user_label = forms.CharField(max_length=35, initial="Cross Train")
-    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all())
+    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all(), required=False)
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
@@ -163,7 +163,7 @@ class AddEventForm(forms.Form):
     gender = forms.ChoiceField(choices=gender_choices)
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
     user_label = forms.CharField(max_length=35, initial="Race")
-    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all())
+    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all(), required=False)
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
@@ -213,7 +213,7 @@ class AddIntervalForm(forms.Form):
         widget=forms.widgets.DateInput(attrs={'type': 'date'})
     )
     user_label=forms.CharField(max_length=35, initial="Intervals")
-    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all())
+    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all(), required=False)
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
