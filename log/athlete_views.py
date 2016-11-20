@@ -16,7 +16,28 @@ from r2win_import import *
 
 import json
 import datetime
-        
+
+@login_required(login_url='/log/login')
+def gear(request):
+    if request.method == 'POST':
+        form = ShoeForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            shoe = Shoe.objects.create(
+                nickname = data['nickname'],
+                description = data['description'],
+                athlete = request.user.athlete_set.all()[0]
+            )
+            shoe.save()
+    shoes = request.user.athlete_set.all()[0].shoe_set.all()
+    form = ShoeForm()
+    context = {
+        'form':form,
+        'shoes':shoes
+    }
+    return render(request, 'log/gear.html', context)
+
+
 @login_required(login_url='/log/login')
 def range_select(request):
     #print ("RANGE SLEC")
@@ -27,12 +48,12 @@ def range_select(request):
         #print("hereeeooo")
         #print(date_range_form)
         if date_range_form.is_valid():
-            
+
             #UNIVERSALLLLL
             athlete = Athlete.objects.get(user=request.user)
-            
+
             activities = Activity.objects.filter(athlete=athlete).order_by('date')
-            
+
             runs = []
             for a in activities:
                 runs += NormalRun.objects.filter(activity=a)
@@ -57,7 +78,7 @@ def range_select(request):
             range_graph_data = build_graph_data(range_dates, range_activities)
             print (range_graph_data)
             return HttpResponse(json.dumps(range_graph_data))
-        
+
     else:
         raise Http404
 
@@ -285,6 +306,7 @@ def edit_normal(request, activity_id):
             activity.comment=data['comments']
             activity.date=data['date']
             activity.user_label=data['user_label']
+            activity.shoe=data['shoe']
             activity.save()
             normal_run.set_pace()
             normal_run.save()
@@ -297,6 +319,7 @@ def edit_normal(request, activity_id):
     form.fields['duration'].initial=normal_run.duration
     form.fields['comments'].initial=activity.comment
     form.fields['user_label'].initial=activity.user_label
+    form.fields['shoe'].initial=activity.shoe
 
     context = {
         'form':form,
@@ -429,7 +452,7 @@ def athlete(request, user_id):
         'week_graph_data':json.dumps(week_graph_data),
         'athlete_user':user,
     }
-    
+
     """
     if request.method == 'POST':
         date_range_form = DateRangeForm(request.POST)
@@ -466,7 +489,6 @@ def add(request, run_type):
     """---------------------------------------------------------
 	  Add a run with this view
 	---------------------------------------------------------"""
-
     #This view only handles run addition for Races, Cross train,
     # and normal runs. Interval runs are complex and require their own view
     if run_type == 'IntervalRun':
@@ -488,7 +510,8 @@ def add(request, run_type):
                 date=data['date'],
                 act_type=run_type,
                 comment=data['comments'],
-                user_label=data['user_label']
+                user_label=data['user_label'],
+                shoe = data['shoe']
             )
             activity.save()
             # create an associated thread for comments

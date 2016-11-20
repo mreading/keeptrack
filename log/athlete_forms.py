@@ -8,6 +8,10 @@ from .models import *
 from datetime import date
 from django.forms.formsets import BaseFormSet
 
+class ShoeForm(forms.Form):
+    nickname = forms.CharField(max_length=50)
+    description = forms.CharField(max_length=1000)
+
 class WearForm(forms.Form):
     town = forms.CharField(max_length=100, label="Town Name")
     state = forms.CharField(max_length=50, label="State Abbr")
@@ -94,6 +98,14 @@ class AddNormalForm(forms.Form):
     duration = MultiValueDurationField(label="Duration (H, M, S)")
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
     user_label = forms.CharField(max_length=35, initial="Normal Run")
+    shoe = ModelChoiceField(queryset=Shoe.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        shoes = kwargs.pop("shoes", None)
+        super(AddNormalForm, self).__init__(*args, **kwargs)
+        if shoes != None:
+            self.fields['shoe'].queryset = shoes
+
 
 class AddXTrainForm(forms.Form):
     """--------------------------------------------------------------------
@@ -154,7 +166,6 @@ class AddRepForm(forms.Form):
     ]
     rep_units = forms.ChoiceField(choices=unit_choices, initial='Meters')
     duration = MultiValueDurationField(label="Duration (H, M, S)")
-    # duration = forms.DurationField()
     # goal_pace = forms.DurationField(optional=True)
     rep_rest =  MultiValueDurationField(label="Duration (H, M, S)")
 

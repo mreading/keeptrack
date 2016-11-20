@@ -59,12 +59,21 @@ class Coach(models.Model):
     teams = models.ManyToManyField(Team)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+class Shoe(models.Model):
+    nickname = models.CharField(max_length=40)
+    description = models.CharField(max_length=1000)
+    athlete = models.ForeignKey(Athlete)
+
+    def __str__(self):
+        return self.nickname
+
 class Activity(models.Model):
     athlete = models.ForeignKey(Athlete)
     date = models.DateField()
     comment = models.CharField(max_length=1500, null=True)
     act_type = models.CharField(max_length=20, default='NormalRun')
     user_label = models.CharField(max_length=35, default="Normal Run")
+    shoe = models.ForeignKey(Shoe, null=True)
     #weather
     #gpx file
 
