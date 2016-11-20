@@ -166,7 +166,7 @@ def edit_interval_run(request, activity_id):
     IntervalForm = AddIntervalForm(user=request.user)
     IntervalForm.fields['warmup'].initial=i_run.warmup
     IntervalForm.fields['wu_units'].initial=i_run.wu_units
-    IntervalForm.fields['cooldown'].initial=i_run.warmup
+    IntervalForm.fields['cooldown'].initial=i_run.cooldown
     IntervalForm.fields['cd_units'].initial=i_run.cd_units
     IntervalForm.fields['date'].initial=activity.date
     IntervalForm.fields['comments'].initial=activity.comment
