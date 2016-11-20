@@ -199,27 +199,27 @@ def update_activity(activity, cleaned_data):
         run = Event.objects.get(activity=activity)
 
 
-def get_post_form(run_type, post):
+def get_post_form(run_type, post, user):
     """ Simply locates a form based on the type of run """
     if run_type == "NormalRun":
-        return AddNormalForm(post)
+        return AddNormalForm(post, user=user)
     elif run_type == "IntervalRun":
-        return AddIntervalForm(post)
+        return AddIntervalForm(post, user=user)
     elif run_type == "CrossTrain":
-        return AddXTrainForm(post)
+        return AddXTrainForm(post, user=user)
     else:
-        return AddEventForm(post)
+        return AddEventForm(post, user=user)
 
-def get_form(run_type):
+def get_form(run_type, user):
     """ Very similar to the function above """
     if run_type == "NormalRun":
-        return AddNormalForm()
+        return AddNormalForm(user=user)
     elif run_type == "IntervalRun":
-        return AddIntervalForm()
+        return AddIntervalForm(user=user)
     elif run_type == "CrossTrain":
-        return AddXTrainForm()
+        return AddXTrainForm(user=user)
     else:
-        return AddEventForm()
+        return AddEventForm(user=euser)
 
 def create_run(run_type, activity, data):
     """ ---------------------------------------------------------------

@@ -12,9 +12,11 @@
       </div>
       <div class="panel-body">
         {% for shoe in shoes %}
-          <div style="border:1px solid black;border-radius:5px;margin:10px;padding:5px;">
-            {{ shoe }}
-          </div>
+          <h4>{{ shoe }}</h4>
+            <p>
+              Description: {{ shoe.description }} </br>
+              Miles to Date: {{ shoe.miles }}
+            </p>
         {% endfor %}
       </div>
     </div>

@@ -5,6 +5,22 @@ from django.utils import timezone
 from datetime import timedelta
 from datetime import date
 from .utils import *
+# from .athlete_utils import *
+
+def get_workout_from_activity(activity):
+    """---------------------------------------------------------
+	  Given an activity, return the corrosponding run
+	---------------------------------------------------------"""
+    if activity.act_type == "NormalRun":
+        return NormalRun.objects.get(activity=activity)
+    if activity.act_type == "IntervalRun":
+        return IntervalRun.objects.get(activity=activity)
+    if activity.act_type == "CrossTrain":
+        return CrossTrain.objects.get(activity=activity)
+    if activity.act_type == "Event":
+        return Event.objects.get(activity=activity)
+    else:
+        print "Unknown type of workout"
 
 class Season(models.Model):
     """ ex: 2017 (athletes participate in seasons)"""
@@ -63,9 +79,21 @@ class Shoe(models.Model):
     nickname = models.CharField(max_length=40)
     description = models.CharField(max_length=1000)
     athlete = models.ForeignKey(Athlete)
-
+    miles = models.IntegerField(default=0)
+    starting_mileage = models.IntegerField(default=0)
     def __str__(self):
         return self.nickname
+
+    def update_miles(self):
+        activities = list(Activity.objects.filter(
+            act_type__in=['NormalRun', 'Event', 'IntervalRun'],
+            shoe=self
+        ))
+        runs = []
+        for a in activities:
+            runs.append(get_workout_from_activity(a))
+
+        self.miles = self.starting_mileage + sum([get_miles(r) for r in runs])
 
 class Activity(models.Model):
     athlete = models.ForeignKey(Athlete)

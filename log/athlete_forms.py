@@ -11,6 +11,7 @@ from django.forms.formsets import BaseFormSet
 class ShoeForm(forms.Form):
     nickname = forms.CharField(max_length=50)
     description = forms.CharField(max_length=1000)
+    starting_mileage = forms.IntegerField(initial=0)
 
 class WearForm(forms.Form):
     town = forms.CharField(max_length=100, label="Town Name")
@@ -98,13 +99,14 @@ class AddNormalForm(forms.Form):
     duration = MultiValueDurationField(label="Duration (H, M, S)")
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
     user_label = forms.CharField(max_length=35, initial="Normal Run")
-    shoe = ModelChoiceField(queryset=Shoe.objects.all())
+    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all())
 
     def __init__(self, *args, **kwargs):
-        shoes = kwargs.pop("shoes", None)
+        user = kwargs.pop("user", None)
         super(AddNormalForm, self).__init__(*args, **kwargs)
-        if shoes != None:
-            self.fields['shoe'].queryset = shoes
+        if user != None:
+            athlete=Athlete.objects.get(user=user)
+            self.fields['shoe'].queryset = Shoe.objects.filter(athlete=athlete)
 
 
 class AddXTrainForm(forms.Form):
@@ -127,6 +129,14 @@ class AddXTrainForm(forms.Form):
     sport = forms.CharField(max_length=20)
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
     user_label = forms.CharField(max_length=35, initial="Cross Train")
+    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        super(AddNormalForm, self).__init__(*args, **kwargs)
+        if user != None:
+            athlete=Athlete.objects.get(user=user)
+            self.fields['shoe'].queryset = Shoe.objects.filter(athlete=athlete)
 
 class AddEventForm(forms.Form):
     """--------------------------------------------------------------------
@@ -153,6 +163,14 @@ class AddEventForm(forms.Form):
     gender = forms.ChoiceField(choices=gender_choices)
     comments = forms.CharField(max_length=1500,widget=forms.Textarea)
     user_label = forms.CharField(max_length=35, initial="Race")
+    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user", None)
+        super(AddNormalForm, self).__init__(*args, **kwargs)
+        if user != None:
+            athlete=Athlete.objects.get(user=user)
+            self.fields['shoe'].queryset = Shoe.objects.filter(athlete=athlete)
 
 class AddRepForm(forms.Form):
     """--------------------------------------------------------------------
@@ -173,33 +191,37 @@ class AddIntervalForm(forms.Form):
     """--------------------------------------------------------------------
     Form for adding or editing interval workouts
     --------------------------------------------------------------------"""
+    warmup = forms.CharField()
+    cooldown = forms.CharField()
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    wu_units = forms.ChoiceField(
+        choices=unit_choices,
+        initial="Miles",
+    )
+    cd_units = forms.ChoiceField(
+        choices=unit_choices,
+        initial="Miles",
+    )
+
+    comments = forms.CharField(max_length=1500, widget=forms.Textarea)
+    date = forms.DateField(
+        initial=date.today,
+        widget=forms.widgets.DateInput(attrs={'type': 'date'})
+    )
+    user_label=forms.CharField(max_length=35, initial="Intervals")
+    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all())
+
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
+        user = kwargs.pop("user", None)
         super(AddIntervalForm, self).__init__(*args, **kwargs)
 
-        self.fields['warmup'] = forms.CharField()   #assumed to be in miles
-        self.fields['cooldown'] = forms.CharField() #assumed to be in miles
-
-        unit_choices = [
-            ('Miles','Miles'),
-            ('Meters','Meters'),
-            ('Kilometers','Kilometers')
-        ]
-        self.fields['wu_units'] = forms.ChoiceField(
-            choices=unit_choices,
-            initial="Miles",
-            )
-        self.fields['cd_units'] = forms.ChoiceField(
-            choices=unit_choices,
-            initial="Miles",
-            )
-
-        self.fields['comments'] = forms.CharField(max_length=1500,widget=forms.Textarea)
-        self.fields['date'] = forms.DateField(
-            initial=date.today,
-            widget=forms.widgets.DateInput(attrs={'type': 'date'})
-        )
-        self.fields['user_label'] = forms.CharField(max_length=35, initial="Intervals")
+        if user != None:
+            athlete=Athlete.objects.get(user=user)
+            self.fields['shoe'].queryset = Shoe.objects.filter(athlete=athlete)
 
 class BaseAddRepFormSet(BaseFormSet):
     def clean(self):

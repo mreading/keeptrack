@@ -83,6 +83,13 @@
                 </div>
               </div>
 
+              <div class="control-group date">
+                <label class="control-label">Shoe</label>
+                <div class="controls">
+                  {{ IntervalForm.shoe|add_class:"form-control" }}
+                </div>
+              </div>
+
               {% for field in IntervalForm.hidden_fields %}
                   {{ field }}
               {% endfor %}

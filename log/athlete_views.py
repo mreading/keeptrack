@@ -27,17 +27,19 @@ def gear(request):
             shoe = Shoe.objects.create(
                 nickname = data['nickname'],
                 description = data['description'],
-                athlete = request.user.athlete_set.all()[0]
+                athlete = request.user.athlete_set.all()[0],
+                starting_mileage = data['starting_mileage']
             )
             shoe.save()
-    shoes = request.user.athlete_set.all()[0].shoe_set.all()
+    shoes = list(request.user.athlete_set.all()[0].shoe_set.all())
+    for shoe in shoes:
+        shoe.update_miles()
     form = ShoeForm()
     context = {
         'form':form,
         'shoes':shoes
     }
     return render(request, 'log/gear.html', context)
-
 
 @login_required(login_url='/log/login')
 def range_select(request):
@@ -91,7 +93,6 @@ def wear(request):
     context = wear_help(athlete.default_location)
     return render(request, 'log/wear.html', context)
 
-
 @login_required(login_url='/log/login/')
 def delete_activity(request, activity_id):
     # FIXME have to make sure athlete is the one deleting the workout
@@ -125,6 +126,7 @@ def edit_interval_run(request, activity_id):
             activity.coment = data['comments']
             activity.date = data['date']
             activity.user_label=data['user_label']
+            activity.shoe = data['shoe']
             activity.save()
 
             # The ordering of reps is probably messed up, so delete them all
@@ -169,6 +171,7 @@ def edit_interval_run(request, activity_id):
     IntervalForm.fields['date'].initial=activity.date
     IntervalForm.fields['comments'].initial=activity.comment
     IntervalForm.fields['user_label'].initial=activity.user_label
+    IntervalForm.fields['shoe'].initial=activity.shoe
 
     # Set the inital data for the formset just the same way as the previsou form
     AddRepFormSet = formset_factory(
@@ -219,6 +222,7 @@ def edit_xtrain(request, activity_id):
             activity.comment=data['comments']
             activity.date=data['date']
             activity.user_label=data['user_label']
+            activity.shoe = data['shoe']
             activity.save()
             xtrain.save()
             return redirect("/log/athlete/"+str(request.user.id), {})
@@ -235,6 +239,7 @@ def edit_xtrain(request, activity_id):
     form.fields['duration'].initial=xtrain.duration
     form.fields['comments'].initial=activity.comment
     form.fields['user_label'].initial=activity.user_label
+    form.fields['shoe'].initial=activity.shoe
 
     context = {
         'form':form,
@@ -265,6 +270,7 @@ def edit_race(request, activity_id):
             activity.date=data['date']
             activity.comment=data['comments']
             activity.user_label=data['user_label']
+            activity.shoe = data['shoe']
             activity.save()
             event.save()
             event.set_pace()
@@ -285,6 +291,7 @@ def edit_race(request, activity_id):
     form.fields['location'].initial=event.meet.location
     form.fields['place'].initial=event.place
     form.fields['user_label'].initial=activity.user_label
+    form.fields['shoe'].initial=activity.shoe
 
     #return the rendered template
     return render(request, "log/edit_run.html", {'form':form, 'activity':activity})
@@ -502,7 +509,7 @@ def add(request, run_type):
     athlete = Athlete.objects.get(user=request.user)
     if request.method == 'POST':
         # Get the right form for the run type
-        form = get_post_form(str(run_type), request.POST)
+        form = get_post_form(str(run_type), request.POST, request.user)
         #validate the form
         if form.is_valid():
             # get the cleaned data (dictuonary form)
@@ -525,7 +532,7 @@ def add(request, run_type):
             return redirect("/log/athlete/"+str(request.user.id), {})
 
     # form has not been filled out yet. get the form and return it to the template
-    form = get_form(run_type)
+    form = get_form(run_type, request.user)
     context = {
         'form':form,
         'run_type':run_type
@@ -601,7 +608,8 @@ def add_intervals(request):
                 date=interval_data['date'],
                 comment=interval_data['comments'],
                 act_type='IntervalRun',
-                user_label=interval_data['user_label']
+                user_label=interval_data['user_label'],
+                shoe=interval_data['shoe']
             )
             activity.save()
             thread = Thread.objects.create(activity=activity)
