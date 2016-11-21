@@ -219,7 +219,7 @@ def get_form(run_type, user):
     elif run_type == "CrossTrain":
         return AddXTrainForm(user=user)
     else:
-        return AddEventForm(user=euser)
+        return AddEventForm(user=user)
 
 def create_run(run_type, activity, data):
     """ ---------------------------------------------------------------
