@@ -51,34 +51,19 @@ def range_select(request):
         #print("hereeeooo")
         #print(date_range_form)
         if date_range_form.is_valid():
-
-            #UNIVERSALLLLL
             athlete = Athlete.objects.get(user=request.user)
 
-            activities = Activity.objects.filter(athlete=athlete).order_by('date')
-
-            runs = []
-            for a in activities:
-                runs += NormalRun.objects.filter(activity=a)
-                runs += IntervalRun.objects.filter(activity=a)
-                runs += Event.objects.filter(activity=a)
-            #gett all dates between
+            # get all dates between
             data = date_range_form.cleaned_data
             start_date = data['start_date']
             end_date = data['end_date']
-
-            #collect the activities between the two dates
-            range_activities = []
-            for r in runs:
-                if r.activity.date >= start_date and r.activity.date <= end_date:
-                    range_activities.append(r.activity)
 
             #collect all the dates between the start and the end date
             range_dates = [start_date]
             while range_dates[-1] <= end_date:
                 range_dates.append(range_dates[-1]+datetime.timedelta(1))
 
-            range_graph_data = build_graph_data(range_dates, range_activities)
+            range_graph_data = build_graph_data(range_dates, athlete)
             return HttpResponse(json.dumps(range_graph_data))
 
     else:
@@ -373,54 +358,18 @@ def athlete(request, user_id):
         }
         return render(request, "log/forbidden.html", context)
 
-    activities = Activity.objects.filter(athlete=athlete).order_by('date')
-
-    # Used for the list of recent activities
-    all_runs = []
-    for a in activities:
-        all_runs = list(NormalRun.objects.filter(activity=a)) + all_runs
-        all_runs = list(CrossTrain.objects.filter(activity=a)) + all_runs
-        all_runs = list(IntervalRun.objects.filter(activity=a)) + all_runs
-        all_runs = list(Event.objects.filter(activity=a)) + all_runs
+    all_runs = [get_workout_from_activity(a) for a in list(Activity.objects.filter(athlete=athlete).order_by('-date'))]
 
     #------------------ mileage graph ----------------------
-    # Year, Month, Week, Last 7 days, and Range
-
-    #get run data
-    runs = []
-    for a in activities:
-        runs += NormalRun.objects.filter(activity=a)
-        runs += IntervalRun.objects.filter(activity=a)
-        runs += Event.objects.filter(activity=a)
-
-    year_activities = Activity.objects.filter(
-        date__year=datetime.date.today().year,
-        athlete=athlete
-        ).order_by('date')
-    year_activities = list(year_activities)
-
-    month_activities = Activity.objects.filter(
-        date__year=datetime.date.today().year,
-        date__month=datetime.date.today().month,
-        athlete=athlete
-        ).order_by('date')
-    month_activities = list(month_activities)
-
-    today = datetime.date.today()
-    start_week = today - datetime.timedelta(today.weekday())
-    end_week = start_week + datetime.timedelta(7)
-    week_activities = Activity.objects.filter(
-        athlete=athlete,
-        date__range=[start_week, end_week]
-    ).order_by('date')
-
-    # ------------------------- get dates -------------------------------------
     curr_year = []
     curr_month = []
     curr_week = []
 
-    jan_1st = datetime.date(year=datetime.date.today().year, month=1, day=1)
-    dec_31st = datetime.date(year=datetime.date.today().year, month=12, day=31)
+    today = datetime.date.today()
+    start_week = today - datetime.timedelta(today.weekday())
+    end_week = start_week + datetime.timedelta(7)
+    jan_1st = datetime.date(year=today.year, month=1, day=1)
+    dec_31st = datetime.date(year=today.year, month=12, day=31)
 
     #Get the dates for the current year
     iter_date = jan_1st
@@ -430,7 +379,7 @@ def athlete(request, user_id):
 
     #get the dates for the current month
     for day in curr_year:
-        if day.month == datetime.date.today().month:
+        if day.month == today.month:
             curr_month.append(day)
 
     # get the dates for the current week
@@ -439,9 +388,9 @@ def athlete(request, user_id):
         start_week = start_week + datetime.timedelta(1)
 
     #--------------- generate graph data, including days off -------------------
-    year_graph_data = build_graph_data(curr_year, year_activities)
-    month_graph_data = build_graph_data(curr_month, month_activities)
-    week_graph_data = build_graph_data(curr_week, week_activities, week_name_labels=True)
+    year_graph_data = build_graph_data(curr_year, athlete)
+    month_graph_data = build_graph_data(curr_month, athlete)
+    week_graph_data = build_graph_data(curr_week, athlete)
 
     #------------------ Get PR's of athlete -----------------------------------
     prs = list(get_prs(athlete).values())
@@ -460,33 +409,6 @@ def athlete(request, user_id):
         'athlete_user':user,
     }
 
-    """
-    if request.method == 'POST':
-        date_range_form = DateRangeForm(request.POST)
-        if date_range_form.is_valid():
-            #gett all dates between
-            data = date_range_form.cleaned_data
-            start_date = data['start_date']
-            end_date = data['end_date']
-
-            #collect the activities between the two dates
-            range_activities = []
-            for r in runs:
-                if r.activity.date >= start_date and r.activity.date <= end_date:
-                    range_activities.append(r.activity)
-
-            #collect all the dates between the start and the end date
-            range_dates = [start_date]
-            while range_dates[-1] <= end_date:
-                range_dates.append(range_dates[-1]+datetime.timedelta(1))
-
-            range_graph_data = build_graph_data(range_dates, range_activities)
-            context['range_graph_data'] = json.dumps(range_graph_data)
-            context['form'] = DateRangeForm()
-            context['show_range_first'] = 'true'
-            return render(request, "log/athlete.html", context)
-    else:
-    """
     context['form'] = DateRangeForm()
 
     return render(request, "log/athlete.html", context)

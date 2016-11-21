@@ -184,8 +184,8 @@ function drawYearChart() {
                  'pointShape': 'circle',
                  'pointSize': 5,
                  'colors': ['#6b7a8f', '#f7c331'],
-                 'legend':{position:'right'}
-                //  'trendlines': { 0: {} }
+                 'legend':{position:'right'},
+                 'isStacked':true
                };
 
   // Instantiate and draw our chart, passing in some options.
@@ -240,7 +240,8 @@ function drawMonthChart() {
                    'pointShape': 'circle',
                    'pointSize': 5,
                    'colors': ['#6b7a8f', '#f7c331', '#f7882f'],
-                   'legend':{position:'right'}
+                   'legend':{position:'right'},
+                   'isStacked':true
                 };
 
     // Instantiate and draw our chart, passing in some options.
@@ -293,7 +294,7 @@ function drawWeekChart() {
                      'pointShape': 'circle',
                      'pointSize': 5,
                      'colors': ['#6b7a8f', '#f7c331', '#dcc7aa', '#f7882f'],
-                     'legend':{position:'right'}
+                     'isStacked':true
                    };
 
       // Instantiate and draw our chart, passing in some options.

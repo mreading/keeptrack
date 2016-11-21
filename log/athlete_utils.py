@@ -133,13 +133,7 @@ def get_workout_from_activity(activity):
     else:
         print "Unknown type of workout"
 
-def build_graph_data(dates, activities, week_name_labels=False):
-    """---------------------------------------------------------
-	Build the data array for google charts mileage on the athlete
-    page given a bunch of dates and activites.
-    Dates are datetime objects.
-	---------------------------------------------------------"""
-    #change this to change the color of the bars in bar graphs for different types of runs.
+def build_graph_data(dates, athlete):
     colors = {
         'NormalRun':'#6b7a8f',
         'IntervalRun':'#f7c331',
@@ -147,41 +141,80 @@ def build_graph_data(dates, activities, week_name_labels=False):
         'Event':'#dcc7aa',
         'OffDay':'#111111' #immaterial, because days off have no color.
     }
+    indexes = {
+        'NormalRun':1,
+        'IntervalRun':2,
+        'CrossTrain':3,
+        'Event':4,
+    }
 
-    graph_data2 = [['Date', 'NormalRun', 'IntervalRun', 'CrossTrain', 'Event', {'role':'style'}, 'Link']]
-    validPoint=False
+    data = [['Date', 'NormalRun', 'IntervalRun', 'CrossTrain', 'Event', {'role':'style'}, 'Link']]
+    date_iterator = 0
+    for d in dates:
+        activities = list(Activity.objects.filter(
+            athlete=athlete,
+            date=d,
+            act_type__in=['NormalRun', 'Event', 'IntervalRun']
+        ))
+        prep = [str(d), 0, 0, 0, 0,'color:'+colors['OffDay'], 'nolink']
+        for a in activities:
+            prep[indexes[a.act_type]] = get_miles(get_workout_from_activity(a))
+        data.append(prep)
 
-    p = 0
-    i = 0
-    while i < len(dates):
-        if p < len(activities) and dates[i] == activities[p].date:
-            validPoint = True
-            w_date = activities[p].date
-            distance = get_miles(get_workout_from_activity(activities[p]))
+    return data
 
-            if week_name_labels:
-                w_date = w_date.strftime("%A")
-
-            graph_data2.append([str(w_date), 0, 0, 0, 0, 'color:'+colors[activities[p].act_type],
-                '/log/athlete/activity_detail/'+str(activities[p].id),])
-            graph_data2[len(graph_data2)-1][graph_data2[0].index(activities[p].act_type)] = distance
-            p += 1
-            if p < len(activities) and dates[i] == activities[p].date:
-                i = i
-            else:
-                i += 1
-        else:
-            w_date = dates[i]
-            if week_name_labels:
-                w_date = w_date.strftime("%A")
-
-            graph_data2.append([str(w_date), 0, 0, 0, 0, 'color:'+colors['OffDay'],
-                'nothing'])
-            i += 1
-
-    if not validPoint:
-        return False
-    return graph_data2
+# def build_graph_data(dates, activities, week_name_labels=False):
+#     """---------------------------------------------------------
+# 	Build the data array for google charts mileage on the athlete
+#     page given a bunch of dates and activites.
+#     Dates are datetime objects.
+# 	---------------------------------------------------------"""
+#     #change this to change the color of the bars in bar graphs for different types of runs.
+#     colors = {
+#         'NormalRun':'#6b7a8f',
+#         'IntervalRun':'#f7c331',
+#         'CrossTrain':'#dcc7aa',
+#         'Event':'#dcc7aa',
+#         'OffDay':'#111111' #immaterial, because days off have no color.
+#     }
+#
+#     graph_data = [['Date', 'NormalRun', 'IntervalRun', 'CrossTrain', 'Event', {'role':'style'}, 'Link']]
+#     validPoint=False
+#
+#     p = 0   # activity iterator
+#     i = 0   # date iterator
+#     #loop through the dates
+#     while i < len(dates):
+#         if p < len(activities) and dates[i] == activities[p].date:
+#             validPoint = True
+#             w_date = activities[p].date
+#             distance = get_miles(get_workout_from_activity(activities[p]))
+#
+#             if week_name_labels:
+#                 w_date = w_date.strftime("%A")
+#
+#             graph_data.append([str(w_date), 0, 0, 0, 0, 'color:'+colors[activities[p].act_type],
+#                 '/log/athlete/activity_detail/'+str(activities[p].id),])
+#             graph_data[len(graph_data)-1][graph_data[0].index(activities[p].act_type)] = distance
+#             p += 1
+#
+#             if p < len(activities) and dates[i] == activities[p].date:
+#                 i = i
+#             else:
+#                 i += 1
+#         else:
+#             w_date = dates[i]
+#             if week_name_labels:
+#                 w_date = w_date.strftime("%A")
+#
+#             graph_data.append([str(w_date), 0, 0, 0, 0, 'color:'+colors['OffDay'],
+#                 'nothing'])
+#             i += 1
+#
+#     if not validPoint:
+#         return False
+#
+#     return graph_data
 
 def update_activity(activity, cleaned_data):
     run = None
