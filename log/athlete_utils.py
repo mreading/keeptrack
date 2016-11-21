@@ -148,7 +148,7 @@ def build_graph_data(dates, activities, week_name_labels=False):
         'NormalRun':'#6b7a8f',
         'IntervalRun':'#f7c331',
         'CrossTrain':'#dcc7aa',
-        'Event':'#f7882f',
+        'Event':'#dcc7aa',
         'OffDay':'#111111' #immaterial, because days off have no color.
     }
 
@@ -161,6 +161,7 @@ def build_graph_data(dates, activities, week_name_labels=False):
         if p < len(activities) and dates[i] == activities[p].date:
             validPoint = True
             w_date = activities[p].date
+            print activities[p].act_type + " " + str(activities[p].date)
             distance = get_miles(get_workout_from_activity(activities[p]))
 
             if week_name_labels:

@@ -230,7 +230,7 @@ function drawMonthChart() {
     // Create the data table.
     var data = google.visualization.arrayToDataTable(month_graph_data);
     var view = new google.visualization.DataView(data);
-    view.setColumns([0, 1, 2])
+    view.setColumns([0, 1, 2, 4])
 
     // Set chart options
     var options = {'title':'Current Month Mileage',
@@ -239,9 +239,8 @@ function drawMonthChart() {
                    'interpolateNulls': true,
                    'pointShape': 'circle',
                    'pointSize': 5,
-                   'colors': ['#6b7a8f', '#f7c331'],
+                   'colors': ['#6b7a8f', '#f7c331', '#f7882f'],
                    'legend':{position:'right'}
-                  //  'trendlines': { 0: {} }
                 };
 
     // Instantiate and draw our chart, passing in some options.
@@ -284,7 +283,7 @@ function drawWeekChart() {
       // Create the data table.
       var data = google.visualization.arrayToDataTable(week_graph_data);
       var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1, 2])
+      view.setColumns([0, 1, 2, 3, 4])
 
       // Set chart options
       var options = {'title':'Current Week Mileage',
@@ -293,7 +292,7 @@ function drawWeekChart() {
                      'interpolateNulls': true,
                      'pointShape': 'circle',
                      'pointSize': 5,
-                     'colors': ['#6b7a8f', '#f7c331'],
+                     'colors': ['#6b7a8f', '#f7c331', '#dcc7aa', '#f7882f'],
                      'legend':{position:'right'}
                    };
 
@@ -334,7 +333,7 @@ function drawRangeChart() {
       // Create the data table.
       var data = google.visualization.arrayToDataTable(range_graph_data);
       var view = new google.visualization.DataView(data);
-      view.setColumns([0, 1, 2])
+      view.setColumns([0, 1, 2, 4])
 
       // Set chart options
       var options = {'title':'Date Range Graph',
@@ -343,7 +342,7 @@ function drawRangeChart() {
                      'interpolateNulls': true,
                      'pointShape': 'circle',
                      'pointSize': 5,
-                     'colors': ['#6b7a8f', '#f7c331'],
+                     'colors': ['#6b7a8f', '#f7c331','#f7882f'],
                      'legend':{position:'right'}
                    };
 
