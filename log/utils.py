@@ -5,7 +5,7 @@ def send_announcement(announcement, season):
     emails = [a.user.email for a in athletes]
     send_mail(
         'New Announcement',             # Subject
-        announcement.text,                   # Message
+        announcement,                   # Message
         'keeptrack.hamilton@gmail.com', # From
         emails,                         # To
         fail_silently=False,

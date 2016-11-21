@@ -72,7 +72,7 @@ def create_announcement(request):
                 season = data['season'],
             )
             announcement.save()
-            send_announcement(announcement, data['season'])
+            send_announcement(announcement.text, data['season'])
             return redirect("/log", {})
     return render(request, "log/announcement.html", {'form':form})
 
