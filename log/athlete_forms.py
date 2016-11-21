@@ -133,7 +133,7 @@ class AddXTrainForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
-        super(AddNormalForm, self).__init__(*args, **kwargs)
+        super(AddXTrainForm, self).__init__(*args, **kwargs)
         if user != None:
             athlete=Athlete.objects.get(user=user)
             self.fields['shoe'].queryset = Shoe.objects.filter(athlete=athlete)
@@ -167,7 +167,7 @@ class AddEventForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
-        super(AddNormalForm, self).__init__(*args, **kwargs)
+        super(AddEventForm, self).__init__(*args, **kwargs)
         if user != None:
             athlete=Athlete.objects.get(user=user)
             self.fields['shoe'].queryset = Shoe.objects.filter(athlete=athlete)
