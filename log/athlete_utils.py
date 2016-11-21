@@ -21,10 +21,6 @@ def wear_help(location):
     fio = ForecastIO.ForecastIO("31d0c8f0c1036505d4f8541000fcc555", latitude=lat, longitude=lon)
     current = FIOCurrently.FIOCurrently(fio)
 
-    # for use in debugging.
-    #for item in current.get().keys():
-    #    print item + ' : ' + unicode(current.get()[item])
-
     tights_CO = 45
     temp = current.temperature
     #------------------------tights-----------------------------
@@ -161,7 +157,6 @@ def build_graph_data(dates, activities, week_name_labels=False):
         if p < len(activities) and dates[i] == activities[p].date:
             validPoint = True
             w_date = activities[p].date
-            print activities[p].act_type + " " + str(activities[p].date)
             distance = get_miles(get_workout_from_activity(activities[p]))
 
             if week_name_labels:

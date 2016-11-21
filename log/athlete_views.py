@@ -79,7 +79,6 @@ def range_select(request):
                 range_dates.append(range_dates[-1]+datetime.timedelta(1))
 
             range_graph_data = build_graph_data(range_dates, range_activities)
-            print (range_graph_data)
             return HttpResponse(json.dumps(range_graph_data))
 
     else:
@@ -87,8 +86,6 @@ def range_select(request):
 
 @login_required(login_url='/log/login/')
 def wear(request):
-    print "FINDME"
-    print os.path.expanduser('~')
     athlete = Athlete.objects.get(user=request.user)
     context = wear_help(athlete.default_location)
     return render(request, 'log/wear.html', context)

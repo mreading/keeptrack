@@ -1,4 +1,5 @@
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -15,6 +16,15 @@ SECRET_KEY = '5zi!5%3qifz7re2j4$edi)rj5_hcpaoim9j3g6887($8zv@+r+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = []
+
+# Might have to unlock gmail captcha
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = json.loads(open(os.path.expanduser('~')+'/.credentials/calendar-python-quickstart.json', 'rb+').read())['email_username']+'@gmail.com'
+EMAIL_HOST_PASSWORD = json.loads(open(os.path.expanduser('~')+'/.credentials/calendar-python-quickstart.json', 'rb+').read())['email_password']
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+
 
 LOGIN_URL = '/log/login/'
 INVITATIONS_SIGNUP_REDIRECT = 'athlete_signup'

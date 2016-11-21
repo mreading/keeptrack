@@ -8,6 +8,17 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
+from django.core.mail import send_mail
+@login_required(login_url='/log/login/')
+def email_me(request):
+    send_mail(
+        'Subject here',
+        'Here is the message.',
+        'jackhpierce@gmail.com',
+        ['jackhpierce@gmail.com'],
+        fail_silently=False,
+    )
+    return redirect('/log', {})
 
 @login_required(login_url='/log/login/')
 def help(request):
