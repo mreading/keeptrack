@@ -59,7 +59,7 @@
       <div class="panel-body">
         {% for bug in bugs %}
           <div style="border:1px solid black;border-radius:5px;margin:10px;padding:5px;">
-            {{ bug }}
+            {{ bug }} <a style="float:right" href="/log/delete_bug/{{bug.id}}/">Delete</a>
           </div>
         {% endfor %}
       </div>

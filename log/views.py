@@ -19,9 +19,11 @@ def index(request):
     else:
         return redirect("/log/athlete/"+str(request.user.id), {})
 
+@login_required(login_url='/log/login/')
 def settings(request):
     return render(request, "log/settings.html", {})
 
+@login_required(login_url='/log/login/')
 def submit_bug(request):
     bugs = Bug.objects.all()
     user = request.user
@@ -38,3 +40,8 @@ def submit_bug(request):
         'bugs':bugs
     }
     return render(request, "log/bug_submission.html", context)
+
+@login_required(login_url='/log/login/')
+def delete_bug(request, bug_id):
+    Bug.objects.get(pk=bug_id).delete()
+    return redirect("/log/submit_bug/", {})
