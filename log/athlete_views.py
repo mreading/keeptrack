@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
 from django.db import IntegrityError, transaction
 from django.forms.formsets import formset_factory
 from .athlete_forms import *
@@ -495,6 +496,18 @@ def activity_detail(request, activity_id):
                 poster=request.user
                 )
             comment.save()
+            message = "{0} {1} Commented on your log! View comment here: {2}".format(
+                comment.poster.first_name,
+                comment.poster.last_name,
+                "http://keeptrack.hamilton.edu/log/athlete/activity_detail/"+str(activity.id)
+            )
+            send_mail(
+                'New Comment!',
+                message,
+                'keeptrack.hamilton@gmail.com',
+                [activity.athlete.user.email],
+                fail_silently=False,
+            )
 
     commentform = CommentForm()
     context = {
