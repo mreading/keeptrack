@@ -98,7 +98,8 @@ class Shoe(models.Model):
 class Activity(models.Model):
     athlete = models.ForeignKey(Athlete)
     date = models.DateField()
-    comment = models.CharField(max_length=1500, null=True)
+    comment = models.CharField(max_length=3000, null=True)
+    private_comments = models.CharField(max_length=2000, null=True)
     act_type = models.CharField(max_length=20, default='NormalRun')
     user_label = models.CharField(max_length=35, default="Normal Run")
     shoe = models.ForeignKey(Shoe, null=True)
@@ -217,7 +218,7 @@ class Rep(models.Model):
     duration = models.DurationField()
     goal_pace = models.FloatField(null=True)
     position = models.PositiveIntegerField()
-    rest = models.DurationField(default=timedelta(seconds=1234))
+    rest = models.CharField(max_length=15, null=True)
 
 class Thread(models.Model):
     activity = models.ForeignKey(Activity)

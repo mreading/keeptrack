@@ -1,7 +1,7 @@
 import datetime
 import re
 import xml.etree.ElementTree as ET
-
+from django.utils.encoding import smart_str, smart_unicode
 from .models import *
 
 # This is an interim class to ease the transition from the xml import file
@@ -17,42 +17,78 @@ class RaceInfo:
         self.units = ""
         self.duration =""
         self.place = ""
-#
-# class Repeat:
-#     def __init__(self, info):
-#         pass
-#
-# def process_set(xmlset):
-#     children = list(xmlset.getchildren())
-#     for child in children:
-#         if child.tag = "Reps":
-#             self.num_reps = int(child.text)
-#         elif child.tag = "Distance":
-#             self.distance = int(child.text.split()[0])
-#             self.units = int(child.text.split()[0])
-#         elif self.
-#
-#
-# class IntervalInfo:
-#     def __init__(self, info):
-#         self.warmup = 0
-#         self.cooldown = 0
-#         self.units = ""
-#         self.wu_units = ""
-#         self.cd_units = ""
-#         self.distance = ""
-#         self.repeats = []
-#         children = list(info.getchildren())
-#         for a in children:
-#             if a.tag == "WarmUp":
-#                 print dir(a)
-#                 # self.warmup = float(a.text)
-#             if a.tag == "CoolDown":
-#                 # self.cooldown = float(a.text)
-#                 pass
-#             if a.tag == "Set":
-#                 self.repeats += process_set(a)
 
+def process_cross_training(root):
+    children = list(root)
+    description = ""
+    count = ""
+    value = ""
+    collector = []
+    for el in children:
+        if el.tag =="Description":
+            collector.append([str(el.text)])
+        elif el.tag == "Count":
+            collector[-1].append(el.text)
+        elif el.tag == "Value":
+            collector[-1].append(el.text)
+
+    retstr = "\nCross Training:\n"
+    for lst in collector:
+        for el in lst:
+            if el != None:
+                retstr += el + ", "
+        retstr += "\n"
+    return retstr
+
+def process_set(xmlset):
+    children = list(xmlset)
+    for child in children:
+        if child.tag == "Reps":
+            num_reps = int(child.text)
+        elif child.tag == "Distance":
+            distance = int(child.text.split()[0])
+            units = int(child.text.split()[0])
+
+class Repeat:
+    def __init__(self, stuff):
+        print stuff.tag
+        self.distance = str(stuff.find('Distance').text)
+        self.count = str(stuff.find('Reps').text)
+        self.goal = str(stuff.find('Goal').text)
+        self.actual = str(stuff.find('Actual').text)
+        self.rest = str(stuff.find('RepRest').text)
+        print str(self)
+
+    def __str__(self):
+        return "{0} X {1} at {2} (goal {3}) with rest {4}".format(
+            self.count, self.distance, self.actual, self.goal, self.rest
+        )
+
+
+class IntervalInfo:
+    def __init__(self, info):
+        self.warmup = 0
+        self.cooldown = 0
+        self.units = ""
+        self.wu_units = ""
+        self.cd_units = ""
+        self.distance = ""
+        self.repeats = []
+        sets = list(info)
+        for a in sets:
+            if a.tag == "WarmUp":
+                self.warmup = a.text
+            elif a.tag == "CoolDown":
+                self.cooldown = a.text
+            elif a.tag == "Set":
+                self.repeats.append(str(Repeat(a)))
+
+    def __str__(self):
+        retstr = "Interval Details:\n"
+        for rep in self.repeats:
+            retstr += rep + "\n"
+
+        return retstr
 
 class Workout:
     def __init__(self, xml_workout):
@@ -71,6 +107,9 @@ class Workout:
         self.avg_hr = ""
         self.difficulty = ""
         self.units = ""
+        self.cross_training = ""
+        self.sleep_hours = ""
+        self.intervals = ""
         for a in attributes:
             if a.tag == "Date":
                 self.date = datetime.datetime.strptime(a.text, "%A, %m/%d/%Y")
@@ -95,7 +134,6 @@ class Workout:
                     self.total_time = datetime.timedelta(minutes=time[0], seconds=time[1])
                 else:
                     self.total_time = datetime.timedelta(hours=0)
-
             elif a.tag == "RunningMiles":
                 self.running_miles = a.text
             elif a.tag == "TerrainTypeDescription":
@@ -105,10 +143,9 @@ class Workout:
             elif a.tag == "ShoeName":
                 self.shoe_name += str(a.text)
             elif a.tag == "Comments":
-                self.comments = str(a.text)
+                self.comments = smart_str(a.text)
             elif a.tag == "Intervals":
-                # self.intervals = IntervalInfo(a)
-                pass
+                self.intervals = str(IntervalInfo(a))
             elif a.tag == "MaxHeartRate":
                 self.max_hr = int(a.text.split()[0])
             elif a.tag == "HeartRate":
@@ -118,6 +155,10 @@ class Workout:
             elif a.tag == "RaceInformation":
                 for attr in a.getchildren():
                     self.comments +=str(a.text)
+            elif a.tag == "CrossTraining":
+                self.cross_training = process_cross_training(a)
+            elif a.tag == "HoursOfSleep":
+                self.sleep_hours = a.text
             else:
                 print "unrecognized tag {0}".format(a.tag)
 
@@ -154,8 +195,13 @@ def django_ify(workout, athlete):
         date=workout.date,
         comment = workout.comments,
         act_type = run_type,
-        user_label=workout.run_type
+        user_label=workout.run_type,
+        private_comments=workout.private_notes
     )
+    if workout.cross_training != "":
+        activity.comment = activity.comment + "\n" + workout.cross_training
+    if workout.intervals != "":
+        activity.comment = activity.comment + "\n" + workout.intervals
     activity.save()
     thread = Thread.objects.create(activity=activity)
     thread.save()
@@ -193,18 +239,6 @@ def django_ify(workout, athlete):
             distance=workout.total_distance
         )
         run.save()
-        # for interval in workout.intervals:
-        #     rep = Rep.objects.create(
-        #         interval_run = run,
-        #         distance = interval.distance,
-        #         units = interval.units,
-        #         duration = interval.duration,
-        #         goal_pace = interval.goal_pace,
-        #         position = workout.intervals.index(interval),
-        #         rest = interval.rest
-        #     )
-        # rep.save()
-        # run.set_distance()
 
     elif run_type == "Event":
         meet = Meet.objects.create(
@@ -231,6 +265,5 @@ def import_from_file(f, athlete):
     # so ignore them using a slice.
     workouts = all_data[3:]
     py_workouts = [Workout(w) for w in workouts]
-    print py_workouts
     for w in py_workouts:
         django_ify(w, athlete)
