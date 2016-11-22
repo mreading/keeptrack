@@ -51,13 +51,11 @@ def process_set(xmlset):
 
 class Repeat:
     def __init__(self, stuff):
-        print stuff.tag
         self.distance = str(stuff.find('Distance').text)
         self.count = str(stuff.find('Reps').text)
         self.goal = str(stuff.find('Goal').text)
         self.actual = str(stuff.find('Actual').text)
         self.rest = str(stuff.find('RepRest').text)
-        print str(self)
 
     def __str__(self):
         return "{0} X {1} at {2} (goal {3}) with rest {4}".format(
@@ -202,6 +200,8 @@ def django_ify(workout, athlete):
         activity.comment = activity.comment + "\n" + workout.cross_training
     if workout.intervals != "":
         activity.comment = activity.comment + "\n" + workout.intervals
+    if workout.sleep_hours != "":
+        activity.comment = activity.comment + "\n" + "Hours of Sleep:\n" + workout.sleep_hours
     activity.save()
     thread = Thread.objects.create(activity=activity)
     thread.save()
