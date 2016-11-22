@@ -1,5 +1,6 @@
 {% extends 'log/base.html' %}
 {% load staticfiles %}
+{% load tags %}
 
 {% block content %}
 <div id="page">
@@ -58,7 +59,7 @@
                         {{ form }}
                         <button id='select_range'>Show Mileage</button>
                 </form>
-                
+
             </div>
         </div>
     </div>
@@ -92,11 +93,11 @@
                 {% endifequal %}
 
                 {% ifequal r.activity.act_type "Event" %}
-                  {{ r.pace }}
+                  {{ r.pace|format_pace }}
                 {% endifequal %}
 
                 {% ifequal r.activity.act_type "NormalRun" %}
-                  {{ r.pace }}
+                  {{ r.pace|format_pace }}
                 {% endifequal %}
 
                 {% ifequal r.activity.act_type "CrossTrain" %}
