@@ -224,7 +224,6 @@ def django_ify(workout, athlete):
 
 
 def import_from_file(f, athlete):
-    Activity.objects.all().delete()
     tree = ET.parse(f)
     root = tree.getroot()
     all_data = list(root)
