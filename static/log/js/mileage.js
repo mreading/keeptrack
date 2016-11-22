@@ -344,7 +344,8 @@ function drawRangeChart() {
                      'pointShape': 'circle',
                      'pointSize': 5,
                      'colors': ['#6b7a8f', '#f7c331','#f7882f'],
-                     'legend':{position:'right'}
+                     'legend':{position:'right'},
+                     'isStacked':true
                    };
 
       // Instantiate and draw our chart, passing in some options.
