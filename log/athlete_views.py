@@ -77,8 +77,9 @@ def wear(request):
 
 @login_required(login_url='/log/login/')
 def delete_activity(request, activity_id):
-    # FIXME have to make sure athlete is the one deleting the workout
-    # Just get the activity by it's id and then delete it
+    can_view, can_edit = athlete_privacy(request.user, Activity.objects.get(id=activity_id).athlete.user)
+    if not can_edit:
+        return HttpResponse("You are not allowed on this page")
     Activity.objects.get(id=activity_id).delete()
     return redirect("/log/athlete/"+str(request.user.id), {})
 
