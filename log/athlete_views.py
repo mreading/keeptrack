@@ -501,11 +501,17 @@ def activity_detail(request, activity_id):
                 comment.poster.last_name,
                 "http://keeptrack.hamilton.edu/log/athlete/activity_detail/"+str(activity.id)
             )
+            notify_these_people = [c.poster.email for c in list(Comment.objects.filter(thread=thread))] + [activity.athlete.user.email]
+            # filter out duplicates
+            notify_these_people = set(notify_these_people)
+            # filter out current poster
+            notify_these_people.remove(request.user.email)
+
             send_mail(
                 'New Comment!',
                 message,
                 'keeptrack.hamilton@gmail.com',
-                [activity.athlete.user.email],
+                notify_these_people,
                 fail_silently=False,
             )
 
