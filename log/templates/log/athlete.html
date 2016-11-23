@@ -108,7 +108,7 @@
                 {{ r.activity.user_label }}
               </td>
               {% if can_edit %}
-                  <td><a href="/log/athlete/edit_activity/{{ r.activity_id }}">EDIT</a></td>
+                  <td><a href="/log/athlete/edit_activity/{{ r.activity_id }}">EDIT</a>   |   <a href="/log/athlete/delete_activity/{{ r.activity_id }}">DELETE</a></td>
               {% endif %}
               </div>
             </tr>

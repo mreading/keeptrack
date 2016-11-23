@@ -133,6 +133,15 @@ def get_workout_from_activity(activity):
     else:
         print "Unknown type of workout"
 
+def get_label(d, num_dates):
+    if num_dates < 10:
+        return d.strftime('%a %b %d')
+    if num_dates < 15:
+        return d.strftime('%a %d')
+    if num_dates < 370:
+        return d.strftime('%b %d')
+    return str(d)
+
 def build_graph_data(dates, athlete):
     colors = {
         'NormalRun':'#6b7a8f',
@@ -156,7 +165,7 @@ def build_graph_data(dates, athlete):
             date=d,
             act_type__in=['NormalRun', 'Event', 'IntervalRun']
         ))
-        prep = [str(d), 0, 0, 0, 0,'color:'+colors['OffDay'], 'nolink']
+        prep = [get_label(d,len(dates)), 0, 0, 0, 0,'color:'+colors['OffDay'], 'nolink']
         for a in activities:
             prep[indexes[a.act_type]] += get_miles(get_workout_from_activity(a))
             prep[-1] = "/log/athlete/activity_detail/"+str(a.id)+"/"
