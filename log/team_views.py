@@ -76,11 +76,11 @@ def create_announcement(request):
             return redirect("/log", {})
     return render(request, "log/announcement.html", {'form':form})
 
-def get_miles_last_7_days(athlete):
+def get_recent_miles(athlete, days):
     activities = list(Activity.objects.filter(
         athlete=athlete,
         date__lt=datetime.date.today()+datetime.timedelta(1),
-        date__gt=datetime.date.today()-datetime.timedelta(7),
+        date__gt=datetime.date.today()-datetime.timedelta(days),
         act_type__in=['NormalRun', 'Event', 'IntervalRun'],
     ))
 
@@ -115,7 +115,9 @@ def team(request):
             str(athlete.user.first_name),
             str(athlete.user.last_name),
             str(athlete.graduation_year),
-            get_miles_last_7_days(athlete)
+            get_recent_miles(athlete, 7),
+            get_recent_miles(athlete, 14),
+            get_recent_miles(athlete, 30),
             ]
         userIDs.append(athlete.user.id)
         athleteData.append(row)

@@ -20,7 +20,9 @@ function drawTable() {
     data.addColumn('string', 'First');
     data.addColumn('string', 'Last');
     data.addColumn('string', 'Grade');
-    data.addColumn('number', 'Mileage (last 7 days)');
+    data.addColumn('number', 'Last 7 Days');
+    data.addColumn('number', 'Last 14 Days');
+    data.addColumn('number', 'Last 30 Days');
     data.addRows(athleteData);
 
     /*--------------------------------------------------------------------
