@@ -10,10 +10,11 @@ CONNECTED FILES:	/log/base.html
 {% load widget_tweaks %}
 {% block content %}
     <div>
-        {% if no_season_alert %}
-            <h4>{{ no_season_alert }}</h4>
-        {% else %}
-            <div class="container-fluid">
+        <div class="container-fluid">
+          {% if no_season_alert %}
+              <h4> No Seasons to View </h4>
+              <p> Go to the manage teams page to add teams and seasons </p>
+          {% else %}
                 <h2> {{ title }} </h2>
                 <div class="panel-group">
                     <div class="panel panel-default">
@@ -75,7 +76,6 @@ CONNECTED FILES:	/log/base.html
                     </div>
                 </div>
             </div>
-        {% endif %}
     </div>
 
     <h3 style=margin-left:20px;>View other Season</h3>
@@ -120,7 +120,7 @@ CONNECTED FILES:	/log/base.html
           {% endblock extra_buttons %}
       </div>
     </form>
-
+    {% endif %}
     <script type="text/javascript">
 
         /*------------------------------------------------------------------------

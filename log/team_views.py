@@ -102,7 +102,7 @@ def team(request):
     if season == None:
         context = {
             'form':form,
-            'no_season_alert':'No seasons to view'
+            'no_season_alert': True
         }
         return render(request, "log/team.html", context)
 

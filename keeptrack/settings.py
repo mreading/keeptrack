@@ -24,8 +24,6 @@ EMAIL_HOST_PASSWORD = json.loads(open(os.path.expanduser('~')+'/.credentials/cal
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-
-
 LOGIN_URL = '/log/login/'
 INVITATIONS_SIGNUP_REDIRECT = 'athlete_signup'
 # Application definition
