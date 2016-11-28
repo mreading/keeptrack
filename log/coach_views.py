@@ -145,6 +145,9 @@ def add_team(request, user_id):
 @login_required(login_url='/log/login/')
 def add_athletes(request, user_id, team_id, season_id):
     coach_user = User.objects.get(id=user_id)
+    season = Season.objects.get(id = season_id)
+    athletes = list(season.athlete_set.all())
+
     if request.method == 'POST':
         form = AddAthleteForm(request.POST)
         if form.is_valid():
@@ -158,7 +161,7 @@ def add_athletes(request, user_id, team_id, season_id):
             except IntegrityError as e:
                 return render(request, "log/add_athletes.html", {'form':form,
                     'coach': coach_user, 'IE': True, "user_id": user_id,
-                    "team_id": team_id, "season_id":season_id})
+                    "team_id": team_id, "season_id":season_id, 'athletes': athletes, 'existing_athletes': (len(athletes) != 0)})
 
             user.first_name = data['first_name']
             user.last_name = data['last_name']
@@ -176,10 +179,11 @@ def add_athletes(request, user_id, team_id, season_id):
 
         else:
             return render(request, "log/add_athletes.html", {'form':form, 'coach': coach_user, "user_id": user_id,
-            "team_id": team_id, "season_id":season_id})
+            "team_id": team_id, "season_id":season_id, 'athletes': athletes, 'existing_athletes': (len(athletes) != 0)})
 
     form = AddAthleteForm()
-    return render(request, "log/add_athletes.html", {'form': form, 'user_id': user_id, 'team_id': team_id, 'season_id': season_id})
+    athletes = list(season.athlete_set.all())
+    return render(request, "log/add_athletes.html", {'form': form, 'user_id': user_id, 'team_id': team_id, 'season_id': season_id,'athletes': athletes, 'existing_athletes': (len(athletes) != 0)})
 
 @login_required(login_url='/log/login/')
 def add_coach(request, user_id):

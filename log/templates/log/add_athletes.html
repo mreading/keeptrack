@@ -62,6 +62,19 @@
       </div>
     </form>
 
-    <a href= "/log/manage_teams/{{user.id}}" > Return to Manage Teams Page </a>
+    {% if existing_athletes %}
+  <div class="container-fluid">
+      <h2> Existing Athletes </h2>
+      {% for athlete in athletes %}
+        {{athlete.user.first_name}} {{athlete.user.last_name}}
+      </br>
+      {% endfor %}
+  </div>
+  {%endif %}
 
+</br>
+
+<div class="container-fluid">
+    <a href= "/log/manage_teams/{{user.id}}" > Return to Manage Teams Page </a>
+</div>
 {% endblock %}
