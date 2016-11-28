@@ -8,7 +8,7 @@ from .forms import *
 from .utils import *
 from .athlete_utils import *
 from .models import *
-from .calendar_views import current_week
+from .calendar_views import current_week, get_teams_seasons, get_ready_javascript
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -72,7 +72,7 @@ def create_announcement(request):
                 season = data['season'],
             )
             announcement.save()
-            send_announcement(announcement.text, data['season'])
+            # send_announcement(announcement.text, data['season'])
             return redirect("/log", {})
     return render(request, "log/announcement.html", {'form':form})
 
@@ -89,20 +89,25 @@ def get_recent_miles(athlete, days):
 
 @login_required(login_url='/log/login')
 def team(request):
-    form = SelectTeamSeasonForm()
+    teams, seasons = get_teams_seasons(request.user.id)
+    t2s_map = get_ready_javascript(teams)
+
+    form = SelectTeamSeasonForm(teams=teams,seasons=seasons)
     if request.method == 'POST':
         form = SelectTeamSeasonForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             team = data['team']
             season = data['season']
+            form = SelectTeamSeasonForm(teams=teams,seasons=seasons)
     else:
         team, season = get_team_season(request.user)
 
     if season == None:
         context = {
             'form':form,
-            'no_season_alert': True
+            'no_season_alert': True,
+            't2s_map':t2s_map
         }
         return render(request, "log/team.html", context)
 
@@ -122,10 +127,10 @@ def team(request):
         userIDs.append(athlete.user.id)
         athleteData.append(row)
 
-
     announcements = Announcement.objects.filter(
-        expiration_date__gt=datetime.date.today()
-    )
+        expiration_date__gt=datetime.date.today(),
+        season=season
+    ).order_by('-posted_date')
 
     # getting calendar information for current week
     calendarId = team.calendarId
@@ -139,6 +144,7 @@ def team(request):
         'athletes':athletes,
         'athleteData': athleteData,
         'userIDs':userIDs,
-        'week': week
+        'week': week,
+        't2s_map':t2s_map,
     }
     return render(request, "log/team.html", context)

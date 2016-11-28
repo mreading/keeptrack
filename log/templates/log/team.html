@@ -122,13 +122,49 @@ CONNECTED FILES:	/log/base.html
     </form>
     {% endif %}
     <script type="text/javascript">
-
-        /*------------------------------------------------------------------------
-        Passing along data to 'team.js' for tables
-        ------------------------------------------------------------------------*/
         var athleteData = {{athleteData|safe}};
         var userIDs = {{userIDs}}
+        var t2s_map = {{ t2s_map|safe }};
     </script>
 
     <script type="text/javascript" src="/static/log/js/team.js"></script>
+    <script>
+      function check_field_value() {
+        //dictionary of teams and corresponding seasons
+
+        // clean out season dropdown
+        document.getElementById('id_season').options.length = 0;
+
+        // team has been selected
+        if($(this).val()) {
+          $('.season').show();
+
+          //get selected team's seasons
+          var team_object = document.getElementById("id_team");
+          var selected_team = team_object.options[team_object.selectedIndex].text;
+          console.log(selected_team)
+          var seasons = JSON.parse(t2s_map[selected_team]);
+
+          // for each season add season object to season field
+          var season_object = document.getElementById("id_season");
+          for(i=0; i < seasons.length; i++){
+            var option = document.createElement("option");
+            option.text = seasons[i]["fields"]["year"];
+            option.value = seasons[i]["pk"];
+            season_object.add(option);
+          }
+
+        // team is no longer selected
+        } else {
+          $('.season').hide();
+        }
+      }
+      $(document).ready(function() {
+            // set things up so function will be called when team field changes
+            $('#id_team').change(check_field_value);
+
+            // set the state based on the initial values
+            check_field_value.call($('#id_team').get(0));
+        });
+    </script>
 {% endblock %}
