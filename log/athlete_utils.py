@@ -115,7 +115,7 @@ def get_interval_graph_data(reps):
     graph_data = [['Date', 'Miles', {'role':'style'}]]
     for rep in reps:
         # [place, [hour, minute, second, millisecond]]
-        graph_data.append([rep.position, make_duration_chartable(rep.duration), 'color:#abcabc'])
+        graph_data.append([rep.position, make_duration_chartable(rep.duration), 'color:#f7c331'])
     return graph_data
 
 def get_workout_from_activity(activity):
