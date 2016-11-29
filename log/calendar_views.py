@@ -205,8 +205,7 @@ def current_week(calendarId):
     week_start = monday[:11] + "00:00:00" + monday[-6:]
     week_end = change_time(week_start, 7, -1)
 
-    #return range_weeks(week_start, week_end, calendarId)[0]
-    return []
+    return range_weeks(week_start, week_end, calendarId)[0]
 
 def get_current_team_season(seasons):
     # get current date and timezone
@@ -276,14 +275,15 @@ def calendar(request):
     start, finish = convert_start_end_dates(season.start_date, season.end_date)
 
     # get event data for season
-    #weeks = range_weeks(start, finish, calendarId)
-    weeks = []
+    weeks = range_weeks(start, finish, calendarId)
 
     return render(request, "log/calendar.html", {"weeks":weeks})
 
 @login_required(login_url='/log/login/')
 def time_period(request):
     teams, seasons = get_teams_seasons(request.user.id)
+    
+    note="nothing"
 
     if request.method == 'POST':
         form = SelectDateRangeForm(request.POST)
@@ -300,15 +300,15 @@ def time_period(request):
 
             # needs to change based on team
             calendarId = team.calendarId
+            note = calendarId
 
-            #weeks = range_weeks(start, finish, calendarId)
-            weeks = []
-            return render(request, "log/calendar.html", {"weeks":weeks})
+            weeks = range_weeks(start, finish, calendarId)
+            return render(request, "log/calendar.html", {"weeks":weeks, "note":note})
         else:
             return render(request, "log/select_time_period.html", {'form':form})
     else:
         form = SelectDateRangeForm(teams=teams)
-        return render(request, "log/select_time_period.html", {'form':form})
+        return render(request, "log/select_time_period.html", {'form':form, "note":note})
 
 @login_required(login_url='/log/login/')
 def team_season(request):
@@ -330,8 +330,7 @@ def team_season(request):
             # needs to change based on team
             calendarId = team.calendarId
 
-            #weeks = range_weeks(start, finish, calendarId)
-            weeks = []
+            weeks = range_weeks(start, finish, calendarId)
             return render(request, "log/calendar.html", {"weeks":weeks})
         else:
             return render(request, "log/select_time_period.html",
