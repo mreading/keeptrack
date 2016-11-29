@@ -61,6 +61,31 @@ CONNECTED FILES:	/log/base.html
                         </div>
                     </div>
 
+                    <div class="panel panel-default calendar">
+                        <div class="panel-heading">
+                            RECENT ACTIVITY
+                        </div>
+                        <div class="panel-body">
+                            <h4>Recent Workouts</h4>
+                            {% for w in recent_workouts %}
+                              <div style="padding-bottom:5px;">
+                                {{ w.activity.athlete.user.first_name }} ran {{ w.distance }}
+                                {% if w.activity.comment != "" %}
+                                  ({{ w.activity.comment }})
+                                {% endif %}
+                                <a href="/log/athlete/activity_detail/{{w.activity.id}}/">VIEW</a>
+                              </div>
+                            {% endfor %}
+                            <h4>Peanut Gallery</h4>
+                            {% for c in recent_comments %}
+                              <div>
+                                {{ c.poster.first_name }} commented on {{ c.thread.activity.athlete.user.first_name }}'s log!
+                                <a href="/log/athlete/activity_detail/{{c.thread.activity.id}}/">VIEW</a>
+                              </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             ATHLETES

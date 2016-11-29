@@ -11,5 +11,7 @@ def format_pace(duration):
     hours = s // 3600
     s = s - (hours * 3600)
     minutes = s // 60
-    seconds = s - (minutes * 60)
+    seconds = str(s - (minutes * 60))
+    if len(seconds) == 1:
+        seconds = '0' + seconds
     return '%s:%s' % (minutes, seconds)

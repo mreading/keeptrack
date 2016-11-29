@@ -157,7 +157,7 @@ def build_graph_data(dates, athlete):
         'Event':4,
     }
 
-    data = [['Date', 'NormalRun', 'IntervalRun', 'CrossTrain', 'Event', {'role':'style'}, 'Link']]
+    data = [['Date', 'Normal Run', 'Interval Run', 'Cross Train', 'Race', {'role':'style'}, 'Link']]
     date_iterator = 0
     for d in dates:
         activities = list(Activity.objects.filter(
