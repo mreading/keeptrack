@@ -115,7 +115,30 @@ def team(request):
     userIDs = []
     athleteData = []
 
-    for athlete in athletes:
+    if request.user.coach_set.all():
+        viewable_athletes = athletes
+    else:
+        viewable_athletes = athletes.filter(
+            log_private=False
+        )
+
+    # ------------------ Get the recent Activity--------------------------------
+    recent_activities = Activity.objects.filter(
+        athlete__in=viewable_athletes,
+        date__gt=datetime.date.today() - datetime.timedelta(3)
+    ).order_by('-date')
+
+    recent_workouts = [get_workout_from_activity(a) for a in recent_activities]
+
+    recent_threads = Thread.objects.filter(
+        activity__in=recent_activities
+    )
+    recent_comments = Comment.objects.filter(
+        thread__in=recent_threads
+    )
+    #---------------------------------------------------------------------------
+
+    for athlete in viewable_athletes:
         row = [
             str(athlete.user.first_name),
             str(athlete.user.last_name),
@@ -138,6 +161,8 @@ def team(request):
     week = [None]
 
     context = {
+        'recent_workouts':recent_workouts,
+        'recent_comments':recent_comments,
         'title': str(team),
         'form':form,
         'announcements':announcements,
