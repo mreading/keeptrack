@@ -105,15 +105,88 @@
             </script>
           {% else %}
             <form action="/log/athlete/edit_activity/{{ activity.id }}/" method="post" autocomplete="off">
-              {% csrf_token %}
-              {{ form.errors }}
-              {{ form.non_field_errors }}
-              {{ form.as_p }}
-              <input type="submit" value="Update Run" />
+                {% csrf_token %}
+                {{ form.media }}
+                {% if form.errors %}
+                    <div class="alert alert-error">
+                        <ul>
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% for field in form.visible_fields %}
+                    <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}" style='{% ifequal field.name "duration"%}display:inline-block{% endifequal %}'>
+                        <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                        <div class="controls">
+                            <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
+                            {{ field|add_class:"form-control" }}
+                            {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% for field in form.hidden_fields %}
+                    {{ field }}
+                {% endfor %}
+
+                {% block formsets %}
+                    {% for formset in inlines %}
+                        {% include "inline_formset.html" with formset=formset %}
+                    {% endfor %}
+                {% endblock formsets %}
+                </br>
+
+                <div class="form-actions">
+                    <input class="btn btn-primary btn-large" type="submit" value="Update Run"/>
+                    {% block extra_buttons %}
+                    {% endblock extra_buttons %}
+                </div>
             </form>
           {% endif %}
-        {% endblock %}
+          <script>
+          // make the duration inputs narrower and side-by-side
+            $("#id_duration_0").css("display", "inline-block");
+            $("#id_duration_1").css("display", "inline-block");
+            $("#id_duration_2").css("display", "inline-block");
+            $("#id_duration_0").css("width", "45px");
+            $("#id_duration_1").css("width", "45px");
+            $("#id_duration_2").css("width", "45px");
+            $("<p id=pace style='display:inline-block;padding-left:10px;'></p>").insertAfter( "#id_duration_2" );
+
+            function set_pace() {
+              console.log("hello")
+              $("#pace").text(
+                function() {
+                  var seconds = parseInt($("#id_duration_0").val()) * 60 * 60 +
+                    parseInt($("#id_duration_1").val()) * 60 +
+                    parseInt($("#id_duration_2").val());
+                  var distance = $("#id_distance").val();
+                  if ($("#id_units").val() === "Kilometers") {
+                    distance = distance * 0.6213
+                  }
+                  var seconds_per_mile = seconds / distance;
+                  var total_seconds = Math.floor(seconds_per_mile % 60).toString();
+                  var total_minutes = Math.floor(seconds_per_mile / 60).toString();
+                  if (total_seconds.length === 1) {
+                    total_seconds = "0".concat(total_seconds)
+                  }
+                  $("#pace").text(total_minutes.concat(':',total_seconds, " Min/Mile"));
+
+                }
+              )
+            }
+
+            $("#id_distance").change(set_pace);
+            $("#id_duration_0").change(set_pace);
+            $("#id_duration_1").change(set_pace);
+            $("#id_duration_2").change(set_pace);
+            $("#id_units").change(set_pace);
+          </script>
       </div>
     </div>
   </div>
 </div>
+{% endblock %}
