@@ -73,10 +73,8 @@
           parseInt($("#id_duration_1").val()) * 60 +
           parseInt($("#id_duration_2").val());
         var distance = $("#id_distance").val();
-        var unit = " Min/Mile";
         if ($("#id_units").val() === "Kilometers") {
           distance = distance * 0.6213
-          unit = " Min/Kilo"
         }
         var seconds_per_mile = seconds / distance;
         var total_seconds = Math.floor(seconds_per_mile % 60).toString();
@@ -84,7 +82,7 @@
         if (total_seconds.length === 1) {
           total_seconds = "0".concat(total_seconds)
         }
-        $("#pace").text(total_minutes.concat(':',total_seconds, unit));
+        $("#pace").text(total_minutes.concat(':',total_seconds, " Min/Mile"));
 
       }
     )
