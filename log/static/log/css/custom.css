@@ -60,3 +60,7 @@ h1 {
 .dropdown-divider {
   align-items: center;
 }
+
+.inline {
+  display:inline-block;
+}
