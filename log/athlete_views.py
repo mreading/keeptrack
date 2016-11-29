@@ -96,7 +96,7 @@ def edit_interval_run(request, activity_id):
 
     if request.method == 'POST':
         # Bind the POST data to the forms
-        IntervalForm = AddIntervalForm(request.POST, user=request.user)
+        IntervalForm = AddIntervalForm(request.POST, user=activity.athlete.user)
         AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet)
         rep_formset = AddRepFormSet(request.POST)
 
@@ -147,7 +147,7 @@ def edit_interval_run(request, activity_id):
             return render(request, "log/edit_run.html", context)
 
     # Set initial interval form data equal to what the run was previously
-    IntervalForm = AddIntervalForm(user=request.user)
+    IntervalForm = AddIntervalForm(user=activity.athlete.user)
     IntervalForm.fields['warmup'].initial=i_run.warmup
     IntervalForm.fields['wu_units'].initial=i_run.wu_units
     IntervalForm.fields['cooldown'].initial=i_run.cooldown
@@ -194,7 +194,7 @@ def edit_xtrain(request, activity_id):
 
     if request.method == 'POST':
         # Bind the POST data to the form
-        form = AddXTrainForm(request.POST, user=request.user)
+        form = AddXTrainForm(request.POST, user=activity.athlete.user)
         if form.is_valid():
             # Save the updated data to CrossTrain object and the Activity Object
             data = form.cleaned_data
@@ -215,7 +215,7 @@ def edit_xtrain(request, activity_id):
     # NOTE for a modelform you could bind the data in one line, but
     # since this affects more than one object (ie Activity and CrossTrain) it
     # has to be done this way.
-    form = AddXTrainForm(user=request.user)
+    form = AddXTrainForm(user=activity.athlete.user)
     form.fields['date'].initial=activity.date
     form.fields['distance'].initial=round(float(xtrain.distance), 2)
     form.fields['units'].initial=xtrain.units
@@ -241,7 +241,7 @@ def edit_race(request, activity_id):
     activity = Activity.objects.get(id=activity_id)
     event = Event.objects.get(activity=activity)
     if request.method == 'POST':
-        form = AddEventForm(request.POST, user=request.user)
+        form = AddEventForm(request.POST, user=activity.athlete.user)
         if form.is_valid():
             # save the new data
             data = form.cleaned_data
@@ -265,7 +265,7 @@ def edit_race(request, activity_id):
     # NOTE for a modelform you could bind the data in one line, but
     # since this affects more than one object (ie Activity and CrossTrain) it
     # has to be done this way.
-    form = AddEventForm(user=request.user)
+    form = AddEventForm(user=activity.athlete.user)
     form.fields['date'].initial=activity.date
     form.fields['distance'].initial=round(float(event.distance), 2)
     form.fields['units'].initial=event.units
@@ -290,7 +290,7 @@ def edit_normal(request, activity_id):
     normal_run = NormalRun.objects.get(activity=activity)
 
     if request.method == 'POST':
-        form = get_post_form(activity.act_type, request.POST, request.user)
+        form = get_post_form(activity.act_type, request.POST, activity.athlete.user)
         if form.is_valid():
             # save the updated data
             data = form.cleaned_data
@@ -306,7 +306,7 @@ def edit_normal(request, activity_id):
             normal_run.save()
             return redirect("/log/athlete/"+str(request.user.id), {})
     # Bind the old data to the form for editing.
-    form = get_form(activity.act_type, request.user)
+    form = get_form(activity.act_type, activity.athlete.user)
     form.fields['date'].initial=activity.date
     form.fields['distance'].initial=normal_run.distance
     form.fields['units'].initial=normal_run.units

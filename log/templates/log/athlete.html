@@ -109,7 +109,7 @@
                 {{ r.activity.date|date:"l" }} {{ r.activity.date }}
               </td>
               <td>
-                {{ r.distance }}
+                {{ r.distance }}{{ r.units|format_units }}
               </td>
               <td>
                 {% ifequal r.activity.act_type "IntervalRun" %}

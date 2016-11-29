@@ -15,3 +15,9 @@ def format_pace(duration):
     if len(seconds) == 1:
         seconds = '0' + seconds
     return '%s:%s' % (minutes, seconds)
+
+@register.filter(name='format_units')
+def format_units(unit):
+    if unit == "Miles":
+        return " mi"
+    return " k"
