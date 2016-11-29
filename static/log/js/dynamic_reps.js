@@ -155,7 +155,7 @@
                 document.intervalform['form-'+(formCount).toString()+'-duration_0'].value = document.intervalform['form-'+(formCount-1)+'-duration_0'].value;
                 document.intervalform['form-'+(formCount).toString()+'-duration_1'].value = document.intervalform['form-'+(formCount-1)+'-duration_1'].value;
                 document.intervalform['form-'+(formCount).toString()+'-duration_2'].value = document.intervalform['form-'+(formCount-1)+'-duration_2'].value;
-                document.intervalform['form-'+(formCount).toString()+'-rep_rest'].value = document.intervalform['form-'+(formCount-1)+'-rep_rest'].value;                
+                document.intervalform['form-'+(formCount).toString()+'-rep_rest'].value = document.intervalform['form-'+(formCount-1)+'-rep_rest'].value;
                 document.intervalform['form-'+(formCount).toString()+'-rep_units'].value = document.intervalform['form-'+(formCount-1)+'-rep_units'].value;
                 if (options.added) options.added(row);
                 return false;
