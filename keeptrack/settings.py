@@ -24,6 +24,9 @@ EMAIL_HOST_PASSWORD = json.loads(open(os.path.expanduser('~')+'/.credentials/ema
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+TWILIO_ACCOUNT_SID = json.loads(open(os.path.expanduser('~')+'/.credentials/email_credentials.json', 'rb+').read())['twilio_account_sid']
+TWILIO_AUTH_TOKEN = json.loads(open(os.path.expanduser('~')+'/.credentials/email_credentials.json', 'rb+').read())['twilio_auth_token']
+
 LOGIN_URL = '/log/login/'
 INVITATIONS_SIGNUP_REDIRECT = 'athlete_signup'
 # Application definition
@@ -42,6 +45,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'axes',
     'captcha',
+    'django_twilio'
 ]
 
 ACCOUNT_ADAPTER = 'invitations.models.InvitationsAdapter'
