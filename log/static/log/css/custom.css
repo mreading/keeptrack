@@ -51,19 +51,15 @@ h1, h2, h3, h4, h5, h6 {
   color:#f7c331;
 }
 
-/*.container-fluid   {
-  background-color:#dcc7aa;
-}*/
-
 .nav>li>a {
-    border-left: 4px solid var(--color3);
-    border-right: 4px solid var(--color3);
+    text-decoration:none;
+    color: var(--color4);
 }
 
-.nav>li>a:hover {
-    background-color: white;
-    border-left: 4px solid #c55660;
-    border-right: 4px solid #c55660;
+.nav>li>a:hover{
+    text-decoration: underline;
+    color: var(--red); 
+    background-color: var(--color3);
 }
 
 .nav {
@@ -72,12 +68,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .nav a {
     color: var(--color2);
-}
-
-a {
-  text-decoration: none;
-    color:var(--color2);
-
 }
 
 .panel {
