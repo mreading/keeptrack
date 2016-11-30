@@ -5,16 +5,17 @@ from django_twilio.request import decompose
 
 @twilio_view
 def inbound(request):
-
+    print "moose"
     response = twiml.Response()
 
     # Create a new TwilioRequest object
     twilio_request = decompose(request)
+    print twilio_request
 
     # See the Twilio attributes on the class
-    twilio_request.to
-    # >>> '+44123456789'
-
+    print twilio_request.to
+    print twilio_request.body
+    print dir(twilio_request)
     # Discover the type of request
     if twilio_request.type is 'message':
         response.message('Thanks for the message!')
