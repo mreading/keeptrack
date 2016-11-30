@@ -40,6 +40,11 @@ def process_sms_text(text, from_num):
     )
     run.set_pace()
     run.save()
+
+    thread = Thread.objects.create(
+        activity=activity
+    )
+    thread.save()
     return "Your run has been saved!"
 
 
