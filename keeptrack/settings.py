@@ -19,8 +19,8 @@ ALLOWED_HOSTS = []
 
 # Might have to unlock gmail captcha
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = json.loads(open(os.path.expanduser('~')+'/.credentials/calendar-python-quickstart.json', 'rb+').read())['email_username']+'@gmail.com'
-EMAIL_HOST_PASSWORD = json.loads(open(os.path.expanduser('~')+'/.credentials/calendar-python-quickstart.json', 'rb+').read())['email_password']
+EMAIL_HOST_USER = json.loads(open(os.path.expanduser('~')+'/.credentials/email_credentials.json', 'rb+').read())['email_username']+'@gmail.com'
+EMAIL_HOST_PASSWORD = json.loads(open(os.path.expanduser('~')+'/.credentials/email_credentials.json', 'rb+').read())['email_password']
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
