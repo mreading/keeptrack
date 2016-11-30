@@ -3,6 +3,8 @@
 {% load widget_tweaks %}
 
 {% block content %}
+<div id="page">
+
 <form method="post", name='intervalform' action="/log/athlete/settings/{{ user.id }}/">
     {% csrf_token %}
     {{ form.media }}
@@ -50,4 +52,6 @@
       <a class="btn btn-primary btn-large" href="/log/change_password/{{user.id}}/">Change Password</a>
     </br>
   </form>
+</div>
+
 {% endblock %}

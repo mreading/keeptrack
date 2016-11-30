@@ -1,6 +1,8 @@
 {% extends 'log/base.html' %}
 {% load staticfiles %}
 {% block content %}
+<div id="page">
+
 <link rel="stylesheet" type="text/css" href="/static/log/css/calendar.css">
 <script>console.log("{{ note }}");</script>
 <div id="page">
@@ -13,7 +15,6 @@
 
     <script type="text/javascript" src="{% static 'log/js/calendar.js' %}"></script>
 
-    <div class="panel-group">
     {% for date, week in weeks %}
       <div class="panel panel-default">
         <div class="panel-heading">Week {{ forloop.counter }} ({{ date.0 }} - {{ date.1 }})</div>
@@ -51,7 +52,7 @@
     {% empty %}
       <h3>There is no current season. Select a time period using the button above.</h3>
     {% endfor %}
-    </div>
   </div>
+</div>
 </div>
 {% endblock %}

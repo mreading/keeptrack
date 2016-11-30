@@ -3,6 +3,8 @@
 {% load widget_tweaks %}
 
 {% block content %}
+<div id="page">
+
   <body>
 
     {% if wrong %}
@@ -10,6 +12,7 @@
         <ul>
           <li> ERROR: Wrong username or password </li>
         </ul>
+    </div>
     {% endif %}
 
     <form class="form-horizontal" action="/log/login/" method="POST" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
@@ -59,5 +62,7 @@
     </form>
 
     <a  class="auth" href="/log/signup/">Signup as Coach</a>
+
+  </div>
 
     {% endblock %}

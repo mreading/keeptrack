@@ -2,10 +2,11 @@
 {% load staticfiles %}
 
 {% block content %}
+<div id="page">
+
 {% if seasons %}
  <div class="container-fluid">
      <h2> All Seasons - {{team}} </h2>
-  <div class="panel-group">
       {% for s in seasons %}
         <div class="panel panel-default">
           <div class="panel-heading">{{s.year}} Season</div>
@@ -32,7 +33,6 @@
             <a class="btn btn-default" role= "button" href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
           </div>
         </div>
-    </div>
   </div>
 
 
@@ -49,4 +49,5 @@
       </div>
     </div>
     {% endif %}
+  </div>
 {% endblock %}

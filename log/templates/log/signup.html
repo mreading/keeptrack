@@ -1,6 +1,8 @@
 {% extends 'log/base.html' %}
 {% load widget_tweaks %}
 {% block content %}
+<div id="page">
+
 
 {% if IE %}
 <div class="alert alert-error">
@@ -56,5 +58,6 @@
       {% endblock extra_buttons %}
   </div>
 </form>
+</div>
 
 {% endblock %}

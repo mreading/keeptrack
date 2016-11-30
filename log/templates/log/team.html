@@ -9,6 +9,8 @@ CONNECTED FILES:	/log/base.html
 {% load staticfiles %}
 {% load widget_tweaks %}
 {% block content %}
+<div id="page">
+
     <div>
         <div class="container-fluid">
           {% if no_season_alert %}
@@ -192,4 +194,5 @@ CONNECTED FILES:	/log/base.html
             check_field_value.call($('#id_team').get(0));
         });
     </script>
+</div>
 {% endblock %}
