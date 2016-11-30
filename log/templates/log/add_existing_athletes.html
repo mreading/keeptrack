@@ -8,7 +8,6 @@
   <h1> Add Existing Athletes </h1>
   <h4> Add multiple athletes at a time </h4>
 
-</br>
     <form action="/log/add_athletes/{{user_id}}/{{team_id}}/{{season_id}}/", method="post" autocomplete="off">
       {% csrf_token %}
       {{ form.media }}
@@ -55,6 +54,8 @@
       </div>
     </form>
 
-    <a href= "/log/manage_teams/{{user.id}}" > Return to Manage Teams Page </a>
-
+    <div class="container-fluid">
+      <a class="btn btn-default" rol = "button" href= "/log/manage_teams/{{user.id}}" > Return to Manage Teams Page </a>
+    </div>
+  </br>
 {% endblock %}
