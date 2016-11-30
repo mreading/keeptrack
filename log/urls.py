@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'^login/$', watch_login(auth_views.login_view), name='login'),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^gear/', athlete_views.gear, name='gear'),
-    url(r'^ajax/range_select/$', athlete_views.range_select, name='test'),
+    url(r'^ajax/range_select/$', athlete_views.range_select, name='range_select'),
     url(r'^athlete/(?P<user_id>[0-9]+)/$', athlete_views.athlete, name='athlete'),
     url(r'^athlete/settings/(?P<user_id>[0-9]+)/$', athlete_views.settings, name='settings'),
     url(r'^coach/settings/(?P<user_id>[0-9]+)/$', coach_views.settings, name='coach_settings'),

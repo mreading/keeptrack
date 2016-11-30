@@ -8,85 +8,84 @@
 
 <div class="container-fluid">
     <h2>{{ athlete_user.first_name }} {{ athlete_user.last_name}}</h2>
-    <div class="panel-group">
-        <div class="panel panel-default">
-          <div class="panel-heading">Mileage</div>
-            <div class="panel-body">
-                <div id= "mileage_options">
-                    <div class="graph_option btn" id="current_year_selector">Year</div>
-                    <div class="graph_option btn" id="current_month_selector">Month</div>
-                    <div class="graph_option btn" id="current_week_selector">Week</div>
-                    <div class="graph_option btn" id="range_selector">Range</div>
-                </div>
-
-                <!--Load the script with the actual mileage graph in it -->
-                <script type="text/javascript">
-                    var show_range_graph_first = {{ show_range_first|safe }};
-
-                    {% if year_graph_data %}
-                    var year_graph_data = {{ year_graph_data|safe }}
-                    {% else %}
-                    var year_graph_data = null;
-                    {% endif %}
-
-                    {% if month_graph_data %}
-                    var month_graph_data = {{ month_graph_data|safe }}
-                    {% else %}
-                    var month_graph_data = null;
-                    {% endif %}
-
-                    {% if week_graph_data %}
-                    var week_graph_data = {{ week_graph_data|safe }}
-                    {% else %}
-                    var week_graph_data = null;
-                    {% endif %}
-
-                    {% if range_graph_data %}
-                    var range_graph_data = {{ range_graph_data|safe }}
-                    {% else %}
-                    var range_graph_data = null;
-                    {% endif %}
-                </script>
-
-                  <!--Div that will hold the bar chart-->
-                <div id="year_mileage_graph" class="graph"></div>
-                <div id="month_mileage_graph" style="width: 100%"></div>
-                <div id="week_mileage_graph" style="width: 100%"></div>
-                <div id="date_range_graph" style="width: 100%">
-                </div>
-                <form action="" id="range_form" method='post'>
-                  {% csrf_token %}
-                  {{ form.media }}
-                  {% if form.errors %}
-                      <div class="alert alert-error">
-                          <ul>
-                              {% for error in form.non_field_errors %}
-                                  <li>{{ error }}</li>
-                              {% endfor %}
-                          </ul>
-                      </div>
-                  {% endif %}
-
-                  {% for field in form.visible_fields %}
-                      <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}" style="display:inline-block;">
-                          <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
-                          <div class="controls">
-                              <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
-                              {{ field|add_class:"form-control" }}
-                              {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
-                          </div>
-                      </div>
-                  {% endfor %}
-
-                  <div class="form-actions" style="display:inline-block;">
-                      <input class="btn btn-primary btn-large" type="submit" value="Show Mileage"/>
-                      {% block extra_buttons %}
-                      {% endblock extra_buttons %}
-                  </div>
-                </form>
+    <div class="panel panel-default">
+      <div class="panel-heading">Mileage</div>
+        <div class="panel-body">
+            <div id= "mileage_options">
+                <div class="graph_option btn" id="current_year_selector">Year</div>
+                <div class="graph_option btn" id="current_month_selector">Month</div>
+                <div class="graph_option btn" id="current_week_selector">Week</div>
+                <div class="graph_option btn" id="range_selector">Range</div>
             </div>
+
+            <!--Load the script with the actual mileage graph in it -->
+            <script type="text/javascript">
+                var show_range_graph_first = {{ show_range_first|safe }};
+
+                {% if year_graph_data %}
+                var year_graph_data = {{ year_graph_data|safe }}
+                {% else %}
+                var year_graph_data = null;
+                {% endif %}
+
+                {% if month_graph_data %}
+                var month_graph_data = {{ month_graph_data|safe }}
+                {% else %}
+                var month_graph_data = null;
+                {% endif %}
+
+                {% if week_graph_data %}
+                var week_graph_data = {{ week_graph_data|safe }}
+                {% else %}
+                var week_graph_data = null;
+                {% endif %}
+
+                {% if range_graph_data %}
+                var range_graph_data = {{ range_graph_data|safe }}
+                {% else %}
+                var range_graph_data = null;
+                {% endif %}
+            </script>
+
+              <!--Div that will hold the bar chart-->
+            <div id="year_mileage_graph" class="graph"></div>
+            <div id="month_mileage_graph" style="width: 100%"></div>
+            <div id="week_mileage_graph" style="width: 100%"></div>
+            <div id="date_range_graph" style="width: 100%">
+            </div>
+            <form action="" id="range_form" method='post'>
+              {% csrf_token %}
+              {{ form.media }}
+              {% if form.errors %}
+                  <div class="alert alert-error">
+                      <ul>
+                          {% for error in form.non_field_errors %}
+                              <li>{{ error }}</li>
+                          {% endfor %}
+                      </ul>
+                  </div>
+              {% endif %}
+
+              {% for field in form.visible_fields %}
+                  <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}" style="display:inline-block;">
+                      <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                      <div class="controls">
+                          <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
+                          {{ field|add_class:"form-control" }}
+                          {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+                      </div>
+                  </div>
+              {% endfor %}
+
+              <div class="form-actions" style="display:inline-block;">
+                  <input class="btn btn-primary btn-large" type="submit" value="Show Mileage"/>
+                  {% block extra_buttons %}
+                  {% endblock extra_buttons %}
+              </div>
+            </form>
         </div>
     </div>
+    
     <div class="panel panel-default">
       <div class="panel-heading">Workout History</div>
       <div class="panel-body">
