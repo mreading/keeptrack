@@ -5,12 +5,11 @@ from django.utils import timezone
 from datetime import timedelta
 from datetime import date
 from .utils import *
-# from .athlete_utils import *
 
 def get_workout_from_activity(activity):
     """---------------------------------------------------------
-	  Given an activity, return the corrosponding run
-	---------------------------------------------------------"""
+         Given an activity, return the corrosponding run
+       ---------------------------------------------------------"""
     if activity.act_type == "NormalRun":
         return NormalRun.objects.get(activity=activity)
     if activity.act_type == "IntervalRun":

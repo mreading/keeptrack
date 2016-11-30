@@ -8,10 +8,13 @@
   <div class="panel-group">
       {% for s in seasons %}
         <div class="panel panel-default">
-          <div class="panel-heading">{{s.year}}</div>
+          <div class="panel-heading">{{s.year}} Season</div>
             <div class="panel-body">
-              <h3> Athletes </h3>
-
+              <!-- <h3> Athletes </h3> -->
+              {% if not s.athlete_set.all.first %}
+                No Athletes
+              </br>
+              {%endif%}
               {% for athlete in s.athlete_set.all %}
                 {{athlete.user.first_name}} {{athlete.user.last_name}}
                 </br>
@@ -25,8 +28,8 @@
       {% endfor %}
       <div class="panel panel-default">
           <div class="panel-body">
-            <a href="/log/create_season/{{user.id}}/{{team.id}}">Add Season</a> </br>
-            <a href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
+            <a class="btn btn-default" role= "button" href="/log/create_season/{{user.id}}/{{team.id}}">Add Season</a>
+            <a class="btn btn-default" role= "button" href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
           </div>
         </div>
     </div>
@@ -39,8 +42,8 @@
         <div class="panel panel-default">
           <div class="panel-body">
             <h2> {{team}} - No Seasons </h2>
-            <a href="/log/create_season/{{user.id}}/{{team.id}}">Add Season</a> </br>
-            <a href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
+            <a class="btn btn-default" role= "button" href="/log/create_season/{{user.id}}/{{team.id}}">Add Season</a>
+            <a class="btn btn-default" role= "button" href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
           </div>
         </div>
       </div>

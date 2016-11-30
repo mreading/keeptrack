@@ -87,6 +87,25 @@ def get_current_season(team):
     else:
         return seasons[0]
 
+def existing_athletes(coach_id, season_id):
+    coach = Coach.objects.filter(user=coach_id)[0]
+    if coach:
+        teams = coach.teams.all()
+        athletes = Athlete.objects.none()
+
+        for team in teams:
+            seasons = team.seasons.all()
+            for season in seasons:
+                athletes = athletes | season.athlete_set.all()
+
+        if season_id != 0:
+            curr_season = Season.objects.filter(id = season_id)[0]
+            athletes = athletes.exclude(pk__in = curr_season.athlete_set.all())
+        athletes = list(athletes.distinct())
+        print "ATHLETES: ", athletes
+        return len(athletes) != 0
+
+
 @login_required(login_url='/log/login/')
 def manage_teams(request, user_id):
 
@@ -96,7 +115,12 @@ def manage_teams(request, user_id):
 
     team_set = list()
     for team in teams:
-        team_set.append((team, get_current_season(team)))
+        season = get_current_season(team)
+        if season:
+            season_id = season.id
+        else:
+            season_id = 0
+        team_set.append((team, season, existing_athletes(user_id, season_id)))
 
     full_set = len(team_set) == 3
 
