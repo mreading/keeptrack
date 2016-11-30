@@ -1,10 +1,49 @@
+/*TEST CSS */
+.dialog {
+    
+}
+
+.ui-dialog {
+    padding: 0px;
+}
+
+button.ui-dialog-titlebar-close {
+    background:var(--red);
+}
+
+.ui-widget-header {
+    background:var(--color4);
+    border: Opx;
+}
+
+.ui-widget.ui-widget-content {
+    border: 0px
+}
+
+.ui-corner-all {
+    border-radius: 0px;
+}
+
+
+
+
+
+
+#page {
+    background-color:white;
+}
+
+
+.ui-widget-overlay {
+    background: #080808;
+}
 
 .jumbotron, .footer {
-    background-color:var(--color1);
+    background-color:var(--color4);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color:#f7882f;
+  color:var(--color2);
 }
 
 
@@ -12,29 +51,44 @@ h1, h2, h3, h4, h5, h6 {
   color:#f7c331;
 }
 
-/*.container-fluid   {
-  background-color:#dcc7aa;
-}*/
+.nav>li>a {
+    text-decoration:none;
+    color: var(--color4);
+}
+
+.nav>li>a:hover{
+    text-decoration: underline;
+    color: var(--red); 
+    background-color: var(--color3);
+}
 
 .nav {
   background-color: var(--color3);
 }
 
-a {
-  text-decoration: none;
-
+.nav a {
+    color: var(--color2);
 }
 
-.panel-default > .panel-heading {
-    background-color: var(--color1);
-    text-align: center;
-    color: aliceblue;
-    font-size: 125%;
+.panel {
+    border-radius: 0px;
+    border: 2px solid var(--color4)
+}
+
+.panel-body, .panel-heading {
+    border-radius: 0px;
 }
 
 .panel-default {
-    box-shadow: 5px 10px 5px grey;
     column-gap: 40px;
+    box-shadow: 0px 5px 5px #888888;
+}
+
+.panel-default > .panel-heading {
+    background-color: var(--color4);
+    text-align: center;
+    color: aliceblue;
+    font-size: 125%;
 }
 
 .panel-group .panel+.panel {

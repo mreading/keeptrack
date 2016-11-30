@@ -66,6 +66,7 @@ class Athlete(models.Model):
     graduation_year = models.PositiveIntegerField()
     log_private = models.BooleanField(default=True)
     default_location = models.CharField(max_length=50, default="Kirkland, NY")
+    phone_number = models.CharField(max_length=11, null=True)
 
     def __str__(self):
         return self.user.first_name + ' ' + self.user.last_name
