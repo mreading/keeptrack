@@ -7,8 +7,6 @@
 
   <h1> Add New Athlete </h1>
 
-</br>
-
 {% if IE %}
 <div class="alert alert-error">
     <ul>
@@ -16,7 +14,8 @@
     </ul>
 </div>
 {% endif %}
-    <form action="/log/add_new_athletes/{{user_id}}/{{team_id}}/{{season_id}}/", method="post" autocomplete="off">
+<div class = "add-athlete">
+    <form  action="/log/add_new_athletes/{{user_id}}/{{team_id}}/{{season_id}}/", method="post" autocomplete="off">
       {% csrf_token %}
       {{ form.media }}
 
@@ -61,20 +60,26 @@
           {% endblock extra_buttons %}
       </div>
     </form>
+  </div>
 
     {% if existing_athletes %}
-  <div class="container-fluid">
-      <h2> Existing Athletes </h2>
-      {% for athlete in athletes %}
-        {{athlete.user.first_name}} {{athlete.user.last_name}}
-      </br>
-      {% endfor %}
-  </div>
+    <div class= "existing-athletes content-container">
+      <div class="panel panel-default">
+        <div class="panel-heading">Existing Athletes</div>
+        <div class="panel-body">
+          {% for athlete in athletes %}
+            {{athlete.user.first_name}} {{athlete.user.last_name}}
+          </br>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
   {%endif %}
 
 </br>
 
-<div class="container-fluid">
-    <a href= "/log/manage_teams/{{user.id}}" > Return to Manage Teams Page </a>
-</div>
+  <div class="container-fluid">
+    <a class="btn btn-default" rol = "button" href= "/log/manage_teams/{{user.id}}" > Return to Manage Teams Page </a>
+  </div>
+</br>
 {% endblock %}

@@ -4,34 +4,32 @@
 {% block content %}
  <div class="container-fluid">
      <h2> Manage Teams </h2>
-  <div class="panel-group">
     {% for t, season in team_set %}
 
         <div class="panel panel-default">
             <div class="panel-heading">{{ t }}</div>
             <div class="panel-body">
-              <a href= "/log/all_seasons/{{user_id}}/{{t.id}}"> View all seasons </a> </br>
-              <a href="/log/create_season/{{user.id}}/{{t.id}}">Add Season</a>
+              <a class="btn btn-default" href="/log/all_seasons/{{user_id}}/{{t.id}}" role="button">Manage Seasons</a>
 
 
             {% if season %}
               <h3> {{season.year}} Season </h3>
-                <!-- <h4> Athletes </h4> -->
                     {% for athlete in season.athlete_set.all %}
                       {{athlete.user.first_name}} {{athlete.user.last_name}}
                     </br>
                     {% endfor %}
                  </br>
-                  <a href="/log/add_new_athletes/{{user.id}}/{{t.id}}/{{season.id}}"> Add New Athlete </a>
+                  <a class="btn btn-default" href="/log/add_new_athletes/{{user.id}}/{{t.id}}/{{season.id}}" role="button">Add New Athlete</a>
+                  <a class="btn btn-default" href="/log/add_athletes/{{user.id}}/{{t.id}}/{{season.id}}" role="button">Add Existing Athlete</a>
+
                 </br>
-                  <a href="/log/add_athletes/{{user.id}}/{{t.id}}/{{season.id}}"> Add Existing Athlete </a>
-                </br>
+              </br>
+
 
                 {% else %}
                 <h3> No Seasons </h3>
                 {% endif %}
 
-            </br>
           </div>
         </div>
       {% endfor %}
@@ -44,7 +42,6 @@
           <a href="/log/add_coach/{{user_id}}/"> Add Additional Coach </a>
         </div>
       </div>
-    </div>
 
   </br>
 
