@@ -36,8 +36,11 @@
               </div>
 
               <div>
-                {{ rep_formset.management_form }}
                 <label>Add Repeats</label>
+                {% for dict in rep_formset.errors %}
+                    {{ dict }}
+                {% endfor %}
+                {{ rep_formset.management_form }}
                 {% for rep_form in rep_formset %}
                   <div class="link-formset">
                     <label>Distance</label>
