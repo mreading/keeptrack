@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.core.mail import send_mail
 from django.db import IntegrityError, transaction
 from django.forms.formsets import formset_factory
 from django.shortcuts import redirect, render, render_to_response
@@ -101,7 +102,7 @@ def existing_athletes(coach_id, season_id):
         if season_id != 0:
             curr_season = Season.objects.filter(id = season_id)[0]
             athletes = athletes.exclude(pk__in = curr_season.athlete_set.all())
-        athletes = list(athletes.distinct()) 
+        athletes = list(athletes.distinct())
         return len(athletes) != 0
 
 
@@ -193,12 +194,38 @@ def add_athletes(request, user_id, team_id, season_id):
             athlete = Athlete.objects.create(
                 user_id=user.id,
                 graduation_year=data['graduation_year'],
+                phone_number=data['phone_number']
                 )
             season = Season.objects.get(id = season_id)
             athlete.seasons.add(season)
-
             athlete.save()
             user.athlete = athlete
+
+            # Notify the athlete that they have been added to keeptrack
+            message = """Dear {0},
+
+I have added you to our team's running log.
+
+You can find it online at {1}. Your username/password are of the format 'DavidWippman/WippmanDavid' (Mind the capitalization and spacing!). \n\n
+
+Please begin logging your mileage.
+
+You can change the privacy settings (click on your name > settings). When your log is private, no one except your coach will be able to see your log. When it is public, it will show up with the other public logs on the team home page. You can change the privacy settings back and forth at your own will.
+
+If you want to log a run via text message, simply text the number '12075170040' a message of the form <Ran 4.5 in h:m:s this is a comment> excluding the angle brackets. I recommend saving this number to your contacts, as you will be using it fairly often.
+
+There are many other features that you should feel free to explore.
+
+This website was built by Jack Pierce and his senior seminar group for computer science. If you have any issues or questions, either submit a bug using the link at the bottom of the page, or email him at jackhpierce@gmail.com.
+
+Happy miles!""".format(user.first_name, "keeptrack.hamilton.edu/log/login/")
+            send_mail(
+                "Your Coach has added you to your team's running log",
+                message,
+                'keeptrack.hamilton@gmail.com',
+                [user.email],
+                fail_silently=False
+            )
 
         else:
             return render(request, "log/add_athletes.html", {'form':form, 'coach': coach_user, "user_id": user_id,

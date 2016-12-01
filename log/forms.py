@@ -32,6 +32,7 @@ class AddAthleteForm(forms.Form):
     last_name = forms.CharField(max_length=50, label="Last Name")
     graduation_year = forms.IntegerField(label = "Graduation Year")
     email = forms.EmailField(max_length=100, label="Email")
+    phone_number = forms.CharField(max_length=11, label="Cell Number (format 12075530064), used by athletes to log mileage")
 
 class AddExistingAthleteForm(forms.Form):
     athletes = forms.ModelMultipleChoiceField(queryset=Athlete.objects.all(), label="Athletes") #to_field_name
