@@ -7,7 +7,7 @@
 {% if seasons %}
  <div class="container-fluid">
      <h2> All Seasons - {{team}} </h2>
-      {% for s in seasons %}
+      {% for s, existing_athletes in seasons %}
         <div class="panel panel-default">
           <div class="panel-heading">{{s.year}} Season</div>
             <div class="panel-body">
@@ -21,9 +21,13 @@
                 </br>
               {% endfor %}
                 </br>
-                <a class="btn btn-default" href="/log/add_new_athletes/{{user.id}}/{{t.id}}/{{season.id}}" role="button">Add New Athlete</a>
-                <a class="btn btn-default" href="/log/add_athletes/{{user.id}}/{{t.id}}/{{season.id}}" role="button">Add Existing Athlete</a>
-                </br>
+                <a class="btn btn-default" href="/log/add_new_athletes/{{user.id}}/{{team.id}}/{{s.id}}" role="button">Add New Athlete</a>
+                {% if existing_athletes %}
+                <a class="btn btn-default" href="/log/add_athletes/{{user.id}}/{{team.id}}/{{s.id}}" role="button">Add Existing Athletes</a>
+                {% else %}
+                <a class="btn btn-default" disabled = "disabled"  role="button">Add Existing Athletes</a>
+                {% endif %}
+                 </br>
               </div>
             </div>
       {% endfor %}

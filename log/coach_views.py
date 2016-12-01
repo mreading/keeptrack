@@ -101,8 +101,7 @@ def existing_athletes(coach_id, season_id):
         if season_id != 0:
             curr_season = Season.objects.filter(id = season_id)[0]
             athletes = athletes.exclude(pk__in = curr_season.athlete_set.all())
-        athletes = list(athletes.distinct())
-        print "ATHLETES: ", athletes
+        athletes = list(athletes.distinct()) 
         return len(athletes) != 0
 
 
@@ -261,7 +260,10 @@ def all_seasons(request, team_id, user_id):
     coach_set = team.coach_set.all()
     for coach_user in coach_set:
         coach = coach_user.user
-    return render(request, "log/all_seasons.html", {'user_id':user_id, 'team':team, 'seasons': seasons})
+    season_list = []
+    for season in seasons:
+         season_list.append((season, existing_athletes(coach.id, season.id)))
+    return render(request, "log/all_seasons.html", {'user_id':user_id, 'team':team, 'seasons': season_list})
 
 def add_existing_athletes(request, user_id, team_id, season_id):
     coach_user = User.objects.get(id=user_id)
