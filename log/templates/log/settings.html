@@ -3,7 +3,7 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<div id="page">
+<div class="page">
 
 <form method="post", name='intervalform' action="/log/athlete/settings/{{ user.id }}/">
     {% csrf_token %}
