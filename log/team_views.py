@@ -60,7 +60,7 @@ def create_announcement(request):
     except:
         return HttpResponse("You are not a coach and therefore forbidden to post announcements")
 
-    form = AddAnnouncementForm()
+    form = AddAnnouncementForm(coach=coach)
     if request.method == 'POST':
         form = AddAnnouncementForm(request.POST)
         if form.is_valid():
@@ -72,7 +72,7 @@ def create_announcement(request):
                 season = data['season'],
             )
             announcement.save()
-            # send_announcement(announcement.text, data['season'])
+            send_announcement(announcement.text, data['season'])
             return redirect("/log", {})
     return render(request, "log/announcement.html", {'form':form})
 

@@ -98,4 +98,14 @@ class AddAnnouncementForm(forms.Form):
     text = forms.CharField(max_length=2000, widget=Textarea)
     expiration_date = forms.DateField(widget=forms.SelectDateWidget(), label="Expiration Date")
     season = forms.ModelChoiceField(queryset=Season.objects.all(),
-        label="Season") #FIXME need to filter season options by teams that the coach coaches.
+        label="Season")
+
+    def __init__(self, *args, **kwargs):
+        coach = kwargs.pop("coach", None)
+        super(AddAnnouncementForm, self).__init__(*args, **kwargs)
+        if coach != None:
+            teams = coach.teams.all()
+            seasons = Season.objects.filter(year=3000)
+            for team in teams:
+                seasons = seasons | team.seasons.all()
+            self.fields['season'].queryset = seasons
