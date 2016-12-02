@@ -147,11 +147,11 @@ def add_team(request, user_id):
             if data['sport'] not in sport_list:
 
                 # Create calendar for team
-                #calendarId = create_calendar(school+" "+gender+" "+data['sport'])
-                calendarId ="primary"
+                calendarId = create_calendar(school+" "+gender+" "+data['sport'])
+                # calendarId ="primary"
 
                 # Share calendar with coach
-                #share_calendar(calendarId, user.email)
+                share_calendar(calendarId, user.email)
 
                 team = Team.objects.create(school_name = school, gender = gender, sport = data['sport'], calendarId=calendarId)
                 coach.teams.add(team)
@@ -265,7 +265,7 @@ def add_coach(request, user_id):
                 coach.teams.add(team)
 
                 # Share calendar with coach
-                #share_calendar(team.calendarId, data['email'])
+                share_calendar(team.calendarId, data['email'])
             coach.save()
 
             return redirect("/log/manage_teams/" + str(user_id) + "/", {})
