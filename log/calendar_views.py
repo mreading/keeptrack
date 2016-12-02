@@ -45,7 +45,7 @@ def get_credentials():
             credentials = tools.run_flow(flow, store, flags)
         else: # Needed only for compatibility with Python 2.6
             credentials = tools.run(flow, store)
-        print('Storing credentials to ' + credential_path)
+        # print('Storing credentials to ' + credential_path)
     return credentials
 
 def create_calendar(name):
@@ -176,7 +176,7 @@ def range_weeks(start, finish, calendarId):
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    print calendarId
+    # print calendarId
 
     # get list of events within the date range
     try:
@@ -282,7 +282,7 @@ def calendar(request):
 @login_required(login_url='/log/login/')
 def time_period(request):
     teams, seasons = get_teams_seasons(request.user.id)
-    
+
     note="nothing"
 
     if request.method == 'POST':
