@@ -1,5 +1,9 @@
 /*TEST CSS */
 
+div.comment_container h5:first-child {
+    margin-top: 0px;
+}
+
 form.inModal {
     padding: 0px;
 }
@@ -25,9 +29,10 @@ form.inModal div.form-actions {
 }
 
 .modal-footer{
-    border-top: 2px dashed var(--color4);
+    border-top: 2px solid #ddd;
     background-color: var(--gray);
     text-align: left;
+    padding-bottom: 0px;
 }
 
 .button-primary {
@@ -156,11 +161,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .panel-footer {
-    
     background-color: var(--gray);
-    border-top: 2px dashed var(--color4);
+    border-top: 2px solid #ddd;
     margin-bottom: 0px;
-    padding: 6px 15px;
+    padding: 10px 15px;
     border-radius: 0px;
 }
 
