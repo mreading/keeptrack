@@ -1,27 +1,91 @@
 /*TEST CSS */
-.dialog {
 
-}
-
-.ui-dialog {
+form.inModal {
     padding: 0px;
 }
 
-button.ui-dialog-titlebar-close {
-    background:var(--red);
+form.inModal div.form-actions {
+    margin-top: 10px;
 }
 
-.ui-widget-header {
-    background:var(--color4);
-    border: Opx;
+#range_form {
+    margin-bottom: 0px;
+    padding-left: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: none;
 }
 
-.ui-widget.ui-widget-content {
-    border: 0px
+.modal-header {
+    background-color: var(--color4);
 }
 
-.ui-corner-all {
+.modal-content{
     border-radius: 0px;
+}
+
+.modal-footer{
+    border-top: 2px dashed var(--color4);
+    background-color: var(--gray);
+    text-align: left;
+}
+
+.button-primary {
+    background-color: #337ab7;
+    border-color: #2e6da4;
+}
+
+.button-primary:hover {
+    background-color: #286090;
+    border-color: #204d74;
+}
+
+button.close {
+    opacity: 1;
+    text-shadow: none;
+    color: var(--red);
+}
+
+button.close:hover {
+    color: white;
+}
+
+.btn-primary {
+    background-color: var(--red);
+    border: 2px solid var(--red);
+}
+
+.btn-primary:hover {
+    background-color: var(--red);
+    border: 2px solid white;
+}
+
+.btn-primary:active{
+    background-color: var(--red);
+    border-color: white;
+}
+
+.btn-primary:focus{
+    background-color: var(--red);
+    border-color: white;
+}
+
+.btn-primary:active:hover {
+    background-color: var(--red);
+    border-color: white;
+}
+
+.activeBtn {
+    background-color: var(--gray);
+    border-color: var(--red);   
+    color: var(--red);
+}
+
+div.activeBtn:hover {
+    background-color: var(--gray);
+    color: var(--red);
+    border-color: var(--red);
+    cursor: default;
 }
 
 
@@ -53,13 +117,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav>li>a:hover{
-    text-decoration: underline;
+    background-color: white;
     color: var(--red);
-    background-color: var(--color3);
 }
 
 .nav {
   background-color: var(--color3);
+    padding: 2px;
 }
 
 .nav a {
@@ -91,6 +155,15 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 20px;
 }
 
+.panel-footer {
+    
+    background-color: var(--gray);
+    border-top: 2px dashed var(--color4);
+    margin-bottom: 0px;
+    padding: 6px 15px;
+    border-radius: 0px;
+}
+
 .jumbotron {
     margin-bottom: 0px;
 }
@@ -99,7 +172,7 @@ h1, h2, h3, h4, h5, h6 {
   padding-left: 20px;
 }
 
-h1, h4 {
+h1 {
   padding-left: 20px;
 }
 
