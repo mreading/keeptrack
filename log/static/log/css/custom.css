@@ -1,8 +1,13 @@
-/*TEST CSS */
-
+/* Comment CSS */
 div.comment_container h5:first-child {
     margin-top: 0px;
 }
+
+div .controls .form-control {
+    width: 100%;
+}
+
+
 
 form.inModal {
     padding: 0px;
@@ -73,6 +78,7 @@ button.close:hover {
 .btn-primary:focus{
     background-color: var(--red);
     border-color: white;
+    outline: none;
 }
 
 .btn-primary:active:hover {
