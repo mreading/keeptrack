@@ -13,11 +13,15 @@ CONNECTED FILES:	/log/base.html
 
     <div>
         <div class="container-fluid">
-          {% if no_season_alert %}
-              <h4> No Seasons to View </h4>
-              <p> Go to the manage teams page to add teams and seasons </p>
-          {% else %}
-                <h2> {{ title }} </h2>
+            <div class="title panel panel-default">
+                <div class="panel-footer">
+                    {% if no_season_alert %}
+                      <h4> No Seasons to View </h4>
+                      <p> Go to the manage teams page to add teams and seasons </p>
+                    {% else %}
+                    <h2> {{ title }} </h2>
+                </div>
+            </div>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         ANNOUNCEMENTS

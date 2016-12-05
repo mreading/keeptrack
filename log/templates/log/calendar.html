@@ -5,12 +5,16 @@
 
 <link rel="stylesheet" type="text/css" href="/static/log/css/calendar.css">
 <script>console.log("{{ note }}");</script>
-<div id="page">
+<div class="page">
   <div = class="container-fluid">
-    <h2 style="display:inline-block">Calendar</h2>
-    <div class='change_time' style="float:right;">
-      <a class='btn' href="/log/calendar/select_team_season/">Select Team/Season</a>
-      <a class='btn' href="/log/calendar/select_time_period/">Select Date Range</a>
+    <div class="title panel panel-default">
+        <div class="panel-footer">
+            <h2 style="display:inline-block">Calendar</h2>
+        <div class='change_time' style="float:right;">
+        <a class='btn btn-primary' href="/log/calendar/select_team_season/">Select Team/Season</a>
+        <a class='btn btn-primary' href="/log/calendar/select_time_period/">Select Date Range</a>
+    </div>
+            </div>
     </div>
 
     <script type="text/javascript" src="{% static 'log/js/calendar.js' %}"></script>

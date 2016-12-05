@@ -194,6 +194,14 @@ h1 {
   align-items: center;
 }
 
+.dropdown-menu {
+    border-radius: 0px;
+}
+
+.nav .dropdown-menu {
+    margin-top: 3px;
+}
+
 .inline {
   display:inline-block;
 }
