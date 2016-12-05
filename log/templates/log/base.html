@@ -28,7 +28,7 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'log/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'log/css/custom.css' %}">
-      
+
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
   </head>
 
@@ -61,8 +61,19 @@
           {% if user.athlete_set.all or user.coach_set.all %}
             <!-- <li><a href="/log/workout_templates/">Workouts</a></li> -->
             <li><a href="/log/calendar/">Calendar</a></li>
-            <li><a href="/log/help/">Help</a></li>
           {% endif %}
+
+          {% if user.athlete_set.all %}
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add<span class="caret"></span></a>
+            <ul class="pull-right dropdown-menu">
+              <li><a href="/log/athlete/add/NormalRun/">Normal Run</a></li>
+              <li><a href="/log/athlete/add_intervals/">Interval Workout</a></li>
+              <li><a href="/log/athlete/add/CrossTrain/">Cross Train</a></li>
+              <li><a href="/log/athlete/add/Event/">Meet</a></li>
+            </ul>
+          </li>
+          {% endif%}
         </ul>
 
 
@@ -70,19 +81,15 @@
           <ul class="pull-right nav nav-pills">
             <li class="dropdown">
               {% if user.coach_set.all %}
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hi Coach {{ user.last_name }} <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hi Coach {{ user.last_name }}<span class="caret"></span></a>
               {% endif%}
 
               {% if user.athlete_set.all %}
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hi {{ user.first_name }} <span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hi {{ user.first_name }}<span class="caret"></span></a>
               {% endif%}
 
               <ul class="pull-right dropdown-menu">
                 {% if user.athlete_set.all %}
-                  <li><a href="/log/athlete/add/NormalRun/">Add Normal Run</a></li>
-                  <li><a href="/log/athlete/add_intervals/">Add Interval Workout</a></li>
-                  <li><a href="/log/athlete/add/CrossTrain/">Add Cross Train</a></li>
-                  <li><a href="/log/athlete/add/Event/">Add Meet</a></li>
                   <li><a href="/log/athlete/r2w_import/">Import Data from Running2Win</a></li>
                   <!-- <div class="dropdown-divider"></div> -->
                   <li><a href="/log/athlete/settings/{{ user.id }}">Settings</a></li>
@@ -94,6 +101,7 @@
                   <!-- <div class="dropdown-divider"></div> -->
                 {% endif%}
 
+                <li><a href="/log/help/">Help</a></li>
                 <li><a href="/log/logout/"> Logout </a></li>
               </ul>
             </li>
