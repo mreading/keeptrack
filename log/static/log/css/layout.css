@@ -4,6 +4,16 @@ div.pagetitle {
   color: #5a5a5a;
 }
 
+.title {
+    margin-top: 20px;
+}
+
+.title h2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    background-color: var(--gray);
+}
+
 * {
     font-family: "Lato";
 }
