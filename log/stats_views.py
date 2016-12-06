@@ -95,7 +95,7 @@ def team_stats(request):
     if coach:
         coach = coach[0]
         if request.method == 'POST':
-            form = SelectSeasonForm(request.POST)
+            form = SelectSeasonForm(request.POST, coach=coach)
             if form.is_valid():
                 data = form.cleaned_data
                 season = data['season']
@@ -107,7 +107,7 @@ def team_stats(request):
                 return render(request, "log/team_stats.html", context)
             else:
                 print "form wasn't valid"
-        form = SelectSeasonForm()
+        form = SelectSeasonForm(coach=coach)
         context = {
             'form':form
         }
@@ -118,7 +118,7 @@ def team_stats(request):
         return render(request, "log/team_stats.html")
 
     else:
-        form = SelectSeasonForm()
+        form = SelectSeasonForm(coach=coach)
         context = {
             'form':form
         }
