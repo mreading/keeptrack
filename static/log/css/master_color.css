@@ -1,11 +1,12 @@
 
 :root {
-    --color1: #1d2f3e; /*blue*/
-    --color2: #152737; /*yellow*/
-    --color3: #C9E1C1; /*cream*/
-    --color4: #0E3B43; /*orange*/
+    --color1: #1d2f3e;
+    --color2: #152737; 
+    --color3: #C9E1C1;
+    --color4: #0E3B43; 
     --aquagreen: #0fb493;
     --red: #c55660;
+    --gray: #ebebeb;
 }
 
-
+/* for potential later use: A3BBAD (light brownish-greenish) */ 

@@ -3,15 +3,6 @@ google.charts.load('current', {'packages':['corechart']});
 
 var range_index = 3;
 $(document).ready(function() {
-   $('.btn').bind("mouseover", function(){
-       var color = $(this).css("background-color");
-
-       $(this).css("background", "#dcc7aa");
-
-       $(this).bind("mouseout", function(){
-           $(this).css("background", color);
-       })
-   })
 
    // CODE NEEDED FOR FORM SAFETY
    function getCookie(name) {
@@ -44,6 +35,31 @@ $(document).ready(function() {
             }
         }
     });
+    
+    $("tr.clickable-row").click(function(e) {
+        var dRef = $(this).attr("data-href");
+        var dSplit = dRef.split("/");
+        var actID = dSplit[dSplit.length-1]
+        var actURL = "/log/athlete/activity_detail/"+actID+"/"
+        $.ajax({
+           type: "POST",
+           url: actURL,
+            dataType: "html",
+           success: function(data) {
+               //jQuery didn't handle data filtration well unless i put the html into a div (I guess it organized it in the div)
+                var tempDiv = $('<div>');
+                tempDiv.html(data);
+    
+                var foot = tempDiv.find('.modalFoot');
+                var body = tempDiv.find('.modalBody');
+                
+                $('#dialog2.modal div.modal-footer').html(foot);
+                $('#dialog2.modal div.modal-body').html(body);
+                $('#dialog2').modal("show");
+            }
+       });
+       e.preventDefault();
+    })
 
    $("#range_form").submit(function(e) {
        //need some indication of loading
@@ -127,7 +143,7 @@ class GraphSelector {
     setActiveButton(index) {
 
         var buttonID = this.graphList[index].buttonID;
-        $(buttonID).addClass('active');
+        $(buttonID).addClass('activeBtn');
     }
 
     setGraph(index) {
@@ -142,8 +158,15 @@ class GraphSelector {
             this.currentGraphIndex = index;
             var currentButtonID = this.graphList[this.currentGraphIndex].buttonID;
 
-            $(prevButtonID).removeClass('active');
-            $(currentButtonID).addClass('active');
+            $(prevButtonID).removeClass('activeBtn');
+            $(currentButtonID).addClass('activeBtn');
+            
+            if (this.graphList[this.currentGraphIndex].graphID == "#date_range_graph") {
+                $('#range_form').show('fast');
+            }
+            else {
+                $('#range_form').hide('fast');
+            }
         }
         else if (index=range_index) {
             this.graphList[index].drawFunc();

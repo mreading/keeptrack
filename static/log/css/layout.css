@@ -4,6 +4,16 @@ div.pagetitle {
   color: #5a5a5a;
 }
 
+.title {
+    margin-top: 20px;
+}
+
+.title h2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    background-color: var(--gray);
+}
+
 * {
     font-family: "Lato";
 }
@@ -31,6 +41,7 @@ div.pagetitle {
   margin-bottom: 10px;
   display: inline-block;
   text-align: center;
+  border-radius: 0px;
 }
 
 .calendar th {
