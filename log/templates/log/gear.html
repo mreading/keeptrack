@@ -4,9 +4,27 @@
 
 {% block content %}
 <div class="page">
-
 <div class="container-fluid">
-  <h2>Keep Track of your Gear</h2>
+  <div class="title panel panel-default">
+      <div class="panel-footer">
+          <h2> Wardrobe Assistant </h2>
+      </div>
+  </div>
+  <div class="panel panel-default">
+   <div class="panel-heading">Wardrobe Assistant</div>
+      <div class="panel-body">
+            <h4>LOCATION</h4>
+            {{ location }}
+            <h4>BOTTOMS</h4>
+            {{ tights }}
+            <h4>TOPS</h4>
+            {{ tops }}
+            <h4>HEADWEAR</h4>
+            {{ hat }}
+            <h4>STORMS</h4>
+            {{ storm }}
+      </div>
+  </div>
     <div class="panel panel-default">
       <div class="panel-heading">
         Currently Active Shoes

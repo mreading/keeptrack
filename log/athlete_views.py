@@ -36,10 +36,10 @@ def gear(request):
     for shoe in shoes:
         shoe.update_miles()
     form = ShoeForm()
-    context = {
-        'form':form,
-        'shoes':shoes
-    }
+    athlete = Athlete.objects.get(user=request.user)
+    context = wear_help(athlete.default_location)
+    context['form'] = form
+    context['shoes'] = shoes
     return render(request, 'log/gear.html', context)
 
 @login_required(login_url='/log/login')

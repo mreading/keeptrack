@@ -10,8 +10,11 @@ class SelectSeasonForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        seasons = kwargs.pop("seasons", None)
+        coach = kwargs.pop("coach", None)
         super(SelectSeasonForm, self).__init__(*args, **kwargs)
-
-        if seasons != None:
+        if coach != None:
+            teams = coach.teams.all()
+            seasons = Season.objects.filter(year=3000)
+            for team in teams:
+                seasons = seasons | team.seasons.all()
             self.fields['season'].queryset = seasons
