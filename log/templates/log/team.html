@@ -71,7 +71,7 @@ CONNECTED FILES:	/log/base.html
                         RECENT ACTIVITY
                     </div>
                     <div class="panel-body">
-                        <h4>Recent Workouts</h4>
+                        <h6>Recent Workouts</h6>
                         {% for w in recent_workouts %}
                           <div style="margin-bottom:15px;border:1px solid #dcc7aa;border-radius:5px;padding:5px;">
                             {{ w.activity.athlete.user.first_name }} ran {{ w.distance }}
@@ -105,52 +105,57 @@ CONNECTED FILES:	/log/base.html
                         </div>
                         <hr>
                     </div>
+                    <div class="panel-footer">
+                      <h3 style=margin-left:20px;>View other Season</h3>
+                      <form action="/log/team/" method="post" autocomplete="off">
+                        {% csrf_token %}
+                        {{ form.media }}
+                        {% if form.errors %}
+                            <div class="alert alert-error">
+                                <ul>
+                                    {% for error in form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        {% for field in form.visible_fields %}
+                            <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+                                <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                                <div class="controls">
+                                    <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
+                                    {{ field|add_class:"form-control" }}
+                                    {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {% for field in form.hidden_fields %}
+                            {{ field }}
+                        {% endfor %}
+
+                        {% block formsets %}
+                            {% for formset in inlines %}
+                                {% include "inline_formset.html" with formset=formset %}
+                            {% endfor %}
+                        {% endblock formsets %}
+                        </br>
+
+                        <div class="form-actions">
+                            <input class="btn btn-primary btn-large" type="submit" value="View Season"/>
+                            {% block extra_buttons %}
+                            {% endblock extra_buttons %}
+                        </div>
+                      </form>
+
+
+
+
+                    </div>
                 </div>
             </div>
         </div>
-
-    <h3 style=margin-left:20px;>View other Season</h3>
-    <form action="/log/team/" method="post" autocomplete="off">
-      {% csrf_token %}
-      {{ form.media }}
-      {% if form.errors %}
-          <div class="alert alert-error">
-              <ul>
-                  {% for error in form.non_field_errors %}
-                      <li>{{ error }}</li>
-                  {% endfor %}
-              </ul>
-          </div>
-      {% endif %}
-
-      {% for field in form.visible_fields %}
-          <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
-              <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
-              <div class="controls">
-                  <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
-                  {{ field|add_class:"form-control" }}
-                  {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
-              </div>
-          </div>
-      {% endfor %}
-
-      {% for field in form.hidden_fields %}
-          {{ field }}
-      {% endfor %}
-
-      {% block formsets %}
-          {% for formset in inlines %}
-              {% include "inline_formset.html" with formset=formset %}
-          {% endfor %}
-      {% endblock formsets %}
-      </br>
-
-      <div class="form-actions">
-          <input class="btn btn-primary btn-large" type="submit" value="View Season"/>
-          {% block extra_buttons %}
-          {% endblock extra_buttons %}
-      </div>
-    </form>
     {% endif %}
     <script type="text/javascript">
         var athleteData = {{athleteData|safe}};
