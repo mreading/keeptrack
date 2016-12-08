@@ -6,9 +6,13 @@
 
 
 <div class="container-fluid">
-  <h2>Create an Announcement</h2>
+    <div class="title panel panel-default">
+        <div class="panel-footer">
+            <h2>Create an Announcement</h2>
+        </div>
+    </div>
     <div class="panel panel-default">
-      <div class="panel-heading">Create Announcement</div>
+      <div class="panel-heading">Announcement Form</div>
       <div class="panel-body">
         <form action="/log/create_announcement/" method="post" autocomplete="off">
           {% csrf_token %}
@@ -44,7 +48,7 @@
               {% endfor %}
           {% endblock formsets %}
           </br>
-
+          
           <div class="form-actions">
               <input class="btn btn-primary btn-large" type="submit" value="Post"/>
               {% block extra_buttons %}

@@ -5,13 +5,23 @@
 <div class="page">
 
  <div class="container-fluid">
-     <h2> Manage Teams </h2>
+    <div class="title panel panel-default">
+        <div class="panel-footer">  
+            <h2 style="display:inline-block"> Manage Teams </h2>
+            {% if not full_team %}
+            <div style="float:right">
+                <a class="btn btn-primary" role= "button" href="/log/add_team/{{user.id}}/"> Add New Team </a>
+            {% endif %}
+                <a class="btn btn-primary" role= "button" href="/log/add_coach/{{user_id}}/"> Add New Coach </a>
+            </div>
+        </div>
+    </div>
     {% for t, season, existing_athletes in team_set %}
 
         <div class="panel panel-default">
             <div class="panel-heading">{{ t }}</div>
             <div class="panel-body">
-              <a class="btn btn-default" href="/log/all_seasons/{{user_id}}/{{t.id}}" role="button">Manage Seasons</a>
+              <a class="btn btn-primary" href="/log/all_seasons/{{user_id}}/{{t.id}}" role="button">Manage Seasons</a>
 
 
             {% if season %}
@@ -24,14 +34,6 @@
                       {{athlete.user.first_name}} {{athlete.user.last_name}}
                     </br>
                     {% endfor %}
-                 </br>
-                  <a class="btn btn-default" href="/log/add_new_athletes/{{user.id}}/{{t.id}}/{{season.id}}" role="button">Add New Athlete</a>
-                  {% if existing_athletes %}
-                  <a class="btn btn-default" href="/log/add_athletes/{{user.id}}/{{t.id}}/{{season.id}}" role="button">Add Existing Athletes</a>
-                  {% else %}
-                  <a class="btn btn-default" disabled = "disabled"  role="button">Add Existing Athletes</a>
-                  {% endif %}
-                </br>
               </br>
 
                 {% else %}
@@ -39,16 +41,18 @@
                 {% endif %}
 
           </div>
+            <div class="panel-footer">
+                {% if season %}
+                <a class="btn btn-primary" href="/log/add_new_athletes/{{user.id}}/{{t.id}}/{{season.id}}" role="button">Add New Athlete</a>
+                  {% if existing_athletes %}
+                    <a class="btn btn-primary" href="/log/add_athletes/{{user.id}}/{{t.id}}/{{season.id}}" role="button">Add Existing Athletes</a>
+                  {% else %}
+                    <a class="btn btn-primary" disabled = "disabled"  role="button">Add Existing Athletes</a>
+                  {% endif %}
+                {% endif %}
+            </div>  
         </div>
       {% endfor %}
-      <div class="panel panel-default">
-        <div class="panel-body">
-          {% if not full_team %}
-            <a class="btn btn-default" role= "button" href="/log/add_team/{{user.id}}/"> Add New Team </a>
-          {% endif %}
-          <a class="btn btn-default" role= "button" href="/log/add_coach/{{user_id}}/"> Add Additional Coach </a>
-        </div>
-      </div>
 
   </br>
 
