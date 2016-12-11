@@ -143,6 +143,7 @@ def get_label(d, num_dates):
     return str(d)
 
 def build_graph_data(dates, athlete):
+    total = 0
     colors = {
         'NormalRun':'#6b7a8f',
         'IntervalRun':'#f7c331',
@@ -167,11 +168,13 @@ def build_graph_data(dates, athlete):
         ))
         prep = [get_label(d,len(dates)), 0, 0, 0, 0,'color:'+colors['OffDay'], 'nolink']
         for a in activities:
-            prep[indexes[a.act_type]] += get_miles(get_workout_from_activity(a))
+            miles = get_miles(get_workout_from_activity(a))
+            prep[indexes[a.act_type]] += miles
+            total += miles
             prep[-1] = "/log/athlete/activity_detail/"+str(a.id)+"/"
         data.append(prep)
 
-    return data
+    return data, total
 
 def update_activity(activity, cleaned_data):
     run = None

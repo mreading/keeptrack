@@ -5,9 +5,12 @@ div.comment_container h5:first-child {
 
 div .controls .form-control {
     width: 100%;
+    max-width: 500px;
 }
 
-
+.modalFoot .controls .form-control {
+    width: 100%;
+}
 
 form.inModal {
     padding: 0px;
@@ -199,7 +202,7 @@ h1 {
 }
 
 .nav .dropdown-menu {
-    margin-top: 3px;
+    margin-top
 }
 
 .inline {
