@@ -44,13 +44,9 @@ def gear(request):
 
 @login_required(login_url='/log/login')
 def range_select(request):
-    #print ("RANGE SLEC")
-    #print (request.method) a
     if request.is_ajax() and request.method == "POST":
         context = {}
         date_range_form = DateRangeForm(request.POST)
-        #print("hereeeooo")
-        #print(date_range_form)
         if date_range_form.is_valid():
             athlete = Athlete.objects.get(user=request.user)
 
