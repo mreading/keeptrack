@@ -31,6 +31,10 @@ div.pagetitle {
   color: black;
 }
 
+#commentField input[name=text], textarea {
+    min-width: 100%;
+}
+
 .error {
     text-align: center;
 }

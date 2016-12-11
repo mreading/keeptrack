@@ -36,6 +36,28 @@ $(document).ready(function() {
         }
     });
     
+    // in modal, when comment posted, reload comment section
+    function onCommentPost (modalPage, url) {
+        $("#commentForm").submit(function(e) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $("#commentForm").serialize(),
+                success: function(data) {
+                    //jQuery didn't handle data filtration well unless i put the html into a div (I guess it organized it in the div)
+                    var tempDiv = $('<div>');
+                    tempDiv.html(data);
+
+                    var foot = tempDiv.find('.modalFoot');
+
+                    $('#dialog2.modal div.modal-footer').html(foot);   
+                } 
+            });
+            e.preventDefault();
+        });
+    }
+    
+    
     $("tr.clickable-row").click(function(e) {
         var dRef = $(this).attr("data-href");
         var dSplit = dRef.split("/");
@@ -55,6 +77,9 @@ $(document).ready(function() {
                 
                 $('#dialog2.modal div.modal-footer').html(foot);
                 $('#dialog2.modal div.modal-body').html(body);
+               
+                onCommentPost(tempDiv, actURL);
+               
                 $('#dialog2').modal("show");
             }
        });
