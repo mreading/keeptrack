@@ -91,7 +91,7 @@ button.close:hover {
 
 .activeBtn {
     background-color: var(--gray);
-    border-color: var(--red);   
+    border-color: var(--red);
     color: var(--red);
 }
 

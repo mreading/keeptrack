@@ -46,25 +46,55 @@
     <div class="container-fluid">
       <ul class="pull-left nav nav-pills">
           {% if user.athlete_set.all %}
-            <li><a href="/log/athlete/{{ user.id }}/">Home</a></li>
-            <li><a href="/log/team/">Team</a></li>
-            <li><a href="/log/gear/">Gear</a></li>
+            <li>
+              <a href="/log/athlete/{{ user.id }}/">
+                <span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home
+              </a>
+            </li>
+            <li>
+              <a href="/log/team/">
+                <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>Team
+              </a>
+            </li>
+            <li>
+              <a href="/log/gear/">
+                <span class="glyphicon glyphicon-sunglasses" aria-hidden="true"></span>Gear
+              </a>
+            </li>
           {% endif%}
 
           {% if user.coach_set.all %}
-            <li><a href="/log/team/">Home</a></li>
-            <li><a href="/log/create_announcement">Announce</a></li>
-            <li><a href="/log/team_stats/">Stats</a></li>
+            <li>
+              <a href="/log/team/">
+                <span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home
+              </a>
+            </li>
+            <li>
+              <a href="/log/create_announcement">
+                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>Announce
+              </a>
+            </li>
+            <li>
+              <a href="/log/team_stats/">
+                <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>Stats
+              </a>
+            </li>
           {% endif%}
 
           {% if user.athlete_set.all or user.coach_set.all %}
             <!-- <li><a href="/log/workout_templates/">Workouts</a></li> -->
-            <li><a href="/log/calendar/">Calendar</a></li>
+            <li>
+              <a href="/log/calendar/">
+                <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>Calendar
+              </a>
+            </li>
           {% endif %}
 
           {% if user.athlete_set.all %}
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add<span class="caret"></span></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add<span class="caret"></span>
+            </a>
             <ul class="pull-right dropdown-menu">
               <li><a href="/log/athlete/add/NormalRun/">Normal Run</a></li>
               <li><a href="/log/athlete/add_intervals/">Interval Workout</a></li>
@@ -80,11 +110,15 @@
           <ul class="pull-right nav nav-pills">
             <li class="dropdown">
               {% if user.coach_set.all %}
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hi Coach {{ user.last_name }}<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>Coach {{ user.last_name }}<span class="caret"></span>
+              </a>
               {% endif%}
 
               {% if user.athlete_set.all %}
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hi {{ user.first_name }}<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>{{ user.first_name }}<span class="caret"></span>
+              </a>
               {% endif%}
 
               <ul class="pull-right dropdown-menu">
@@ -117,9 +151,7 @@
     <div class="footer">
         <a style="color:var(--red);" href="/log/submit_bug">Submit a Bug</a>
         <br>
-        <a href="https://cs.hamilton.edu/" style="color:white;"> Hamilton College Computer Science Department </a>
-        <br>
-        <a id="github_link" href="https://github.com/jhpierce/keeptrack">GitHub</a>
+        <a href="https://cs.hamilton.edu/" style="color:white;">Hamilton College Computer Science Department</a>
     </div>
   </body>
 </div>
