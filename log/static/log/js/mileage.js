@@ -81,6 +81,9 @@ $(document).ready(function() {
                 onCommentPost(tempDiv, actURL);
                
                 $('#dialog2').modal("show");
+                $('#dialog2').on('shown.bs.modal', function() {
+                    google.charts.setOnLoadCallback(drawIntervalChart); 
+                });
             }
        });
        e.preventDefault();
