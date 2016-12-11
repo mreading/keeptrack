@@ -6,18 +6,17 @@
 
  <div class="container-fluid">
     <div class="title panel panel-default">
-        <div class="panel-footer">  
+        <div class="panel-footer">
             <h2 style="display:inline-block"> Manage Teams </h2>
+            <div class='change_time' style="float:right;"> 
             {% if not full_team %}
-            <div style="float:right">
                 <a class="btn btn-primary" role= "button" href="/log/add_team/{{user.id}}/"> Add New Team </a>
             {% endif %}
                 <a class="btn btn-primary" role= "button" href="/log/add_coach/{{user_id}}/"> Add New Coach </a>
-            </div>
+              </div>
         </div>
     </div>
     {% for t, season, existing_athletes in team_set %}
-
         <div class="panel panel-default">
             <div class="panel-heading">{{ t }}</div>
             <div class="panel-body">
@@ -50,7 +49,7 @@
                     <a class="btn btn-primary" disabled = "disabled"  role="button">Add Existing Athletes</a>
                   {% endif %}
                 {% endif %}
-            </div>  
+            </div>
         </div>
       {% endfor %}
 

@@ -183,8 +183,7 @@ def update_activity(activity, cleaned_data):
         run = CrossTrail.objects.get(activity=activity)
     elif activity.act_type == "Event":
         run = Event.objects.get(activity=activity)
-
-
+ 
 def get_post_form(run_type, post, user):
     """ Simply locates a form based on the type of run """
     if run_type == "NormalRun":
