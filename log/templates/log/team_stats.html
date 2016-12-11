@@ -13,6 +13,11 @@
         <div class="panel panel-default">
             <div class="panel-heading">Mileage</div>
                 <div class="panel-body">
+                  <!--Div that will hold the bar chart-->
+                  <!-- <h2>{{ no_season }}</h2> -->
+                  <div id="mileage_graph" class="graph"></div>
+                </div>
+                <div class="panel-footer">
                     <form class="form-horizontal" action="/log/team_stats/" method="POST" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
                       {% csrf_token %}
                       {{ form.media }}
@@ -66,9 +71,6 @@
                         var mileage_data = {{ mileage_data|safe }}
                     </script>
                     <script type="text/javascript" src="{% static 'log/js/stats.js' %}"></script>
-
-                    <!--Div that will hold the bar chart-->
-                    <div id="mileage_graph" class="graph"></div>
                 </div>
             </div>
     </div>

@@ -11,7 +11,7 @@
             </div>
           {% endfor %}
         {% endif %}
-        <form class="inModal" action="/log/athlete/activity_detail/{{ activity.id }}/" method="post" autocomplete="off">
+        <form class="inModal" id="commentForm" action="" method="post" autocomplete="off">
             {% csrf_token %}
             {{ commentform.media }}
             {% if commentform.errors %}
@@ -27,7 +27,7 @@
             {% for field in commentform.visible_fields %}
                 <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
                     <!-- <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label> -->
-                    <div class="controls">
+                    <div class="controls" id="commentField">
                         <!-- |add_class is a widget tweak that helps connects the django commentforms to the bootstrap -->
                         {{ field|add_class:"form-control" }}
                         {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}

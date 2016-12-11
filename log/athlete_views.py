@@ -44,13 +44,9 @@ def gear(request):
 
 @login_required(login_url='/log/login')
 def range_select(request):
-    #print ("RANGE SLEC")
-    #print (request.method) a
     if request.is_ajax() and request.method == "POST":
         context = {}
         date_range_form = DateRangeForm(request.POST)
-        #print("hereeeooo")
-        #print(date_range_form)
         if date_range_form.is_valid():
             athlete = Athlete.objects.get(user=request.user)
 
@@ -64,7 +60,7 @@ def range_select(request):
             while range_dates[-1] <= end_date:
                 range_dates.append(range_dates[-1]+datetime.timedelta(1))
 
-            range_graph_data = build_graph_data(range_dates, athlete)
+            range_graph_data, range_total = build_graph_data(range_dates, athlete)
             return HttpResponse(json.dumps(range_graph_data))
 
     else:
@@ -385,14 +381,14 @@ def athlete(request, user_id):
             curr_month.append(day)
 
     # get the dates for the current week
-    while start_week <= end_week:
+    while start_week < end_week:
         curr_week.append(start_week)
         start_week = start_week + datetime.timedelta(1)
 
     #--------------- generate graph data, including days off -------------------
-    year_graph_data = build_graph_data(curr_year, athlete)
-    month_graph_data = build_graph_data(curr_month, athlete)
-    week_graph_data = build_graph_data(curr_week, athlete)
+    year_graph_data, year_total = build_graph_data(curr_year, athlete)
+    month_graph_data, month_total = build_graph_data(curr_month, athlete)
+    week_graph_data, week_total = build_graph_data(curr_week, athlete)
 
     #------------------ Get PR's of athlete -----------------------------------
     prs = list(get_prs(athlete).values())
@@ -406,8 +402,11 @@ def athlete(request, user_id):
         'prs':prs,
         'all_runs':all_runs,
         'year_graph_data':json.dumps(year_graph_data),
+        'year_total':year_total,
         'month_graph_data':json.dumps(month_graph_data),
+        'month_total':month_total,
         'week_graph_data':json.dumps(week_graph_data),
+        'week_total':week_total,
         'athlete_user':user,
     }
 

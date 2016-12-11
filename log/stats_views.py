@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .team_forms import *
 from .utils import *
 from .athlete_utils import *
+from .team_views import get_team_season
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -94,6 +95,7 @@ def team_stats(request):
 
     if coach:
         coach = coach[0]
+        #Default to the current season
         if request.method == 'POST':
             form = SelectSeasonForm(request.POST, coach=coach)
             if form.is_valid():
@@ -107,19 +109,23 @@ def team_stats(request):
                 return render(request, "log/team_stats.html", context)
             else:
                 print "form wasn't valid"
-        form = SelectSeasonForm(coach=coach)
-        context = {
-            'form':form
-        }
-        return render(request, "log/team_stats.html", context)
 
-    elif athlete:
-        print "Error: Athlete shouldn't be here"
-        return render(request, "log/team_stats.html")
+        #default to current season
+        form = SelectSeasonForm(coach=coach)
+        team, season = get_team_season(request.user)
+        if season:
+            data = get_team_mileage_data(season)
+            context = {
+                'form':form,
+                'mileage_data':json.dumps(data)
+            }
+        else:
+            context = {
+                'form':form,
+                'no_season':"No Current Season"
+            }
+        return render(request, "log/team_stats.html", context)
 
     else:
-        form = SelectSeasonForm(coach=coach)
-        context = {
-            'form':form
-        }
-        return render(request, "log/team_stats.html", context)
+        print "Error: Athlete shouldn't be here"
+        return render(request, "log/team_stats.html")

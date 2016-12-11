@@ -10,7 +10,7 @@
         <div class="panel-footer">
             <h2>{{ athlete_user.first_name }} {{ athlete_user.last_name}}</h2>
         </div>
-    </div> 
+    </div>
     <div id="dialog2" class="modal fade">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -27,7 +27,7 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-   
+
         <div class="panel panel-default">
           <div class="panel-heading">Mileage</div>
             <div class="panel-body">
@@ -37,19 +37,22 @@
                     var show_range_graph_first = {{ show_range_first|safe }};
 
                     {% if year_graph_data %}
-                    var year_graph_data = {{ year_graph_data|safe }}
+                    var year_graph_data = {{ year_graph_data|safe }};
+                    var year_total = {{ year_total }};
                     {% else %}
                     var year_graph_data = null;
                     {% endif %}
 
                     {% if month_graph_data %}
-                    var month_graph_data = {{ month_graph_data|safe }}
+                    var month_graph_data = {{ month_graph_data|safe }};
+                    var month_total = {{ month_total }};
                     {% else %}
                     var month_graph_data = null;
                     {% endif %}
 
                     {% if week_graph_data %}
-                    var week_graph_data = {{ week_graph_data|safe }}
+                    var week_graph_data = {{ week_graph_data|safe }};
+                    var week_total = {{ week_total }};
                     {% else %}
                     var week_graph_data = null;
                     {% endif %}

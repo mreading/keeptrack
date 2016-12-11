@@ -35,7 +35,29 @@ $(document).ready(function() {
             }
         }
     });
-    
+
+    // in modal, when comment posted, reload comment section
+    function onCommentPost (modalPage, url) {
+        $("#commentForm").submit(function(e) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $("#commentForm").serialize(),
+                success: function(data) {
+                    //jQuery didn't handle data filtration well unless i put the html into a div (I guess it organized it in the div)
+                    var tempDiv = $('<div>');
+                    tempDiv.html(data);
+
+                    var foot = tempDiv.find('.modalFoot');
+
+                    $('#dialog2.modal div.modal-footer').html(foot);
+                }
+            });
+            e.preventDefault();
+        });
+    }
+
+
     $("tr.clickable-row").click(function(e) {
         var dRef = $(this).attr("data-href");
         var dSplit = dRef.split("/");
@@ -49,13 +71,19 @@ $(document).ready(function() {
                //jQuery didn't handle data filtration well unless i put the html into a div (I guess it organized it in the div)
                 var tempDiv = $('<div>');
                 tempDiv.html(data);
-    
+
                 var foot = tempDiv.find('.modalFoot');
                 var body = tempDiv.find('.modalBody');
-                
+
                 $('#dialog2.modal div.modal-footer').html(foot);
                 $('#dialog2.modal div.modal-body').html(body);
+
+                onCommentPost(tempDiv, actURL);
+
                 $('#dialog2').modal("show");
+                $('#dialog2').on('shown.bs.modal', function() {
+                    google.charts.setOnLoadCallback(drawIntervalChart);
+                });
             }
        });
        e.preventDefault();
@@ -160,7 +188,7 @@ class GraphSelector {
 
             $(prevButtonID).removeClass('activeBtn');
             $(currentButtonID).addClass('activeBtn');
-            
+
             if (this.graphList[this.currentGraphIndex].graphID == "#date_range_graph") {
                 $('#range_form').show('fast');
             }
@@ -200,7 +228,7 @@ function drawYearChart() {
   var view = new google.visualization.DataView(data);
   view.setColumns([0, 1, 2])
 
-  var options = {'title':'Current Year Mileage',
+  var options = {'title':'Current Year Mileage ('.concat(year_total.toString(), ')'),
                  'height':300,
                 'width': graphSelector.getActiveDivWidth(),
                  'interpolateNulls': true,
@@ -256,7 +284,7 @@ function drawMonthChart() {
     view.setColumns([0, 1, 2, 4])
 
     // Set chart options
-    var options = {'title':'Current Month Mileage',
+    var options = {'title':'Current Month Mileage ('.concat(month_total.toString(), ')'),
                    'height':300,
                    'width':graphSelector.getActiveDivWidth(),
                    'interpolateNulls': true,
@@ -310,7 +338,7 @@ function drawWeekChart() {
       view.setColumns([0, 1, 2, 3, 4])
 
       // Set chart options
-      var options = {'title':'Current Week Mileage',
+      var options = {'title':'Current Week Mileage('.concat(week_total.toString(), ')'),
                      'height':300,
                      'width':graphSelector.getActiveDivWidth(),
                      'interpolateNulls': true,
