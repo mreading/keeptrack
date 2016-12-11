@@ -284,7 +284,7 @@ function drawMonthChart() {
     view.setColumns([0, 1, 2, 4])
 
     // Set chart options
-    var options = {'title':'Current Month Mileage ('.concat(month_total.toString(), ')'),
+    var options = {'title':'Current Month Mileage ('.concat(year_total.toString(), ')'),
                    'height':300,
                    'width':graphSelector.getActiveDivWidth(),
                    'interpolateNulls': true,
@@ -338,7 +338,7 @@ function drawWeekChart() {
       view.setColumns([0, 1, 2, 3, 4])
 
       // Set chart options
-      var options = {'title':'Current Week Mileage('.concat(week_total.toString(), ')'),
+      var options = {'title':'Current Week Mileage ('.concat(week_total.toString(), ')'),
                      'height':300,
                      'width':graphSelector.getActiveDivWidth(),
                      'interpolateNulls': true,

@@ -381,7 +381,7 @@ def athlete(request, user_id):
             curr_month.append(day)
 
     # get the dates for the current week
-    while start_week <= end_week:
+    while start_week < end_week:
         curr_week.append(start_week)
         start_week = start_week + datetime.timedelta(1)
 
