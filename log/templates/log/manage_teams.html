@@ -8,7 +8,7 @@
     <div class="title panel panel-default">
         <div class="panel-footer">
             <h2 style="display:inline-block"> Manage Teams </h2>
-            <div class='change_time' style="float:right;"> 
+            <div class='change_time' style="float:right;">
             {% if not full_team %}
                 <a class="btn btn-primary" role= "button" href="/log/add_team/{{user.id}}/"> Add New Team </a>
             {% endif %}
@@ -20,7 +20,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">{{ t }}</div>
             <div class="panel-body">
-              <a class="btn btn-primary" href="/log/all_seasons/{{user_id}}/{{t.id}}" role="button">Manage Seasons</a>
+              <a class="btn btn-default"  href="/log/all_seasons/{{user_id}}/{{t.id}}" role="button">Manage Seasons</a>
 
 
             {% if season %}
