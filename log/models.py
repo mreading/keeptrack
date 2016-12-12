@@ -75,6 +75,9 @@ class Coach(models.Model):
     teams = models.ManyToManyField(Team)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.user)
+
 class Shoe(models.Model):
     nickname = models.CharField(max_length=40)
     description = models.CharField(max_length=1000)

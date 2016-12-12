@@ -6,8 +6,14 @@
 
 {% if seasons %}
  <div class="container-fluid">
-     <h2> All Seasons - {{team}} </h2>
-      {% for s, existing_athletes in seasons %}
+   <div class="title panel panel-default">
+       <div class="panel-footer">
+           <h2 style="display:inline-block"> All Seasons - {{team}} </h2>
+       </div>
+   </div>
+
+
+       {% for s, existing_athletes in seasons %}
         <div class="panel panel-default">
           <div class="panel-heading">{{s.year}} Season</div>
             <div class="panel-body">
@@ -20,38 +26,45 @@
                 {{athlete.user.first_name}} {{athlete.user.last_name}}
                 </br>
               {% endfor %}
-                </br>
-                <a class="btn btn-default" href="/log/add_new_athletes/{{user.id}}/{{team.id}}/{{s.id}}" role="button">Add New Athlete</a>
+              </div>
+              <div class="panel-footer">
+                <a class="btn btn-primary" href="/log/add_new_athletes/{{user.id}}/{{team.id}}/{{s.id}}" role="button">Add New Athlete</a>
                 {% if existing_athletes %}
-                <a class="btn btn-default" href="/log/add_athletes/{{user.id}}/{{team.id}}/{{s.id}}" role="button">Add Existing Athletes</a>
+                <a class="btn btn-primary" href="/log/add_athletes/{{user.id}}/{{team.id}}/{{s.id}}" role="button">Add Existing Athletes</a>
                 {% else %}
-                <a class="btn btn-default" disabled = "disabled"  role="button">Add Existing Athletes</a>
+                <a class="btn btn-primary" disabled = "disabled"  role="button">Add Existing Athletes</a>
                 {% endif %}
                  </br>
               </div>
-            </div>
+        </div>
       {% endfor %}
+
       <div class="panel panel-default">
           <div class="panel-body">
-            <a class="btn btn-default" role= "button" href="/log/create_season/{{user.id}}/{{team.id}}">Add Season</a>
-            <a class="btn btn-default" role= "button" href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
+            <a class="btn btn-primary" role= "button" href="/log/create_season/{{user.id}}/{{team.id}}">Add Season</a>
+            <a class="btn btn-primary" role= "button" href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
           </div>
-        </div>
-  </div>
-
-
-    {% else %}
-    <div class="container-fluid">
-      <div class="panel-group">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <h2> {{team}} - No Seasons </h2>
-            <a class="btn btn-default" role= "button" href="/log/create_season/{{user.id}}/{{team.id}}">Add Season</a>
-            <a class="btn btn-default" role= "button" href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
-          </div>
-        </div>
       </div>
-    </div>
-    {% endif %}
+      </div>
+
+
+      {% else %}
+      <div class="container-fluid">
+          <div class="title panel panel-default">
+              <div class="panel-footer">
+                  <h2 style="display:inline-block"> All Seasons - {{team}} </h2>
+              </div>
+          </div>
+          <div class="panel panel-default">
+              <div class="panel-body">
+                <a class="btn btn-primary" role= "button" href="/log/create_season/{{user.id}}/{{team.id}}">Add Season</a>
+                <a class="btn btn-primary" role= "button" href= "/log/manage_teams/{{user_id}}" > Return to Manage Teams Page </a>
+              </div>
+          </div>
+      </div>
+      {% endif %}
+
+
+
   </div>
 {% endblock %}
