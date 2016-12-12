@@ -12,6 +12,32 @@ div.pagetitle {
     margin-top: 0px;
     margin-bottom: 0px;
     background-color: var(--gray);
+    display: inline;
+}
+
+#view-form, #view-form div, #view-form .form-control {
+  display: inline-block;
+}
+
+#view-form {
+ float: right;
+ padding: 0px;
+}
+
+#view-form label, #view-form label {
+  font-weight: normal;
+}
+
+#view-form .team, #view-form .season {
+  margin-right: 10px;
+}
+
+#id_team {
+  max-width: 250px;
+}
+
+#id_season {
+  max-width: 100px;
 }
 
 * {
