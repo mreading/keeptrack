@@ -91,7 +91,7 @@ button.close:hover {
 
 .activeBtn {
     background-color: var(--gray);
-    border-color: var(--red);   
+    border-color: var(--red);
     color: var(--red);
 }
 
@@ -182,10 +182,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .auth {
-  padding-left: 20px;
-}
-
-h1 {
   padding-left: 20px;
 }
 
