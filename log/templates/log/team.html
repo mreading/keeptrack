@@ -20,142 +20,136 @@ CONNECTED FILES:	/log/base.html
                       <p> Go to the manage teams page to add teams and seasons </p>
                     {% else %}
                     <h2> {{ title }} </h2>
+                    <form id="view-form" action="/log/team/" method="post" autocomplete="off">
+                      {% csrf_token %}
+                      {{ form.media }}
+                      {% if form.errors %}
+                          <div class="alert alert-error">
+                              <ul>
+                                  {% for error in form.non_field_errors %}
+                                      <li>{{ error }}</li>
+                                  {% endfor %}
+                              </ul>
+                          </div>
+                      {% endif %}
+
+                      {% for field in form.visible_fields %}
+                          <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+                              <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                              <div class="controls">
+                                  <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
+                                  {{ field|add_class:"form-control" }}
+                                  {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+                              </div>
+                          </div>
+                      {% endfor %}
+
+                      {% for field in form.hidden_fields %}
+                          {{ field }}
+                      {% endfor %}
+
+                      {% block formsets %}
+                          {% for formset in inlines %}
+                              {% include "inline_formset.html" with formset=formset %}
+                          {% endfor %}
+                      {% endblock formsets %}
+                      <div class="form-actions">
+                          <input class="btn btn-primary btn-large" type="submit" value="View"/>
+                          {% block extra_buttons %}
+                          {% endblock extra_buttons %}
+                      </div>
+                    </form>
                 </div>
             </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        ANNOUNCEMENTS
-                    </div>
-                    <div class="panel-body">
-                        {% for a in announcements %}
-                            <h3>{{ a.posted_date|date:"l" }}, {{ a.posted_date }}</h3>
-                            {{ a.text }}
-                        {% endfor %}
-                    </div>
-                </div>
 
-                <div class="panel panel-default calendar">
-                    <div class="panel-heading">
-                        CURRENT WEEK
-                    </div>
-                    <div class="panel-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Monday</th>
-                                    <th>Tuesday</th>
-                                    <th>Wednesday</th>
-                                    <th>Thursday</th>
-                                    <th>Friday</th>
-                                    <th>Saturday</th>
-                                    <th>Sunday</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class=week>
-                                    {% for day in week.1 %}
-                                        <td class="day">
-                                    {% for event in day %}
-                                        <a class="event well" data-content="{{event.dateInfo}}" data-toggle="popover">{{event.summary}}</a>
-                                    {% endfor %}
-                                        </td>
-                                    {% endfor %}
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    ANNOUNCEMENTS
                 </div>
-
-                <div class="panel panel-default calendar">
-                    <div class="panel-heading">
-                        RECENT ACTIVITY
-                    </div>
-                    <div class="panel-body">
-                        <h6>Recent Workouts</h6>
-                        {% for w in recent_workouts %}
-                          <div style="margin-bottom:15px;border:1px solid #dcc7aa;border-radius:5px;padding:5px;">
-                            {{ w.activity.athlete.user.first_name }} ran {{ w.distance }}
-                            {% if w.activity.comment != "" %}
-                              ({{ w.activity.comment }})
-                            {% endif %}
-                            <div style="float:right;padding-right:10px;">
-                              <a href="/log/athlete/activity_detail/{{w.activity.id}}/">VIEW</a>
-                            </div>
-                          </div>
-                        {% endfor %}
-                        <h4>Peanut Gallery</h4>
-                        {% for c in recent_comments %}
-                          <div>
-                            {{ c.poster.first_name }} commented on {{ c.thread.activity.athlete.user.first_name }}'s log!
-                            <a href="/log/athlete/activity_detail/{{c.thread.activity.id}}/">VIEW</a>
-                          </div>
-                        {% endfor %}
-                    </div>
+                <div class="panel-body">
+                    {% for a in announcements %}
+                        <h3>{{ a.posted_date|date:"l" }}, {{ a.posted_date }}</h3>
+                        {{ a.text }}
+                    {% endfor %}
                 </div>
+            </div>
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        ATHLETES
-                    </div>
-                    <div class="panel-body">
-                        <!--------------------------------------------------------------------
-                        Athlete Table div that will later be filled
-                        --------------------------------------------------------------------->
-                        <div class="table table-hover" id="athletes" style="width: 100%">
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="panel-footer">
-                      <h3 style=margin-left:20px;>View other Season</h3>
-                      <form action="/log/team/" method="post" autocomplete="off">
-                        {% csrf_token %}
-                        {{ form.media }}
-                        {% if form.errors %}
-                            <div class="alert alert-error">
-                                <ul>
-                                    {% for error in form.non_field_errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
+            <div class="panel panel-default calendar">
+                <div class="panel-heading">
+                    CURRENT WEEK
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Monday</th>
+                                <th>Tuesday</th>
+                                <th>Wednesday</th>
+                                <th>Thursday</th>
+                                <th>Friday</th>
+                                <th>Saturday</th>
+                                <th>Sunday</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class=week>
+                                {% for day in week.1 %}
+                                    <td class="day">
+                                {% for event in day %}
+                                    <a class="event well" data-content="{{event.dateInfo}}" data-toggle="popover">{{event.summary}}</a>
+                                {% endfor %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    RECENT ACTIVITY
+                </div>
+                <div class="panel-body">
+                    <h6>Recent Workouts</h6>
+                    {% for w in recent_workouts %}
+                      <div style="margin-bottom:15px;border:1px solid #dcc7aa;border-radius:5px;padding:5px;">
+                        {{ w.activity.athlete.user.first_name }} ran {{ w.distance }}
+                        {% if w.activity.comment != "" %}
+                          ({{ w.activity.comment }})
                         {% endif %}
-
-                        {% for field in form.visible_fields %}
-                            <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
-                                <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
-                                <div class="controls">
-                                    <!-- |add_class is a widget tweak that helps connects the django forms to the bootstrap -->
-                                    {{ field|add_class:"form-control" }}
-                                    {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
-                                </div>
-                            </div>
-                        {% endfor %}
-
-                        {% for field in form.hidden_fields %}
-                            {{ field }}
-                        {% endfor %}
-
-                        {% block formsets %}
-                            {% for formset in inlines %}
-                                {% include "inline_formset.html" with formset=formset %}
-                            {% endfor %}
-                        {% endblock formsets %}
-                        </br>
-
-                        <div class="form-actions">
-                            <input class="btn btn-primary btn-large" type="submit" value="View Season"/>
-                            {% block extra_buttons %}
-                            {% endblock extra_buttons %}
+                        <div style="float:right;padding-right:10px;">
+                          <a href="/log/athlete/activity_detail/{{w.activity.id}}/">VIEW</a>
                         </div>
-                      </form>
+                      </div>
+                    {% endfor %}
+                    <h4>Peanut Gallery</h4>
+                    {% for c in recent_comments %}
+                      <div>
+                        {{ c.poster.first_name }} commented on {{ c.thread.activity.athlete.user.first_name }}'s log!
+                        <a href="/log/athlete/activity_detail/{{c.thread.activity.id}}/">VIEW</a>
+                      </div>
+                    {% endfor %}
+                </div>
+            </div>
 
-
-
-
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    ATHLETES
+                </div>
+                <div class="panel-body">
+                    <!--------------------------------------------------------------------
+                    Athlete Table div that will later be filled
+                    --------------------------------------------------------------------->
+                    <div class="table table-hover" id="athletes" style="width: 100%">
                     </div>
+                    <hr>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
     {% endif %}
     <script type="text/javascript">
         var athleteData = {{athleteData|safe}};
@@ -173,7 +167,7 @@ CONNECTED FILES:	/log/base.html
 
         // team has been selected
         if($(this).val()) {
-          $('.season').show();
+          $('.season').disabled=true;
 
           //get selected team's seasons
           var team_object = document.getElementById("id_team");
@@ -192,7 +186,7 @@ CONNECTED FILES:	/log/base.html
 
         // team is no longer selected
         } else {
-          $('.season').hide();
+          $('.season').disabled=false;
         }
       }
       $(document).ready(function() {
