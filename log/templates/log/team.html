@@ -111,8 +111,21 @@ CONNECTED FILES:	/log/base.html
                     RECENT ACTIVITY
                 </div>
                 <div class="panel-body">
-                    <h6>Recent Workouts</h6>
-                    {% for w in recent_workouts %}
+                    <h4>Today</h4>
+                    {% for w in workouts_today %}
+                      <div style="margin-bottom:15px;border:1px solid #dcc7aa;border-radius:5px;padding:5px;">
+                        {{ w.activity.athlete.user.first_name }} ran {{ w.distance }}
+                        {% if w.activity.comment != "" %}
+                          ({{ w.activity.comment }})
+                        {% endif %}
+                        <div style="float:right;padding-right:10px;">
+                          <a href="/log/athlete/activity_detail/{{w.activity.id}}/">VIEW</a>
+                        </div>
+                      </div>
+                    {% endfor %}
+
+                    <h4>Yesterday</h4>
+                    {% for w in workouts_yesterday %}
                       <div style="margin-bottom:15px;border:1px solid #dcc7aa;border-radius:5px;padding:5px;">
                         {{ w.activity.athlete.user.first_name }} ran {{ w.distance }}
                         {% if w.activity.comment != "" %}

@@ -123,15 +123,21 @@ def team(request):
         )
 
     # ------------------ Get the recent Activity--------------------------------
-    recent_activities = Activity.objects.filter(
+    activities_today = Activity.objects.filter(
         athlete__in=viewable_athletes,
-        date__gt=datetime.date.today() - datetime.timedelta(3)
+        date=datetime.date.today()
     ).order_by('-date')
 
-    recent_workouts = [get_workout_from_activity(a) for a in recent_activities]
+    activities_yesterday = Activity.objects.filter(
+        athlete__in=viewable_athletes,
+        date=datetime.date.today() - datetime.timedelta(1)
+    ).order_by('-date')
+
+    workouts_today = [get_workout_from_activity(a) for a in activities_today]
+    workouts_yesterday = [get_workout_from_activity(a) for a in activities_yesterday]
 
     recent_threads = Thread.objects.filter(
-        activity__in=recent_activities
+        activity__in=activities_today | activities_yesterday
     )
     recent_comments = Comment.objects.filter(
         thread__in=recent_threads
@@ -160,7 +166,8 @@ def team(request):
     week = current_week(calendarId)
 
     context = {
-        'recent_workouts':recent_workouts,
+        'workouts_today':workouts_today,
+        'workouts_yesterday':workouts_yesterday,
         'recent_comments':recent_comments,
         'title': str(team),
         'form':form,
