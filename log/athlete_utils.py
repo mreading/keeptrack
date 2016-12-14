@@ -161,11 +161,11 @@ def build_graph_data(dates, athlete):
     data = [['Date', 'Normal Run', 'Interval Run', 'Cross Train', 'Race', {'role':'style'}, 'Link']]
     date_iterator = 0
     for d in dates:
-        activities = list(Activity.objects.filter(
+        activities = Activity.objects.filter(
             athlete=athlete,
             date=d,
             act_type__in=['NormalRun', 'Event', 'IntervalRun']
-        ))
+        )
         prep = [get_label(d,len(dates)), 0, 0, 0, 0,'color:'+colors['OffDay'], 'nolink']
         for a in activities:
             miles = get_miles(get_workout_from_activity(a))
@@ -186,7 +186,7 @@ def update_activity(activity, cleaned_data):
         run = CrossTrail.objects.get(activity=activity)
     elif activity.act_type == "Event":
         run = Event.objects.get(activity=activity)
- 
+
 def get_post_form(run_type, post, user):
     """ Simply locates a form based on the type of run """
     if run_type == "NormalRun":

@@ -14,10 +14,7 @@ def help(request):
 
 @login_required(login_url='/log/login/')
 def index(request):
-    if list(request.user.coach_set.all()):
-        return team(request)
-    else:
-        return redirect("/log/athlete/"+str(request.user.id), {})
+    return team(request)
 
 @login_required(login_url='/log/login/')
 def settings(request):

@@ -14,6 +14,7 @@ from .utils import *
 from .athlete_utils import *
 from .privacy import *
 from r2win_import import *
+import time
 
 import json
 import datetime
@@ -356,12 +357,17 @@ def athlete(request, user_id):
         }
         return render(request, "log/forbidden.html", context)
 
+    start = time.clock()
     all_runs = [get_workout_from_activity(a) for a in list(Activity.objects.filter(athlete=athlete).order_by('-date'))]
+    print time.clock() - start
+    print "-----------done getting all runs----------"
 
     #------------------ mileage graph ----------------------
     curr_year = []
     curr_month = []
     curr_week = []
+
+    start = time.clock()
 
     today = datetime.date.today()
     start_week = today - datetime.timedelta(today.weekday())
@@ -385,13 +391,20 @@ def athlete(request, user_id):
         curr_week.append(start_week)
         start_week = start_week + datetime.timedelta(1)
 
+    start = time.clock()
     #--------------- generate graph data, including days off -------------------
     year_graph_data, year_total = build_graph_data(curr_year, athlete)
     month_graph_data, month_total = build_graph_data(curr_month, athlete)
     week_graph_data, week_total = build_graph_data(curr_week, athlete)
 
     #------------------ Get PR's of athlete -----------------------------------
+    print time.clock() - start
+    print "-----------done building graph data----------"
+
+    start = time.clock()
     prs = list(get_prs(athlete).values())
+    print time.clock() - start
+    print "-----------done getting prs------------"
 
     # if len(all_runs) > 20:
     #     all_runs = all_runs[:19]
