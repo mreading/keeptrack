@@ -191,8 +191,8 @@ class AddIntervalForm(forms.Form):
     """--------------------------------------------------------------------
     Form for adding or editing interval workouts
     --------------------------------------------------------------------"""
-    warmup = forms.CharField()
-    cooldown = forms.CharField()
+    warmup = forms.FloatField()
+    cooldown = forms.FloatField()
     unit_choices = [
         ('Miles','Miles'),
         ('Meters','Meters'),
