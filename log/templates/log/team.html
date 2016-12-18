@@ -61,7 +61,22 @@ CONNECTED FILES:	/log/base.html
                     </form>
                 </div>
             </div>
-
+            <div id="dialog2" class="modal fade">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    <!--<h4 class="modal-title">Modal title</h4>-->
+                  </div>
+                  <div class="modal-body">
+                  </div>
+                  <div class="modal-footer">
+                  </div>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
             <div class="panel panel-default">
                 <div class="panel-heading">
                     ANNOUNCEMENTS
@@ -119,7 +134,7 @@ CONNECTED FILES:	/log/base.html
                           ({{ w.activity.comment }})
                         {% endif %}
                         <div style="float:right;padding-right:10px;">
-                          <a href="/log/athlete/activity_detail/{{w.activity.id}}/">VIEW</a>
+                          <a class="clickable-row" data-href="/log/athlete/activity_detail/{{w.activity_id}}">VIEW</a>
                         </div>
                       </div>
                     {% endfor %}
@@ -132,7 +147,7 @@ CONNECTED FILES:	/log/base.html
                           ({{ w.activity.comment }})
                         {% endif %}
                         <div style="float:right;padding-right:10px;">
-                          <a href="/log/athlete/activity_detail/{{w.activity.id}}/">VIEW</a>
+                          <a class="clickable-row" data-href="/log/athlete/activity_detail/{{w.activity_id}}">VIEW</a>
                         </div>
                       </div>
                     {% endfor %}
@@ -140,7 +155,7 @@ CONNECTED FILES:	/log/base.html
                     {% for c in recent_comments %}
                       <div>
                         {{ c.poster.first_name }} commented on {{ c.thread.activity.athlete.user.first_name }}'s log!
-                        <a href="/log/athlete/activity_detail/{{c.thread.activity.id}}/">VIEW</a>
+                        <a class="clickable-row" data-href="/log/athlete/activity_detail/{{c.thread.activity.id}}">VIEW</a>
                       </div>
                     {% endfor %}
                 </div>
@@ -170,45 +185,131 @@ CONNECTED FILES:	/log/base.html
         var t2s_map = {{ t2s_map|safe }};
     </script>
 
-    <script type="text/javascript" src="/static/log/js/team.js"></script>
+    <script type="text/javascript" src="{% static 'log/js/team.js' %}"></script>
     <script>
-      function check_field_value() {
+    function check_field_value() {
         //dictionary of teams and corresponding seasons
 
         // clean out season dropdown
         document.getElementById('id_season').options.length = 0;
 
         // team has been selected
-        if($(this).val()) {
-          $('.season').disabled=true;
+        if ($(this).val()) {
+            $('.season').disabled = true;
 
-          //get selected team's seasons
-          var team_object = document.getElementById("id_team");
-          var selected_team = team_object.options[team_object.selectedIndex].text;
-          console.log(selected_team)
-          var seasons = JSON.parse(t2s_map[selected_team]);
+            //get selected team's seasons
+            var team_object = document.getElementById("id_team");
+            var selected_team = team_object.options[team_object.selectedIndex].text;
+            console.log(selected_team)
+            var seasons = JSON.parse(t2s_map[selected_team]);
 
-          // for each season add season object to season field
-          var season_object = document.getElementById("id_season");
-          for(i=0; i < seasons.length; i++){
-            var option = document.createElement("option");
-            option.text = seasons[i]["fields"]["year"];
-            option.value = seasons[i]["pk"];
-            season_object.add(option);
-          }
+            // for each season add season object to season field
+            var season_object = document.getElementById("id_season");
+            for (i = 0; i < seasons.length; i++) {
+                var option = document.createElement("option");
+                option.text = seasons[i]["fields"]["year"];
+                option.value = seasons[i]["pk"];
+                season_object.add(option);
+            }
 
-        // team is no longer selected
+            // team is no longer selected
         } else {
-          $('.season').disabled=false;
+            $('.season').disabled = false;
         }
-      }
-      $(document).ready(function() {
-            // set things up so function will be called when team field changes
-            $('#id_team').change(check_field_value);
+    }
+    $(document).ready(function() {
+        // set things up so function will be called when team field changes
+        $('#id_team').change(check_field_value);
 
-            // set the state based on the initial values
-            check_field_value.call($('#id_team').get(0));
+        // set the state based on the initial values
+        check_field_value.call($('#id_team').get(0));
+
+        // CODE NEEDED FOR FORM SAFETY
+        function getCookie(name) {
+            var cookieValue = null;
+            var i = 0;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (i; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            crossDomain: false, // obviates need for sameOrigin test
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type)) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
         });
+
+        // in modal, when comment posted, reload comment section
+        function onCommentPost(modalPage, url) {
+            $("#commentForm").submit(function(e) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: $("#commentForm").serialize(),
+                    success: function(data) {
+                        //jQuery didn't handle data filtration well unless i put the html into a div (I guess it organized it in the div)
+                        var tempDiv = $('<div>');
+                        tempDiv.html(data);
+
+                        var foot = tempDiv.find('.modalFoot');
+
+                        $('#dialog2.modal div.modal-footer').html(foot);
+                    }
+                });
+                e.preventDefault();
+            });
+        }
+
+
+        $(".clickable-row").click(function(e) {
+            var dRef = $(this).attr("data-href");
+            var dSplit = dRef.split("/");
+            var actID = dSplit[dSplit.length - 1]
+            var actURL = "/log/athlete/activity_detail/" + actID + "/"
+            console.log("moose");
+            $.ajax({
+                type: "POST",
+                url: actURL,
+                dataType: "html",
+                success: function(data) {
+                    //jQuery didn't handle data filtration well unless i put the html into a div (I guess it organized it in the div)
+                    var tempDiv = $('<div>');
+                    tempDiv.html(data);
+
+                    var foot = tempDiv.find('.modalFoot');
+                    var body = tempDiv.find('.modalBody');
+
+                    $('#dialog2.modal div.modal-footer').html(foot);
+                    $('#dialog2.modal div.modal-body').html(body);
+
+                    onCommentPost(tempDiv, actURL);
+
+                    $('#dialog2').modal("show");
+                    //  $('#dialog2').on('shown.bs.modal', function() {
+                    //      google.charts.setOnLoadCallback(drawIntervalChart);
+                    //  });
+                }
+            });
+            e.preventDefault();
+        })
+    });
     </script>
 </div>
 {% endblock %}
