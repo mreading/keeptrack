@@ -52,5 +52,6 @@ urlpatterns = [
     url(r'^delete_bug/(?P<bug_id>[0-9]+)/$', views.delete_bug, name='delete_bug'),
     url(r'^wear/$', athlete_views.wear, name="wear"),
     url(r'^create_announcement/$', team_views.create_announcement, name='create_announcement'),
-    url(r'^receive/$', sms.inbound, name="respond")
+    url(r'^receive/$', sms.inbound, name="respond"),
+    url(r'^report/$', sms.generate_report, name="report_test"),
  ]
