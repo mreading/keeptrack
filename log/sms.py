@@ -17,9 +17,6 @@ def save_run(match, athlete):
     seconds = match.group('seconds')
     comments = match.group('comments')
 
-    # find the athlete associated with that phobe number
-    if from_num[0] == '+':
-        from_num = from_num[1:]
     activity = Activity.objects.create(
         athlete=athlete,
         date=datetime.date.today(),
