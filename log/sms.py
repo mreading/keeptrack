@@ -44,7 +44,7 @@ def save_run(match, athlete):
 def generate_report(request):
     # Returns a string to send back to the athlete.
     report = ""
-    athlete=Athlete.objects.get(user_id=55)
+    athlete=Athlete.objects.get(user_id=request.user.id)
     today = datetime.date.today()
     athlete_activities = Activity.objects.filter(athlete=athlete)
 
@@ -97,7 +97,7 @@ def generate_report(request):
     return report
 
 def process_sms_text(text, from_num):
-    athlete = Athlete.objects.filter(phone_number=from_num)[0]
+    athlete = Athlete.objects.filter(phone_number=from_num[1:])[0]
 
     # Athlete is trying to save a run
     exp = r'^(r|R)an (?P<distance>[0-9]+(\.[0-9]+)?)\s*in ((?P<hours>[0-9]*):)?(?P<minutes>[0-9]+):(?P<seconds>[0-9]+) (?P<comments>.*)'
