@@ -8,6 +8,7 @@ from .athlete_forms import *
 
 from forecastiopy import *
 from geopy.geocoders import Nominatim
+import time
 
 def wear_help(location):
 
@@ -160,12 +161,13 @@ def build_graph_data(dates, athlete):
 
     data = [['Date', 'Normal Run', 'Interval Run', 'Cross Train', 'Race', {'role':'style'}, 'Link']]
     date_iterator = 0
+    athlete_acts = Activity.objects.filter(athlete=athlete)
     for d in dates:
-        activities = Activity.objects.filter(
-            athlete=athlete,
+        activities = athlete_acts.filter(
             date=d,
-            act_type__in=['NormalRun', 'Event', 'IntervalRun']
+            act_type__in=['NormalRun', 'Event', 'IntervalRun', 'CrossTrain']
         )
+
         prep = [get_label(d,len(dates)), 0, 0, 0, 0,'color:'+colors['OffDay'], 'nolink']
         for a in activities:
             miles = get_miles(get_workout_from_activity(a))
@@ -173,7 +175,6 @@ def build_graph_data(dates, athlete):
             total += miles
             prep[-1] = "/log/athlete/activity_detail/"+str(a.id)+"/"
         data.append(prep)
-
     return data, total
 
 def update_activity(activity, cleaned_data):

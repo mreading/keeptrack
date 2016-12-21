@@ -77,22 +77,22 @@ def generate_report(request):
 
     # number of people who have logged runs on your team today, and collective number of miles
     team, season = get_team_season(athlete.user)
-    print team
-    print season
 
     athletes = season.athlete_set.all()
-    total_logs_today = 0
     total_miles_today = 0
-    print athletes
     for a in athletes:
         acts = list(Activity.objects.filter(athlete=a, date=today))
         if len(acts) > 0:
-            total_logs_today += 1
             total_miles_today += sum([get_miles(get_workout_from_activity(act)) for act in acts])
 
     # generate report strting
-    report = "Last 7 Days: {0}\nThis Week: {1}\n Last Week: {2}\nWeek Before: {3}\n{4} runs were logged by your teammates for a total of {5} miles today.".format(
-        last_7_total, current_week_total, last_week_total, week_before_total, total_logs_today, total_miles_today
+    report = "Last 7 Days: {0}\nThis Week: {1}\nLast Week: {2}\nWeek Before: {3}\n{4} teammate(s) logged {5} miles today.".format(
+        round(last_7_total, 2),
+        round(current_week_total, 2),
+        round(last_week_total, 2),
+        round(week_before_total, 2),
+        len(Activity.objects.filter(date=datetime.date.today(), athlete__in=athletes).values('athlete').distinct()),
+        round(total_miles_today, 2)
     )
     return report
 

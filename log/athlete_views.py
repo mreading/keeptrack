@@ -390,7 +390,9 @@ def athlete(request, user_id):
         start_week = start_week + datetime.timedelta(1)
 
     #--------------- generate graph data, including days off -------------------
+    start = time.clock()
     year_graph_data, year_total = build_graph_data(curr_year, athlete)
+    print "Time to build year graph: {0}".format(time.clock() - start)
     month_graph_data, month_total = build_graph_data(curr_month, athlete)
     week_graph_data, week_total = build_graph_data(curr_week, athlete)
 
