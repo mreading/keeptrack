@@ -47,7 +47,7 @@ def generate_report(request):
 
     # last 7 days
     last_7 = athlete_activities.filter(
-        date__gte=today - datetime.timedelta(7)
+        date__gt=today - datetime.timedelta(7)
     )
 
     # current week
