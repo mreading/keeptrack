@@ -214,3 +214,13 @@ h1, h2, h3, h4, h5, h6 {
   padding-left: 20px;
   width: 40%
 }
+
+.repeats {
+  margin-bottom:15px;
+  border:1px solid #dcc7aa;
+  border-radius:5px;
+  padding:5px;
+  width:500px;
+  margin-top:10px;
+  background-color:
+}

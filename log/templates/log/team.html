@@ -1,10 +1,10 @@
-<!----------------------------------------------------------------------------
+<!--***************************************************************************
 PURPOSE: 			The team page is the home screen for
                     the coach. It can also be be accessed
                     via the 'TEAM' button on the navbar
 CONNECTED FILES:	/log/base.html
 				    /static/log/js/team.js
------------------------------------------------------------------------------>
+***************************************************************************-->
 {% extends 'log/base.html' %}
 {% load staticfiles %}
 {% load widget_tweaks %}
@@ -127,35 +127,38 @@ CONNECTED FILES:	/log/base.html
                 </div>
                 <div class="panel-body">
                     <h4>Today</h4>
-                    {% for w in workouts_today %}
+                    {% for activity in workouts_today %}
                       <div style="margin-bottom:15px;border:1px solid #dcc7aa;border-radius:5px;padding:5px;">
-                        {{ w.activity.athlete.user.first_name }} ran {{ w.distance }}
-                        {% if w.activity.comment != "" %}
-                          ({{ w.activity.comment }})
+                        {{ activity.athlete.user.first_name }} ran {{ activity.distance }}
+                        {% if activity.comment != "" %}
+                          ({{ activity.comment }})
                         {% endif %}
                         <div style="float:right;padding-right:10px;">
-                          <a class="clickable-row" data-href="/log/athlete/activity_detail/{{w.activity_id}}">VIEW</a>
+                          <a class="clickable-row" data-href="/log/athlete/activity_detail/{{activity.id}}">VIEW</a>
                         </div>
                       </div>
                     {% endfor %}
 
                     <h4>Yesterday</h4>
-                    {% for w in workouts_yesterday %}
+                    {% for activity in workouts_yesterday %}
                       <div style="margin-bottom:15px;border:1px solid #dcc7aa;border-radius:5px;padding:5px;">
-                        {{ w.activity.athlete.user.first_name }} ran {{ w.distance }}
-                        {% if w.activity.comment != "" %}
-                          ({{ w.activity.comment }})
+                        {{ activity.athlete.user.first_name }} ran {{ activity.distance }}
+                        {% if activity.comment != "" %}
+                          ({{ activity.comment }})
                         {% endif %}
                         <div style="float:right;padding-right:10px;">
-                          <a class="clickable-row" data-href="/log/athlete/activity_detail/{{w.activity_id}}">VIEW</a>
+                          <a class="clickable-row" data-href="/log/athlete/activity_detail/{{activity.id}}">VIEW</a>
                         </div>
                       </div>
                     {% endfor %}
                     <h4>Peanut Gallery</h4>
-                    {% for c in recent_comments %}
+                    {% for t in recent_threads %}
                       <div>
-                        {{ c.poster.first_name }} commented on {{ c.thread.activity.athlete.user.first_name }}'s log!
-                        <a class="clickable-row" data-href="/log/athlete/activity_detail/{{c.thread.activity.id}}">VIEW</a>
+                        {% for c in t.comment_set.all %}
+                          {% if forloop.last %} and {% else %} {% if not forloop.first %}, {% endif %}{% endif %}{{ c.poster.first_name }}
+                        {% endfor %}
+                        commented on {{ t.activity.athlete.user.first_name }}'s log!
+                        <a class="clickable-row" data-href="/log/athlete/activity_detail/{{t.activity.id}}">VIEW</a>
                       </div>
                     {% endfor %}
                 </div>
@@ -166,9 +169,7 @@ CONNECTED FILES:	/log/base.html
                     ATHLETES
                 </div>
                 <div class="panel-body">
-                    <!--------------------------------------------------------------------
-                    Athlete Table div that will later be filled
-                    --------------------------------------------------------------------->
+                    <!---Athlete Table div that will later be filled--->
                     <div class="table table-hover" id="athletes" style="width: 100%">
                     </div>
                     <hr>
@@ -302,9 +303,9 @@ CONNECTED FILES:	/log/base.html
                     onCommentPost(tempDiv, actURL);
 
                     $('#dialog2').modal("show");
-                    //  $('#dialog2').on('shown.bs.modal', function() {
-                    //      google.charts.setOnLoadCallback(drawIntervalChart);
-                    //  });
+                     $('#dialog2').on('shown.bs.modal', function() {
+                         google.charts.setOnLoadCallback(drawIntervalChart);
+                     });
                 }
             });
             e.preventDefault();

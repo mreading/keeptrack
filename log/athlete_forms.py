@@ -81,102 +81,11 @@ class MultiValueDurationField(forms.MultiValueField):
         else:
             return timedelta(0)
 
-class AddNormalForm(forms.Form):
-    """--------------------------------------------------------------------
-    Form for adding normal runs
-    --------------------------------------------------------------------"""
-    date = forms.DateField(
-        initial=date.today,
-        widget=forms.widgets.DateInput(attrs={'type': 'date'})
-        )
-    distance = forms.FloatField()
-    unit_choices = [
-        ('Miles','Miles'),
-        ('Meters','Meters'),
-        ('Kilometers','Kilometers')
-    ]
-    units = forms.ChoiceField(choices=unit_choices)
-    duration = MultiValueDurationField(label="Duration (H, M, S)")
-    comments = forms.CharField(max_length=1500,widget=forms.Textarea)
-    user_label = forms.CharField(max_length=35, initial="Normal Run")
-    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all(), required=False)
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
-        super(AddNormalForm, self).__init__(*args, **kwargs)
-        if user != None:
-            athlete=Athlete.objects.get(user=user)
-            self.fields['shoe'].queryset = Shoe.objects.filter(athlete=athlete)
-
-
-class AddXTrainForm(forms.Form):
-    """--------------------------------------------------------------------
-    Form for adding CrossTrain workouts.
-    --------------------------------------------------------------------"""
-    date = forms.DateField(
-        initial=date.today,
-        widget=forms.widgets.DateInput(attrs={'type': 'date'})
-        )
-    distance = forms.FloatField()
-    unit_choices = [
-        ('Miles','Miles'),
-        ('Meters','Meters'),
-        ('Kilometers','Kilometers'),
-        ('Laps', 'Laps'),
-    ]
-    units = forms.ChoiceField(choices=unit_choices)
-    duration = MultiValueDurationField(label="Duration (H, M, S)")
-    sport = forms.CharField(max_length=20)
-    comments = forms.CharField(max_length=1500,widget=forms.Textarea)
-    user_label = forms.CharField(max_length=35, initial="Cross Train")
-    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all(), required=False)
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
-        super(AddXTrainForm, self).__init__(*args, **kwargs)
-        if user != None:
-            athlete=Athlete.objects.get(user=user)
-            self.fields['shoe'].queryset = Shoe.objects.filter(athlete=athlete)
-
-class AddEventForm(forms.Form):
-    """--------------------------------------------------------------------
-    Form for adding events
-    --------------------------------------------------------------------"""
-    date = forms.DateField(
-        initial=date.today,
-        widget=forms.widgets.DateInput(attrs={'type': 'date'})
-    )
-    distance = forms.FloatField()
-    unit_choices = [
-        ('Miles','Miles'),
-        ('Meters','Meters'),
-        ('Kilometers','Kilometers')
-    ]
-    units = forms.ChoiceField(choices=unit_choices)
-    duration = MultiValueDurationField(label="Duration (H, M, S)")
-    location = forms.CharField(max_length=100)
-    place = forms.IntegerField()
-    gender_choices = [
-        ('Men', 'M'),
-        ('Women', 'W')
-    ]
-    gender = forms.ChoiceField(choices=gender_choices)
-    comments = forms.CharField(max_length=1500,widget=forms.Textarea)
-    user_label = forms.CharField(max_length=35, initial="Race")
-    shoe = forms.ModelChoiceField(queryset=Shoe.objects.all(), required=False)
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
-        super(AddEventForm, self).__init__(*args, **kwargs)
-        if user != None:
-            athlete=Athlete.objects.get(user=user)
-            self.fields['shoe'].queryset = Shoe.objects.filter(athlete=athlete)
-
 class AddRepForm(forms.Form):
     """--------------------------------------------------------------------
     Form for individual repeats
     --------------------------------------------------------------------"""
-    rep_distance = forms.FloatField()
+    rep_distance = forms.FloatField(widget=TextInput(attrs={'size':4}))
     unit_choices = [
         ('Miles','Miles'),
         ('Meters','Meters'),
@@ -185,14 +94,23 @@ class AddRepForm(forms.Form):
     rep_units = forms.ChoiceField(choices=unit_choices, initial='Meters')
     duration = MultiValueDurationField(label="Duration (H, M, S)")
     # goal_pace = forms.DurationField(optional=True)
-    rep_rest =  forms.CharField(max_length=15)
+    rep_rest =  forms.CharField(max_length=15,widget=TextInput(attrs={'size':4}))
 
-class AddIntervalForm(forms.Form):
-    """--------------------------------------------------------------------
-    Form for adding or editing interval workouts
-    --------------------------------------------------------------------"""
-    warmup = forms.FloatField()
-    cooldown = forms.FloatField()
+class AddActivityForm(forms.Form):
+    activity_types = (
+        ('-', '-'),
+        ('NormalRun', 'Normal Run'),
+        ('IntervalRun', 'Interval Run'),
+        ('CrossTrain','Cross Train'),
+        ('Event','Event')
+    )
+    act_type = forms.ChoiceField(choices=activity_types)
+    date = forms.DateField(
+        initial=date.today,
+        widget=forms.widgets.DateInput(attrs={'type': 'date'})
+    )
+    # Fields for Warmup/Cooldowns
+    warmup = forms.FloatField(required=False, initial=0)
     unit_choices = [
         ('Miles','Miles'),
         ('Meters','Meters'),
@@ -201,24 +119,36 @@ class AddIntervalForm(forms.Form):
     wu_units = forms.ChoiceField(
         choices=unit_choices,
         initial="Miles",
+        required=False,
+        label=""
     )
+    cooldown = forms.FloatField(required=False, initial=0)
     cd_units = forms.ChoiceField(
         choices=unit_choices,
         initial="Miles",
+        required=False,
+        label=""
     )
-
-    comments = forms.CharField(max_length=1500, widget=forms.Textarea)
-    date = forms.DateField(
-        initial=date.today,
-        widget=forms.widgets.DateInput(attrs={'type': 'date'})
-    )
-    user_label=forms.CharField(max_length=35, initial="Intervals")
+    sport = forms.CharField(max_length=20,required=False)
+    distance = forms.FloatField(initial=0, required=False)
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    units = forms.ChoiceField(choices=unit_choices, required=False)
+    duration = MultiValueDurationField(label="Duration (H, M, S)")
+    comments = forms.CharField(max_length=1500)
+    user_label = forms.CharField(max_length=35, initial="None")
     shoe = forms.ModelChoiceField(queryset=Shoe.objects.all(), required=False)
+
+    # Fields for Race (Event)
+    location = forms.CharField(max_length=100,required=False)
+    place = forms.IntegerField(required=False, label="Finishing Place")
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
-        super(AddIntervalForm, self).__init__(*args, **kwargs)
-
+        super(AddActivityForm, self).__init__(*args, **kwargs)
         if user != None:
             athlete=Athlete.objects.get(user=user)
             self.fields['shoe'].queryset = Shoe.objects.filter(athlete=athlete)

@@ -194,7 +194,15 @@ def django_ify(workout, athlete):
         comment = workout.comments,
         act_type = run_type,
         user_label=workout.run_type,
-        private_comments=workout.private_notes
+        private_comments=workout.private_notes,
+        distance=workout.total_distance,
+        units=workout.units,
+        duration=workout.total_time,
+        warmup=0,
+        cooldown=0,
+        wu_units="Miles",
+        cd_units="Miles",
+        place=0
     )
     if workout.cross_training != "":
         activity.comment = activity.comment + "\n" + workout.cross_training
@@ -202,60 +210,11 @@ def django_ify(workout, athlete):
         activity.comment = activity.comment + "\n" + workout.intervals
     if workout.sleep_hours != "":
         activity.comment = activity.comment + "\n" + "Hours of Sleep:\n" + workout.sleep_hours
+
+    activity.set_pace()
     activity.save()
     thread = Thread.objects.create(activity=activity)
     thread.save()
-
-    if run_type == "NormalRun":
-        run = NormalRun.objects.create(
-            activity=activity,
-            distance=workout.total_distance,
-            units=workout.units,
-            duration=workout.total_time,
-            #shoe
-            #surface
-            #route
-        )
-        run.set_pace()
-        run.save()
-
-    elif run_type == "CrossTrain":
-        run = CrossTrain.objects.create(
-            activity=activity,
-            distance=workout.total_distance,
-            units=workout.units,
-            duration=workout.total_time
-        )
-        run.save()
-
-    elif run_type == "IntervalRun":
-        run = IntervalRun.objects.create(
-            activity=activity,
-            warmup=0,
-            cooldown=0,
-            units="Miles",
-            wu_units="Miles",
-            cd_units="Miles",
-            distance=workout.total_distance
-        )
-        run.save()
-
-    elif run_type == "Event":
-        meet = Meet.objects.create(
-            location="test location"
-        )
-        meet.save()
-        event = Event.objects.create(
-            activity=activity,
-            meet=meet,
-            gender="M",
-            distance=workout.total_distance,
-            units=workout.units,
-            duration=workout.total_time,
-            place=0
-        )
-        event.set_pace()
-
 
 def import_from_file(f, athlete):
     tree = ET.parse(f)

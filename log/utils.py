@@ -30,32 +30,32 @@ def meters_to_miles(meters):
 def miles_to_meters(miles):
     return kilometers_to_meters(miles_to_kilometers(miles))
 
-def get_miles(obj):
-    if obj.units == 'Miles':
-        return obj.distance
-    elif obj.units == 'Meters':
-        return  meters_to_miles(obj.distance)
-    elif obj.units == 'Kilometers':
-        return  kilometers_to_miles(obj.distance)
+def get_miles(activity):
+    if activity.units == 'Miles':
+        return activity.distance
+    elif activity.units == 'Meters':
+        return  meters_to_miles(activity.distance)
+    elif activity.units == 'Kilometers':
+        return  kilometers_to_miles(activity.distance)
     else:
         print "ERROR IN GET_MILES"
 
-def get_kilometers(obj):
-    if obj.units == 'Miles':
-        return miles_to_kilometers(obj.distance)
-    elif obj.units == 'Meters':
-        return meters_to_kilometers(obj.distance)
-    elif obj.units == 'Kilometers':
-        return obj.distance
+def get_kilometers(activity):
+    if activity.units == 'Miles':
+        return miles_to_kilometers(activity.distance)
+    elif activity.units == 'Meters':
+        return meters_to_kilometers(activity.distance)
+    elif activity.units == 'Kilometers':
+        return activity.distance
     else:
         print "ERROR IN GET_KILOMETERS"
 
-def get_meters(obj):
-    if obj.units == 'Miles':
-        return miles_to_meters(obj.distance)
-    elif obj.units == 'Meters':
-        return obj.distance
-    elif obj.units == 'Kilometers':
-        return kilometers_to_meters(obj.distance)
+def get_meters(activity):
+    if activity.units == 'Miles':
+        return miles_to_meters(activity.distance)
+    elif activity.units == 'Meters':
+        return activity.distance
+    elif activity.units == 'Kilometers':
+        return kilometers_to_meters(activity.distance)
     else:
         print "ERROR IN GET_MILES"

@@ -124,32 +124,32 @@
               </tr>
               {% for r in all_runs %}
                 <!-- <a href="/log/athlete/activity_detail/{{ r.activity_id }}"> -->
-                <tr class="clickable-row" data-href="/log/athlete/activity_detail/{{ r.activity_id }}">
+                <tr class="clickable-row" data-href="/log/athlete/activity_detail/{{ r.id }}">
                   <td>
-                    {{ r.activity.date|date:"l" }} {{ r.activity.date }}
+                    {{ r.date|date:"l" }} {{ r.date }}
                   </td>
                   <td>
                     {{ r.distance }}{{ r.units|format_units }}
                   </td>
                   <td>
-                    {% ifequal r.activity.act_type "IntervalRun" %}
+                    {% ifequal r.act_type "IntervalRun" %}
                         -
                     {% endifequal %}
 
-                    {% ifequal r.activity.act_type "Event" %}
+                    {% ifequal r.act_type "Event" %}
                       {{ r.pace|format_pace }}
                     {% endifequal %}
 
-                    {% ifequal r.activity.act_type "NormalRun" %}
+                    {% ifequal r.act_type "NormalRun" %}
                       {{ r.pace|format_pace }}
                     {% endifequal %}
 
-                    {% ifequal r.activity.act_type "CrossTrain" %}
+                    {% ifequal r.act_type "CrossTrain" %}
                         -
                     {% endifequal %}
                   </td>
                   <td>
-                    {{ r.activity.user_label }}
+                    {{ r.user_label }}
                   </td
                 </tr>
 
@@ -186,9 +186,91 @@
     });
 
   $(document).ready(function($) {
-      $(".clickable-row").click(function() {
-          //window.document.location = $(this).data("href");
-      });
+    // CODE NEEDED FOR FORM SAFETY
+    function getCookie(name) {
+        var cookieValue = null;
+        var i = 0;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (i; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        crossDomain: false, // obviates need for sameOrigin test
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type)) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+    // in modal, when comment posted, reload comment section
+    function onCommentPost(modalPage, url) {
+        $("#commentForm").submit(function(e) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $("#commentForm").serialize(),
+                success: function(data) {
+                    //jQuery didn't handle data filtration well unless i put the html into a div (I guess it organized it in the div)
+                    var tempDiv = $('<div>');
+                    tempDiv.html(data);
+
+                    var foot = tempDiv.find('.modalFoot');
+
+                    $('#dialog2.modal div.modal-footer').html(foot);
+                }
+            });
+            e.preventDefault();
+        });
+    }
+
+
+    $(".clickable-row").click(function(e) {
+        var dRef = $(this).attr("data-href");
+        var dSplit = dRef.split("/");
+        var actID = dSplit[dSplit.length - 1]
+        var actURL = "/log/athlete/activity_detail/" + actID + "/"
+        console.log("moose");
+        $.ajax({
+            type: "POST",
+            url: actURL,
+            dataType: "html",
+            success: function(data) {
+                //jQuery didn't handle data filtration well unless i put the html into a div (I guess it organized it in the div)
+                var tempDiv = $('<div>');
+                tempDiv.html(data);
+
+                var foot = tempDiv.find('.modalFoot');
+                var body = tempDiv.find('.modalBody');
+
+                $('#dialog2.modal div.modal-footer').html(foot);
+                $('#dialog2.modal div.modal-body').html(body);
+
+                onCommentPost(tempDiv, actURL);
+
+                $('#dialog2').modal("show");
+                 $('#dialog2').on('shown.bs.modal', function() {
+                     google.charts.setOnLoadCallback(drawIntervalChart);
+                 });
+            }
+        });
+        e.preventDefault();
+    })
   });
 
   $(document).ready(function() {

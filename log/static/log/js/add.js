@@ -1,15 +1,118 @@
-/**
- * jQuery Formset 1.1
- * @author Stanislaus Madueke (stan DOT madueke AT gmail DOT com)
- * @requires jQuery 1.2.6 or later
- *
- * Copyright (c) 2009, Stanislaus Madueke
- * All rights reserved.
- *
- * Licensed under the New BSD License
- * See: http://www.opensource.org/licenses/bsd-license.php
- */
-;(function($) {
+// All Javascript for adding a run
+$(document).ready(function() {
+  show_hide_fields($(".act_type option:selected").text());
+})
+
+//---------------------------- Real-time Pace Calculation ----------------------
+function set_pace() {
+  $("#pace").text(
+    function() {
+      var seconds = parseInt($("#id_duration_0").val()) * 60 * 60 +
+        parseInt($("#id_duration_1").val()) * 60 +
+        parseInt($("#id_duration_2").val());
+      var distance = $("#id_distance").val();
+      if ($("#id_units").val() === "Kilometers") {
+        distance = distance * 0.6213
+      }
+      var seconds_per_mile = seconds / distance;
+      var total_seconds = Math.floor(seconds_per_mile % 60).toString();
+      var total_minutes = Math.floor(seconds_per_mile / 60).toString();
+      if (total_seconds.length === 1) {
+        total_seconds = "0".concat(total_seconds)
+      }
+      $("#pace").text(total_minutes.concat(':',total_seconds, " Min/Mile"));
+
+    }
+  )
+}
+
+$("#id_distance").change(set_pace);
+$("#id_duration_0").change(set_pace);
+$("#id_duration_1").change(set_pace);
+$("#id_duration_2").change(set_pace);
+$("#id_units").change(set_pace);
+
+// -----------------------------------------------------------------------------
+
+// make the duration inputs narrower and side-by-side
+$("#id_duration_0").css({"display": "inline-block", "width": "45px"});
+$("#id_duration_1").css({"display": "inline-block", "width": "45px"});
+$("#id_duration_2").css({"display": "inline-block", "width": "45px"});
+$("<p id=pace style='display:inline-block;padding-left:10px;'></p>").insertAfter( "#id_duration_2" );
+
+$(".wu_units").css({"display":"inline-block", "width": "100px"});
+$(".cd_units").css({"display":"inline-block", "width": "100px"});
+$(".warmup").css({"display":"inline-block", "width": "147px"});
+$(".cooldown").css({"display":"inline-block", "width": "147px"});
+//-------------------- Show and hide fields depending on the type---------------
+function show_hide_fields(act_type){
+  $('.control-group').hide();
+  $('.act_type').show();
+  switch(act_type) {
+
+    case "Interval Run":
+      $('.date').show();
+      $('.warmup').show();
+      $('.wu_units').show();
+      $('.cooldown').show();
+      $('.cd_units').show();
+      $('.comments').show();
+      $('.user_label').show();
+      $('.shoe').show();
+      $('.repeats').show();
+      $('.repeats').insertAfter($('.cd_units'));
+      break;
+
+    case "Normal Run":
+      $('.date').show();
+      $('.distance').show();
+      $('.units').show();
+      $('.duration').show();
+      $('.comments').show();
+      $('.user_label').show();
+      $('.shoe').show();
+      break;
+
+    case "Cross Train":
+      $('.sport').show();
+      $('.date').show();
+      $('.distance').show();
+      $('.units').show();
+      $('.duration').show();
+      $('.comments').show();
+      $('.user_label').show();
+      $('.shoe').show();
+      break;
+
+    case "Event":
+      $('.date').show();
+      $('.warmup').show();
+      $('.wu_units').show();
+      $('.cooldown').show();
+      $('.cd_units').show();
+      $('.distance').show();
+      $('.units').show();
+      $('.duration').show();
+      $('.location').show();
+      $('.place').show();
+      $('.comments').show();
+      $('.user_label').show();
+      $('.shoe').show();
+      break;
+
+    case "-":
+      $('.control-group').hide();
+      $('.act_type').show();
+      break;
+  }
+}
+
+$(".act_type").change(function() {
+  show_hide_fields($(".act_type option:selected").text());
+});
+
+// ----------Javascript for dynamic repeats for interval runs.--------------
+(function($) {
     $.fn.formset = function(opts)
     {
         var options = $.extend({}, $.fn.formset.defaults, opts),
@@ -151,12 +254,14 @@
                 // If a post-add callback was supplied, call it with the added form:
 
                 // When adding a rep, let the initial values be those of the previous rep
-                document.intervalform['form-'+(formCount).toString()+'-rep_distance'].value = document.intervalform['form-'+(formCount-1)+'-rep_distance'].value;
-                document.intervalform['form-'+(formCount).toString()+'-duration_0'].value = document.intervalform['form-'+(formCount-1)+'-duration_0'].value;
-                document.intervalform['form-'+(formCount).toString()+'-duration_1'].value = document.intervalform['form-'+(formCount-1)+'-duration_1'].value;
-                document.intervalform['form-'+(formCount).toString()+'-duration_2'].value = document.intervalform['form-'+(formCount-1)+'-duration_2'].value;
-                document.intervalform['form-'+(formCount).toString()+'-rep_rest'].value = document.intervalform['form-'+(formCount-1)+'-rep_rest'].value;
-                document.intervalform['form-'+(formCount).toString()+'-rep_units'].value = document.intervalform['form-'+(formCount-1)+'-rep_units'].value;
+
+                document.forms[0]['form-'+(formCount).toString()+'-rep_distance'].value = document.forms[0]['form-'+(formCount-1)+'-rep_distance'].value;
+                document.forms[0]['form-'+(formCount).toString()+'-duration_0'].value = document.forms[0]['form-'+(formCount-1)+'-duration_0'].value;
+                document.forms[0]['form-'+(formCount).toString()+'-duration_1'].value = document.forms[0]['form-'+(formCount-1)+'-duration_1'].value;
+                document.forms[0]['form-'+(formCount).toString()+'-duration_2'].value = document.forms[0]['form-'+(formCount-1)+'-duration_2'].value;
+                document.forms[0]['form-'+(formCount).toString()+'-rep_rest'].value = document.forms[0]['form-'+(formCount-1)+'-rep_rest'].value;
+                document.forms[0]['form-'+(formCount).toString()+'-rep_units'].value = document.forms[0]['form-'+(formCount-1)+'-rep_units'].value;
+
                 if (options.added) options.added(row);
                 return false;
             });
@@ -178,4 +283,9 @@
         added: null,                     // Function called each time a new form is added
         removed: null                    // Function called each time a form is deleted
     };
-})(jQuery)
+})(jQuery);
+
+$('.link-formset').formset({
+    addText: 'Add Repeat',
+    deleteText: 'Remove'
+});

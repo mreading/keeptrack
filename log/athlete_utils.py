@@ -89,16 +89,8 @@ def wear_help(location):
 
 def get_prs(athlete):
     activities = Activity.objects.filter(act_type='Event', athlete=athlete)
-    events = [Event.objects.filter(activity=a)[0] for a in activities]
-    prs = {}
-    for e in events:
-        if str(e.distance) in prs:
-            if e.duration < prs[str(e.distance)].duration:
-                prs[str(e.distance)] = e
-        else:
-            prs[str(e.distance)] = e
-
-    return prs
+    #FIXME
+    return {}
 
 def make_duration_chartable(duration):
     """-------------------------------------------------------
@@ -119,20 +111,6 @@ def get_interval_graph_data(reps):
         graph_data.append([rep.position, make_duration_chartable(rep.duration), 'color:#f7c331'])
     return graph_data
 
-def get_workout_from_activity(activity):
-    """---------------------------------------------------------
-	  Given an activity, return the corrosponding run
-	---------------------------------------------------------"""
-    if activity.act_type == "NormalRun":
-        return NormalRun.objects.get(activity=activity)
-    if activity.act_type == "IntervalRun":
-        return IntervalRun.objects.get(activity=activity)
-    if activity.act_type == "CrossTrain":
-        return CrossTrain.objects.get(activity=activity)
-    if activity.act_type == "Event":
-        return Event.objects.get(activity=activity)
-    else:
-        print "Unknown type of workout"
 
 def get_label(d, num_dates):
     if num_dates < 10:
@@ -167,114 +145,40 @@ def build_graph_data(dates, athlete):
             date=d,
             act_type__in=['NormalRun', 'Event', 'IntervalRun', 'CrossTrain']
         )
-
         prep = [get_label(d,len(dates)), 0, 0, 0, 0,'color:'+colors['OffDay'], 'nolink']
         for a in activities:
-            miles = get_miles(get_workout_from_activity(a))
+            miles = get_miles(a)
             prep[indexes[a.act_type]] += miles
             total += miles
             prep[-1] = "/log/athlete/activity_detail/"+str(a.id)+"/"
         data.append(prep)
     return data, total
 
-def update_activity(activity, cleaned_data):
-    run = None
-    if activity.act_type == "NormalRun":
-        run = NormalRun.objects.get(activity=activity)
-    elif activity.act_type == "IntervalRun":
-        run = IntervalRun.objects.get(activity=activity)
-    elif activity.act_type == "CrossTrain":
-        run = CrossTrail.objects.get(activity=activity)
-    elif activity.act_type == "Event":
-        run = Event.objects.get(activity=activity)
 
-def get_post_form(run_type, post, user):
-    """ Simply locates a form based on the type of run """
-    if run_type == "NormalRun":
-        return AddNormalForm(post, user=user)
-    elif run_type == "IntervalRun":
-        return AddIntervalForm(post, user=user)
-    elif run_type == "CrossTrain":
-        return AddXTrainForm(post, user=user)
-    else:
-        return AddEventForm(post, user=user)
-
-def get_form(run_type, user):
-    """ Very similar to the function above """
-    if run_type == "NormalRun":
-        return AddNormalForm(user=user)
-    elif run_type == "IntervalRun":
-        return AddIntervalForm(user=user)
-    elif run_type == "CrossTrain":
-        return AddXTrainForm(user=user)
-    else:
-        return AddEventForm(user=user)
-
-def create_run(run_type, activity, data):
-    """ ---------------------------------------------------------------
-    Helper function for the athlete_views.add function to create a run
-    -------------------------------------------------------------------"""
-    if run_type == "NormalRun":
-        run = NormalRun.objects.create(
-            activity=activity,
-            distance=round(float(data['distance']), 2),
-            duration=data['duration'],
-            units=data['units'],
-        )
-        run.set_pace()
-    elif run_type == "IntervalRun":
-        # Not implemented because it is handled in a seperate view
-        pass
-    elif run_type == "CrossTrain":
-        run = CrossTrain.objects.create(
-            activity=activity,
-            distance=round(float(data['distance']), 2),
-            duration=data['duration'],
-            sport=data['sport'],
-            units=data['units'],
-        )
-    elif run_type == "Event":
-        # FIXME Need ability to locoate existing meet.
-        meet = Meet.objects.create(
-            location=data['location'],
-        )
-        meet.save()
-        run = Event.objects.create(
-            activity=activity,
-            meet=meet,
-            distance=round(float(data['distance']), 2),
-            duration=data['duration'],
-            place=data['place'],
-            units=data['units'],
-            gender=data['gender']
-        )
-        run.set_pace()
-    run.save()
-
-def set_total_distance(interval_run):
+def set_total_distance(activity):
     """---------------------------------------------------------
     used to set the total distance attribute of inerval runs.
 	---------------------------------------------------------"""
-    reps = Rep.objects.filter(interval_run=interval_run)
+    reps = Rep.objects.filter(activity=activity)
     total = 0
     for r in reps:
         total += get_miles(r)
 
     #Calculate warm up distance
-    if interval_run.wu_units == 'Miles':
-        total += float(interval_run.warmup)
-    elif interval_run.wu_units == 'Kilometers':
-        total += kilometers_to_miles(interval_run.warmup)
-    elif interval_run.wu_units == 'Meters':
-        total += meters_to_miles(interval_run.warmup)
+    if activity.wu_units == 'Miles':
+        total += float(activity.warmup)
+    elif activity.wu_units == 'Kilometers':
+        total += kilometers_to_miles(activity.warmup)
+    elif activity.wu_units == 'Meters':
+        total += meters_to_miles(activity.warmup)
 
     #Calculate cool down distance
-    if interval_run.cd_units == 'Miles':
-        total += float(interval_run.cooldown)
-    elif interval_run.cd_units == 'Kilometers':
-        total += kilometers_to_miles(interval_run.cooldown)
-    elif interval_run.cd_units == 'Meters':
-        total += meters_to_miles(interval_run.cooldown)
+    if activity.cd_units == 'Miles':
+        total += float(activity.cooldown)
+    elif activity.cd_units == 'Kilometers':
+        total += kilometers_to_miles(activity.cooldown)
+    elif activity.cd_units == 'Meters':
+        total += meters_to_miles(activity.cooldown)
 
-    interval_run.distance = total
-    interval_run.save()
+    activity.distance = round(total, 2)
+    activity.save()

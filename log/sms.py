@@ -20,18 +20,13 @@ def save_run(match, athlete):
     activity = Activity.objects.create(
         athlete=athlete,
         date=datetime.date.today(),
-        comment=comments
-    )
-    activity.save()
-
-    run = NormalRun.objects.create(
-        activity=activity,
+        comment=comments,
         distance=float(distance),
-        duration=datetime.timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds))
-
+        duration=datetime.timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds)),
+        act_type="NormalRun"
     )
-    run.set_pace()
-    run.save()
+    activity.set_pace()
+    activity.save()
 
     thread = Thread.objects.create(
         activity=activity
@@ -67,10 +62,10 @@ def generate_report(request):
         date__gte=start_week - datetime.timedelta(14)
     )
 
-    last_7_total = sum([get_miles(get_workout_from_activity(a)) for a in last_7])
-    current_week_total = sum([get_miles(get_workout_from_activity(a)) for a in current_week])
-    last_week_total = sum([get_miles(get_workout_from_activity(a)) for a in last_week])
-    week_before_total = sum([get_miles(get_workout_from_activity(a)) for a in week_before])
+    last_7_total = sum([get_miles(a) for a in last_7])
+    current_week_total = sum([get_miles(a) for a in current_week])
+    last_week_total = sum([get_miles(a) for a in last_week])
+    week_before_total = sum([get_miles(a) for a in week_before])
 
     # number of people who have logged runs on your team today, and collective number of miles
     team, season = get_team_season(athlete.user)
@@ -80,7 +75,7 @@ def generate_report(request):
     for a in athletes:
         acts = list(Activity.objects.filter(athlete=a, date=today))
         if len(acts) > 0:
-            total_miles_today += sum([get_miles(get_workout_from_activity(act)) for act in acts])
+            total_miles_today += sum([get_miles(act) for act in acts])
 
     # generate report strting
     report = "Last 7 Days: {0}\nThis Week: {1}\nLast Week: {2}\nWeek Before: {3}\n{4} teammate(s) logged {5} miles today.".format(

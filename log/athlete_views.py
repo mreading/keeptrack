@@ -82,41 +82,49 @@ def delete_activity(request, activity_id):
     return redirect("/log/athlete/"+str(request.user.id), {})
 
 @login_required(login_url='/log/login/')
-def edit_interval_run(request, activity_id):
+def edit_activity(request, activity_id):
     """---------------------------------------------------------
 	  Given an activity's id, return the edit_run template with
       the correct form for the editing interval runs (and reps)
 	---------------------------------------------------------"""
     activity = Activity.objects.get(id=activity_id)
-    i_run = IntervalRun.objects.get(activity=activity)
-    reps = Rep.objects.filter(interval_run=i_run).order_by('position')
+    reps = Rep.objects.filter(activity=activity).order_by('position')
 
     if request.method == 'POST':
         # Bind the POST data to the forms
-        IntervalForm = AddIntervalForm(request.POST, user=activity.athlete.user)
-        AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet)
-        rep_formset = AddRepFormSet(request.POST)
+        form = AddActivityForm(request.POST, user=activity.athlete.user)
+        if activity.act_type == "IntervalRun":
+            AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet)
+            rep_formset = AddRepFormSet(request.POST)
 
-        if IntervalForm.is_valid() and rep_formset.is_valid():
-            # save the updated dated for both the interval run and the reps
-            data = IntervalForm.cleaned_data
-            i_run.warmup = float(data['warmup'])
-            i_run.cooldown = float(data['cooldown'])
-            i_run.cd_units = data['cd_units']
-            i_run.save()
-            activity.coment = data['comments']
+        if form.is_valid() and activity.act_type == "IntervalRun":
+            if rep_formset.is_valid() == False:
+                # Rep formset was not valid. Try again.
+                context = {
+                    'form':form,
+                    'activity':activity,
+                    'rep_formset':rep_formset
+                }
+                return render(request, "log/add_run.html", context)
+
+            # Save the data for interval run
+            data = form.cleaned_data
+            activity.warmup = float(data['warmup'])
+            activity.wu_units = data['wu_units']
+            activity.cooldown = float(data['cooldown'])
+            activity.cd_units = data['cd_units']
+            activity.comment = data['comments']
             activity.date = data['date']
             activity.user_label=data['user_label']
             activity.shoe = data['shoe']
             activity.save()
 
             # The ordering of reps is probably messed up, so delete them all
-            # and then create new rep objects rather than updating the existing
-            # ones.
-            Rep.objects.filter(interval_run=i_run).delete()
+            # and then create new rep objects rather than updating the existing ones
+            Rep.objects.filter(activity=activity).delete()
             for i in range(len(rep_formset)):
                 rep = Rep.objects.create(
-                    interval_run=i_run,
+                    activity=activity,
                     distance=round(float(rep_formset[i].cleaned_data.get('rep_distance')), 2),
                     units=rep_formset[i].cleaned_data.get('rep_units'),
                     duration=rep_formset[i].cleaned_data.get('duration'),
@@ -128,215 +136,85 @@ def edit_interval_run(request, activity_id):
             # recalculate total distance of interval workout. If any of the
             # distances or numbers of the reps were edited than this total
             # distance for the run will be updated.
-            set_total_distance(i_run)
-            i_run.save()
+            set_total_distance(activity)
+            activity.save()
 
+            # redirect back to the athlete's home page
+            return redirect("/log/athlete/"+str(request.user.id), {})
+
+        elif form.is_valid():
+            data = form.cleaned_data
+            activity.warmup = float(data['warmup'])
+            activity.wu_units = data['wu_units']
+            activity.cooldown = float(data['cooldown'])
+            activity.cd_units = data['cd_units']
+            activity.comment = data['comments']
+            activity.date = data['date']
+            activity.user_label=data['user_label']
+            activity.distance=data['distance']
+            activity.units=data['units']
+            activity.duration=data['duration']
+            activity.shoe=data['shoe']
+            activity.sport=data['sport']
+            activity.set_pace()
+            activity.save()
             # redirect back to the athlete's home page
             return redirect("/log/athlete/"+str(request.user.id), {})
 
         else:
             # Form was not valid. Try again.
+            print "form invalid"
             context = {
-                'IntervalForm':IntervalForm,
-                'rep_formset':rep_formset,
+                'form':form,
                 'activity':activity,
             }
-            return render(request, "log/edit_run.html", context)
+            if activity.act_type == "IntervalRun":
+                context['rep_formset']=rep_formset
+            return render(request, "log/add_run.html", context)
 
-    # Set initial interval form data equal to what the run was previously
-    IntervalForm = AddIntervalForm(user=activity.athlete.user)
-    IntervalForm.fields['warmup'].initial=i_run.warmup
-    IntervalForm.fields['wu_units'].initial=i_run.wu_units
-    IntervalForm.fields['cooldown'].initial=i_run.cooldown
-    IntervalForm.fields['cd_units'].initial=i_run.cd_units
-    IntervalForm.fields['date'].initial=activity.date
-    IntervalForm.fields['comments'].initial=activity.comment
-    IntervalForm.fields['user_label'].initial=activity.user_label
-    IntervalForm.fields['shoe'].initial=activity.shoe
+    # Set initial data equal to what the run was previously
+    form = AddActivityForm(user=activity.athlete.user)
+    form.fields['act_type'].initial=activity.act_type
+    form.fields['warmup'].initial=activity.warmup
+    form.fields['wu_units'].initial=activity.wu_units
+    form.fields['cooldown'].initial=activity.cooldown
+    form.fields['cd_units'].initial=activity.cd_units
+    form.fields['date'].initial=activity.date
+    form.fields['distance'].initial=activity.distance
+    form.fields['units'].initial=activity.units
+    form.fields['duration'].initial=activity.duration
+    form.fields['comments'].initial=activity.comment
+    form.fields['user_label'].initial=activity.user_label
+    form.fields['shoe'].initial=activity.shoe
+    form.fields['sport'].initial=activity.sport
 
-    # Set the inital data for the formset just the same way as the previsou form
-    AddRepFormSet = formset_factory(
-        AddRepForm,
-        formset=BaseAddRepFormSet,
-        min_num=0,
-        extra=len(reps) # need to keep the same number of reps
-    )
-    rep_formset = AddRepFormSet()
-    for i in range(len(reps)):
-        rep_formset.forms[i].fields['rep_distance'].initial=reps[i].distance
-        rep_formset.forms[i].fields['rep_units'].initial=reps[i].units
-        rep_formset.forms[i].fields['duration'].initial=reps[i].duration
-        # Without the if statement an error is generated
-        if reps[i].goal_pace != None:
-            rep_formset.forms[i].fields['goal_pace'].initial=reps[i].goal_pace
-        rep_formset.forms[i].fields['rep_rest'].initial=reps[i].rest
 
     # set the context dictionary to be rendered to the template
     context = {
-        'IntervalForm':IntervalForm,
-        'rep_formset':rep_formset,
+        'form':form,
         'activity':activity,
     }
+    # Set the inital data for the formset just the same way as the previous form
+    if activity.act_type == "IntervalRun":
+        AddRepFormSet = formset_factory(
+            AddRepForm,
+            formset=BaseAddRepFormSet,
+            min_num=0,
+            extra=len(reps) # need to keep the same number of reps
+        )
+        rep_formset = AddRepFormSet()
+        for i in range(len(reps)):
+            rep_formset.forms[i].fields['rep_distance'].initial=reps[i].distance
+            rep_formset.forms[i].fields['rep_units'].initial=reps[i].units
+            rep_formset.forms[i].fields['duration'].initial=reps[i].duration
+            # Without the if statement an error is generated
+            if reps[i].goal_pace != None:
+                rep_formset.forms[i].fields['goal_pace'].initial=reps[i].goal_pace
+            rep_formset.forms[i].fields['rep_rest'].initial=reps[i].rest
+        context['rep_formset'] = rep_formset
 
-    return render(request, "log/edit_run.html", context)
+    return render(request, "log/add_run.html", context)
 
-@login_required(login_url='/log/login/')
-def edit_xtrain(request, activity_id):
-    """---------------------------------------------------------
-	  Given an activity's id, return the edit_run template with
-      the correct form for the editing cross train runs
-	---------------------------------------------------------"""
-    activity = Activity.objects.get(id=activity_id)
-    xtrain = CrossTrain.objects.get(activity=activity)
-
-    if request.method == 'POST':
-        # Bind the POST data to the form
-        form = AddXTrainForm(request.POST, user=activity.athlete.user)
-        if form.is_valid():
-            # Save the updated data to CrossTrain object and the Activity Object
-            data = form.cleaned_data
-            data = form.cleaned_data
-            xtrain.distance=round(float(data['distance']), 2)
-            xtrain.duration=data['duration']
-            xtrain.units=data['units']
-            xtrain.sport=data['sport']
-            activity.comment=data['comments']
-            activity.date=data['date']
-            activity.user_label=data['user_label']
-            activity.shoe = data['shoe']
-            activity.save()
-            xtrain.save()
-            return redirect("/log/athlete/"+str(request.user.id), {})
-
-    # Bind the old data to the form so that it can be updated
-    # NOTE for a modelform you could bind the data in one line, but
-    # since this affects more than one object (ie Activity and CrossTrain) it
-    # has to be done this way.
-    form = AddXTrainForm(user=activity.athlete.user)
-    form.fields['date'].initial=activity.date
-    form.fields['distance'].initial=round(float(xtrain.distance), 2)
-    form.fields['units'].initial=xtrain.units
-    form.fields['sport'].initial=xtrain.sport
-    form.fields['duration'].initial=xtrain.duration
-    form.fields['comments'].initial=activity.comment
-    form.fields['user_label'].initial=activity.user_label
-    form.fields['shoe'].initial=activity.shoe
-
-    context = {
-        'form':form,
-        'activity':activity
-    }
-    # render the template in context
-    return render(request, "log/edit_run.html", context)
-
-@login_required(login_url='/log/login/')
-def edit_race(request, activity_id):
-    """---------------------------------------------------------
-	  Given an activity's id, return the edit_run template with
-      the correct form for the editing races runs
-	---------------------------------------------------------"""
-    activity = Activity.objects.get(id=activity_id)
-    event = Event.objects.get(activity=activity)
-    if request.method == 'POST':
-        form = AddEventForm(request.POST, user=activity.athlete.user)
-        if form.is_valid():
-            # save the new data
-            data = form.cleaned_data
-            event.distance=round(float(data['distance']), 2)
-            event.duration=data['duration']
-            event.units=data['units']
-            event.gender=data['gender']
-            event.meet.location=data['location']
-            event.meet.save()
-            activity.date=data['date']
-            activity.comment=data['comments']
-            activity.user_label=data['user_label']
-            activity.shoe = data['shoe']
-            activity.save()
-            event.save()
-            event.set_pace()
-            # redirect back to the athlete's home page
-            return redirect("/log/athlete/"+str(request.user.id), {})
-
-    # Bind the old data to the form so that it can be updated
-    # NOTE for a modelform you could bind the data in one line, but
-    # since this affects more than one object (ie Activity and CrossTrain) it
-    # has to be done this way.
-    form = AddEventForm(user=activity.athlete.user)
-    form.fields['date'].initial=activity.date
-    form.fields['distance'].initial=round(float(event.distance), 2)
-    form.fields['units'].initial=event.units
-    form.fields['duration'].initial=event.duration
-    form.fields['gender'].initial=event.gender
-    form.fields['comments'].initial=activity.comment
-    form.fields['location'].initial=event.meet.location
-    form.fields['place'].initial=event.place
-    form.fields['user_label'].initial=activity.user_label
-    form.fields['shoe'].initial=activity.shoe
-
-    #return the rendered template
-    return render(request, "log/edit_run.html", {'form':form, 'activity':activity})
-
-@login_required(login_url='/log/login/')
-def edit_normal(request, activity_id):
-    """---------------------------------------------------------
-	  Given an activity's id, return the edit_run template with
-      the correct form for the editing normal runs
-	---------------------------------------------------------"""
-    activity = Activity.objects.get(id=activity_id)
-    normal_run = NormalRun.objects.get(activity=activity)
-
-    if request.method == 'POST':
-        form = get_post_form(activity.act_type, request.POST, activity.athlete.user)
-        if form.is_valid():
-            # save the updated data
-            data = form.cleaned_data
-            normal_run.distance=round(float(data['distance']), 2)
-            normal_run.duration=data['duration']
-            normal_run.units=data['units']
-            activity.comment=data['comments']
-            activity.date=data['date']
-            activity.user_label=data['user_label']
-            activity.shoe=data['shoe']
-            activity.save()
-            normal_run.set_pace()
-            normal_run.save()
-            return redirect("/log/athlete/"+str(request.user.id), {})
-    # Bind the old data to the form for editing.
-    form = get_form(activity.act_type, activity.athlete.user)
-    form.fields['date'].initial=activity.date
-    form.fields['distance'].initial=normal_run.distance
-    form.fields['units'].initial=normal_run.units
-    form.fields['duration'].initial=normal_run.duration
-    form.fields['comments'].initial=activity.comment
-    form.fields['user_label'].initial=activity.user_label
-    form.fields['shoe'].initial=activity.shoe
-
-    context = {
-        'form':form,
-        'activity':activity
-    }
-    return render(request, "log/edit_run.html", context)
-
-@login_required(login_url='/log/login/')
-def edit_activity(request, activity_id):
-    """---------------------------------------------------------
-	  Redirects to any of the five functions above depending
-      on the type of activity
-	---------------------------------------------------------"""
-    can_view, can_edit = athlete_privacy(request.user, Activity.objects.get(id=activity_id).athlete.user)
-    if not can_edit:
-        return HttpResponse("You are not allowed on this page")
-
-    activity = Activity.objects.get(id=activity_id)
-    if activity.act_type == 'NormalRun':
-        return edit_normal(request, activity_id)
-    elif activity.act_type == 'IntervalRun':
-        return edit_interval_run(request, activity_id)
-    elif activity.act_type == 'CrossTrain':
-        return edit_xtrain(request, activity_id)
-    elif activity.act_type == 'Event':
-        return edit_race(request, activity_id)
 
 @login_required(login_url='/log/login/')
 def athlete(request, user_id):
@@ -358,14 +236,12 @@ def athlete(request, user_id):
         return render(request, "log/forbidden.html", context)
 
     # start = time.clock()
-    all_runs = [get_workout_from_activity(a) for a in list(Activity.objects.filter(athlete=athlete).order_by('-date'))]
+    all_runs = [a for a in list(Activity.objects.filter(athlete=athlete).order_by('-date'))]
     # print time.clock() - start
     #------------------ mileage graph ----------------------
     curr_year = []
     curr_month = []
     curr_week = []
-
-    start = time.clock()
 
     today = datetime.date.today()
     start_week = today - datetime.timedelta(today.weekday())
@@ -390,9 +266,7 @@ def athlete(request, user_id):
         start_week = start_week + datetime.timedelta(1)
 
     #--------------- generate graph data, including days off -------------------
-    start = time.clock()
     year_graph_data, year_total = build_graph_data(curr_year, athlete)
-    print "Time to build year graph: {0}".format(time.clock() - start)
     month_graph_data, month_total = build_graph_data(curr_month, athlete)
     week_graph_data, week_total = build_graph_data(curr_week, athlete)
 
@@ -418,21 +292,19 @@ def athlete(request, user_id):
     return render(request, "log/athlete.html", context)
 
 @login_required(login_url='/log/login/')
-def add(request, run_type):
+def add(request):
     """---------------------------------------------------------
 	  Add a run with this view
 	---------------------------------------------------------"""
-    #This view only handles run addition for Races, Cross train,
-    # and normal runs. Interval runs are complex and require their own view
-    if run_type == 'IntervalRun':
-        add_intervals(request)
-        return redirect("/log/athlete", {})
-
     # Find the associated athlete
     athlete = Athlete.objects.get(user=request.user)
+
+    # Create the formset, specifying the form and formset we want to use.
+    AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet)
+
     if request.method == 'POST':
-        # Get the right form for the run type
-        form = get_post_form(str(run_type), request.POST, request.user)
+        rep_formset = AddRepFormSet(request.POST)
+        form = AddActivityForm(request.POST, user=request.user)
         #validate the form
         if form.is_valid():
             # get the cleaned data (dictuonary form)
@@ -441,24 +313,49 @@ def add(request, run_type):
             activity = Activity.objects.create(
                 athlete=athlete,
                 date=data['date'],
-                act_type=run_type,
+                act_type=data['act_type'],
                 comment=data['comments'],
                 user_label=data['user_label'],
-                shoe = data['shoe']
+                shoe = data['shoe'],
+                distance=round(float(data['distance']), 2),
+                duration=data['duration'],
+                units=data['units'],
+                place=data['place'],
+                warmup=float(data['warmup']),
+                wu_units=data['wu_units'],
+                cooldown=float(data['cooldown']),
+                cd_units=data['cd_units'],
             )
+            if data['act_type'] != "IntervalRun":
+                activity.set_pace()
             activity.save()
+
+            if data['act_type'] == "IntervalRun" and rep_formset.is_valid():
+                #create a number of reps for the inverval workout
+                for i in range(len(rep_formset)):
+                    rep = Rep.objects.create(
+                        activity=activity,
+                        distance=round(float(rep_formset[i].cleaned_data.get('rep_distance')), 2),
+                        units=rep_formset[i].cleaned_data.get('rep_units'),
+                        duration=rep_formset[i].cleaned_data.get('duration'),
+                        rest=rep_formset[i].cleaned_data.get('rep_rest'),
+                        position=i+1
+                    )
+                    rep.save()
+                    set_total_distance(activity)
+
             # create an associated thread for comments
             thread = Thread.objects.create(activity=activity)
             thread.save()
-            # create the associated run
-            create_run(run_type, activity, data)
             return redirect("/log/athlete/"+str(request.user.id), {})
 
     # form has not been filled out yet. get the form and return it to the template
-    form = get_form(run_type, request.user)
+    form = AddActivityForm(user=request.user)
+    AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet)
+    rep_formset = AddRepFormSet()
     context = {
         'form':form,
-        'run_type':run_type
+        'rep_formset':rep_formset,
     }
     return render(request, "log/add_run.html", context)
 
@@ -474,16 +371,9 @@ def activity_detail(request, activity_id):
     comments = Comment.objects.filter(thread=thread).order_by('position')
     reps = None
     interval_graph_data = None
-    if activity.act_type == 'NormalRun':
-        workout = NormalRun.objects.get(activity=activity)
-    elif activity.act_type == 'IntervalRun':
-        workout = IntervalRun.objects.get(activity=activity)
-        reps = Rep.objects.filter(interval_run=workout).order_by('position')
+    if activity.act_type == "IntervalRun":
+        reps = Rep.objects.filter(activity=activity).order_by('position')
         interval_graph_data = get_interval_graph_data(reps)
-    elif activity.act_type == 'CrossTrain':
-        workout = CrossTrain.objects.get(activity=activity)
-    elif activity.act_type == 'Event':
-        workout = Event.objects.get(activity=activity)
 
     # If comments were submitted, than they need to be saved and the page reloaded
     if request.method == 'POST':
@@ -520,79 +410,12 @@ def activity_detail(request, activity_id):
     commentform = CommentForm()
     context = {
         'interval_graph_data':json.dumps(interval_graph_data),
-        'workout':workout,
         'activity':activity,
         'reps':reps,
         'commentform':commentform,
         'comments':comments
     }
     return render(request, "log/activity_detail.html", context)
-
-@login_required(login_url='/log/login/')
-def add_intervals(request):
-    athlete = Athlete.objects.get(user=request.user)
-
-    # Create the formset, specifying the form and formset we want to use.
-    AddRepFormSet = formset_factory(AddRepForm, formset=BaseAddRepFormSet)
-
-    if request.method == 'POST':
-        IntervalForm = AddIntervalForm(request.POST, user=request.user)
-        rep_formset = AddRepFormSet(request.POST)
-
-        if IntervalForm.is_valid() and rep_formset.is_valid():
-            # Save Workout info
-            interval_data = IntervalForm.cleaned_data
-
-            #Create the Activity
-            activity = Activity.objects.create(
-                athlete=athlete,
-                date=interval_data['date'],
-                comment=interval_data['comments'],
-                act_type='IntervalRun',
-                user_label=interval_data['user_label'],
-                shoe=interval_data['shoe']
-            )
-            activity.save()
-            thread = Thread.objects.create(activity=activity)
-            thread.save()
-
-            #Create the interval object
-            interval_workout = IntervalRun.objects.create(
-                activity=activity,
-                warmup=float(interval_data['warmup']),
-                wu_units=interval_data['wu_units'],
-                cooldown=float(interval_data['cooldown']),
-                cd_units=interval_data['cd_units'],
-                distance=0.00
-            )
-            interval_workout.save()
-
-            #create a number of reps for the inverval workout
-            for i in range(len(rep_formset)):
-                rep = Rep.objects.create(
-                    interval_run=interval_workout,
-                    distance=round(float(rep_formset[i].cleaned_data.get('rep_distance')), 2),
-                    units=rep_formset[i].cleaned_data.get('rep_units'),
-                    duration=rep_formset[i].cleaned_data.get('duration'),
-                    rest=rep_formset[i].cleaned_data.get('rep_rest'),
-                    position=i+1
-                )
-                rep.save()
-
-            #Always assumed to be in miles
-            set_total_distance(interval_workout)
-            return redirect("/log/athlete/"+str(request.user.id), {})
-
-    else:
-        IntervalForm = AddIntervalForm(user=request.user)
-        rep_formset = AddRepFormSet()
-
-    context = {
-        'IntervalForm': IntervalForm,
-        'rep_formset': rep_formset,
-    }
-
-    return render(request, 'log/add_intervals.html', context)
 
 @login_required(login_url='/log/login/')
 def r2w_import(request):

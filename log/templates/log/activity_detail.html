@@ -66,11 +66,11 @@
           <h2 id='test'> Interval Run </h2>
           <div class="activity_detail_container">
             <h4>Warm up</h4>
-            <p> {{ workout.warmup }} {{ workout.wu_units }}</p>
+            <p> {{ activity.warmup }} {{ activity.wu_units }}</p>
             <h4>Cool Down</h4>
-            <p> {{ workout.cooldown }} {{ workout.cd_units }}</p>
+            <p> {{ activity.cooldown }} {{ activity.cd_units }}</p>
             <h4>Total Distance</h4>
-            <p> {{ workout.distance }} Miles</p>
+            <p> {{ activity.distance }} Miles</p>
 
             <table>
               <tr>
@@ -104,33 +104,33 @@
         {% ifequal activity.act_type "NormalRun" %}
           <div class="activity_detail_container">
             <h4> Distance</h4>
-            <p> {{ workout.distance }} {{ workout.units }} </p>
+            <p> {{ activity.distance }} {{ activity.units }} </p>
             <h4> Time </h4>
-            <p>{{ workout.duration }} </p>
+            <p>{{ activity.duration }} </p>
             <h4> Pace </h4>
-            <p> {{ workout.pace }} Min/Mile </p>
+            <p> {{ activity.pace }} Min/Mile </p>
           </div>
         {% endifequal %}
 
         {% ifequal activity.act_type "CrossTrain" %}
           <div .class="activity_detail_container">
               <h4>Sport</h4>
-              {{ workout.sport }}
+              {{ activity.sport }}
               <h4>Distance</h4>
-              {{ workout.distance }} {{ workout.units }}
+              {{ activity.distance }} {{ activity.units }}
               <h4>Time</h4>
-              {{ workout.duration }}
+              {{ activity.duration }}
           </div>
         {% endifequal %}
 
         {% ifequal activity.act_type "Event" %}
           <div .class="activity_detail_container">
             <h4> Distance </h4>
-            <p>{{ workout.distance }} {{ workout.units }}</p>
+            <p>{{ activity.distance }} {{ activity.units }}</p>
             <h4> Time </h4>
-            <p> {{ workout.duration }} </p>
+            <p> {{ activity.duration }} </p>
             <h4> Finishing Place </h4>
-            <p> {{ workout.place }} </p>
+            <p> {{ activity.place }} </p>
           </div>
         {% endifequal %}
 

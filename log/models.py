@@ -98,22 +98,53 @@ class Shoe(models.Model):
 
         self.miles = self.starting_mileage + sum([get_miles(r) for r in runs])
 
+class Meet(models.Model):
+    location = models.CharField(max_length=100)
+
 class Activity(models.Model):
     athlete = models.ForeignKey(Athlete)
     date = models.DateField()
+    warmup = models.FloatField(default=0)
+    cooldown = models.FloatField(default=0)
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    wu_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
+    cd_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
+    sport = models.CharField(max_length=20, null=True)
+    distance = models.FloatField(default=0)
+    units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
+    unit_choices = [
+        ('Miles','Miles'),
+        ('Meters','Meters'),
+        ('Kilometers','Kilometers')
+    ]
+    duration = models.DurationField(null=True)
+    location = models.CharField(max_length=100, null=True)
+    meet = models.ForeignKey(Meet, null=True)
+    place = models.PositiveIntegerField(null=True)
+    pace = models.DurationField(null=True)
     comment = models.CharField(max_length=3000, null=True)
     private_comments = models.CharField(max_length=2000, null=True)
     act_type = models.CharField(max_length=20, default='NormalRun')
     user_label = models.CharField(max_length=35, default="Normal Run")
     shoe = models.ForeignKey(Shoe, null=True)
-    #weather
-    #gpx file
+    gender = models.CharField(max_length=1, default="M")
+
+    def set_pace(self):
+        num_miles = 0
+        if self.units == 'Miles':
+            num_miles = self.distance
+        elif self.units == 'Kilometers':
+            num_miles = kilometers_to_miles(self.distance)
+        elif self.units == 'Meters':
+            num_miles = kilometers_to_miles(self.distance)
+        self.pace = timedelta(seconds=int(self.duration.total_seconds() / num_miles))
 
     def __str__(self):
         return str(self.date) + ' ' + self.act_type
-
-class Meet(models.Model):
-    location = models.CharField(max_length=100)
 
 class Event(models.Model):
     activity = models.ForeignKey(Activity)
@@ -210,7 +241,8 @@ class IntervalRun(models.Model):
         return str(round(self.distance, 2)) + ' Mile Interval Run'
 
 class Rep(models.Model):
-    interval_run = models.ForeignKey(IntervalRun)
+    interval_run = models.ForeignKey(IntervalRun, null=True)
+    activity = models.ForeignKey(Activity)
     distance = models.FloatField()
     unit_choices = [
         ('Miles','Miles'),

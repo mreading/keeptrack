@@ -84,7 +84,7 @@ def get_recent_miles(athlete, days):
         act_type__in=['NormalRun', 'Event', 'IntervalRun'],
     ))
 
-    distance = sum([get_miles(get_workout_from_activity(a)) for a in activities])
+    distance = sum([get_miles(a) for a in activities])
     return distance
 
 @login_required(login_url='/log/login')
@@ -123,25 +123,20 @@ def team(request):
         )
 
     # ------------------ Get the recent Activity--------------------------------
-    activities_today = Activity.objects.filter(
+    workouts_today = Activity.objects.filter(
         athlete__in=viewable_athletes,
         date=datetime.date.today()
     ).order_by('-date')
 
-    activities_yesterday = Activity.objects.filter(
+    workouts_yesterday = Activity.objects.filter(
         athlete__in=viewable_athletes,
         date=datetime.date.today() - datetime.timedelta(1)
     ).order_by('-date')
 
-    workouts_today = [get_workout_from_activity(a) for a in activities_today]
-    workouts_yesterday = [get_workout_from_activity(a) for a in activities_yesterday]
-
     recent_threads = Thread.objects.filter(
-        activity__in=activities_today | activities_yesterday
-    )
-    recent_comments = Comment.objects.filter(
-        thread__in=recent_threads
-    )
+        activity__in=workouts_today | workouts_yesterday,
+        comment__isnull=False
+    ).distinct()
     #---------------------------------------------------------------------------
 
     for athlete in viewable_athletes:
@@ -168,7 +163,7 @@ def team(request):
     context = {
         'workouts_today':workouts_today,
         'workouts_yesterday':workouts_yesterday,
-        'recent_comments':recent_comments,
+        'recent_threads':recent_threads,
         'title': str(team),
         'form':form,
         'announcements':announcements,

@@ -91,16 +91,10 @@
           {% endif %}
 
           {% if user.athlete_set.all %}
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add<span class="caret"></span>
+          <li>
+            <a href="/log/athlete/add/">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add Run
             </a>
-            <ul class="pull-right dropdown-menu">
-              <li><a href="/log/athlete/add/NormalRun/">Normal Run</a></li>
-              <li><a href="/log/athlete/add_intervals/">Interval Workout</a></li>
-              <li><a href="/log/athlete/add/CrossTrain/">Cross Train</a></li>
-              <li><a href="/log/athlete/add/Event/">Meet</a></li>
-            </ul>
           </li>
           {% endif%}
         </ul>

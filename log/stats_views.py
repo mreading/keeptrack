@@ -12,14 +12,6 @@ import datetime
 import json
 from django.db.models import Q
 
-  # var data = google.visualization.arrayToDataTable([
-  #       ['Genre', 'Fantasy & Sci Fi', 'Romance', 'Mystery/Crime', 'General',
-  #        'Western', 'Literature'],
-  #       ['2010', 10, 24, 20, 32, 18, 5],
-  #       ['2020', 16, 22, 23, 30, 16, 9],
-  #       ['2030', 28, 19, 29, 30, 12, 13]
-  #     ]);
-
 def get_team_mileage_data(season):
     athletes = list(season.athlete_set.all())
     # 1. come up with an array of dates.
