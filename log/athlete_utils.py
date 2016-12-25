@@ -89,8 +89,14 @@ def wear_help(location):
 
 def get_prs(athlete):
     activities = Activity.objects.filter(act_type='Event', athlete=athlete)
-    #FIXME
-    return {}
+    prs = {}
+    for e in activities:
+        if str(e.distance) in prs:
+            if e.duration < prs[str(e.distance)].duration:
+                prs[str(e.distance)] = e
+        else:
+            prs[str(e.distance)] = e
+    return prs
 
 def make_duration_chartable(duration):
     """-------------------------------------------------------
@@ -101,8 +107,8 @@ def make_duration_chartable(duration):
     hours = days * 24 + seconds // 3600
     minutes = (seconds % 3600) // 60
     seconds = seconds % 60
-    # FIXME milliseconds are hardcoded
-    return [hours, minutes, seconds, 0]
+    milliseconds = duration.microseconds / 1000
+    return [hours, minutes, seconds, milliseconds]
 
 def get_interval_graph_data(reps):
     graph_data = [['Date', 'Miles', {'role':'style'}]]

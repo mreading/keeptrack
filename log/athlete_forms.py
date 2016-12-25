@@ -45,6 +45,7 @@ class SplitDurationWidget(forms.MultiWidget):
     def __init__(self, attrs={'size':2}):
         widgets = (forms.TextInput(attrs=attrs),
                    forms.TextInput(attrs=attrs),
+                   forms.TextInput(attrs=attrs),
                    forms.TextInput(attrs=attrs))
         super(SplitDurationWidget, self).__init__(widgets, attrs)
 
@@ -55,8 +56,9 @@ class SplitDurationWidget(forms.MultiWidget):
                 hours = d.seconds // 3600
                 minutes = (d.seconds % 3600) // 60
                 seconds = d.seconds % 60
-                return [int(hours), int(minutes), int(seconds)]
-        return [0, 0, 0]
+                milliseconds = 0
+                return [int(hours), int(minutes), int(seconds), int(milliseconds)]
+        return [0, 0, 0, 0]
 
 class MultiValueDurationField(forms.MultiValueField):
     widget = SplitDurationWidget
@@ -67,6 +69,7 @@ class MultiValueDurationField(forms.MultiValueField):
          forms.IntegerField(label="Hours"),
          forms.IntegerField(),
          forms.IntegerField(),
+         forms.IntegerField(),
         )
         super(MultiValueDurationField, self).__init__(
             fields=fields,
@@ -74,11 +77,13 @@ class MultiValueDurationField(forms.MultiValueField):
             )
 
     def compress(self, data_list):
-        if len(data_list) == 3:
+        if len(data_list) == 4:
             return timedelta(
                 hours=int(data_list[0]),
                 minutes=int(data_list[1]),
-                seconds=int(data_list[2]))
+                seconds=int(data_list[2]),
+                milliseconds=int(data_list[3]) * 10
+            )
         else:
             return timedelta(0)
 
@@ -93,7 +98,7 @@ class AddRepForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     rep_units = forms.ChoiceField(choices=unit_choices, initial='Meters')
-    duration = MultiValueDurationField(label="Duration (H, M, S)")
+    duration = MultiValueDurationField(label="Duration (H:M:S:MS)")
     # goal_pace = forms.DurationField(optional=True)
     rep_rest =  forms.CharField(max_length=15,widget=TextInput(attrs={'size':4}))
 
@@ -138,7 +143,7 @@ class AddActivityForm(forms.Form):
         ('Kilometers','Kilometers')
     ]
     units = forms.ChoiceField(choices=unit_choices, required=False)
-    duration = MultiValueDurationField(label="Duration (H, M, S)")
+    duration = MultiValueDurationField(label="Duration (Hour/Minute/Second/Millisecond)")
     comments = forms.CharField(max_length=1500)
     user_label = forms.CharField(max_length=35, initial="None")
     shoe = forms.ModelChoiceField(queryset=Shoe.objects.all(), required=False)

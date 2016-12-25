@@ -129,7 +129,7 @@
                     {{ r.date|date:"l" }} {{ r.date }}
                   </td>
                   <td>
-                    {{ r.distance }}{{ r.units|format_units }}
+                    {{ r.distance|format_distance }}{{ r.units|format_units }}
                   </td>
                   <td>
                     {% ifequal r.act_type "IntervalRun" %}
@@ -166,7 +166,7 @@
           <div class="panel-body">
           {% for pr in prs %}
             <div>
-              <p>{{ pr.distance }} {{ pr.units }}:
+              <p>{{ pr.distance|format_distance }} {{ pr.units }}:
               {{ pr.duration }}
               (at {{ pr.meet.location }} {{ pr.activity.date }})
               </p>

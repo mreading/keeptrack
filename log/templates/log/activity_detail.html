@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load widget_tweaks %}
+{% load tags %}
 
 {% block content %}
     <div class="modalFoot">
@@ -70,7 +71,7 @@
             <h4>Cool Down</h4>
             <p> {{ activity.cooldown }} {{ activity.cd_units }}</p>
             <h4>Total Distance</h4>
-            <p> {{ activity.distance }} Miles</p>
+            <p> {{ activity.distance|format_distance }} Miles</p>
 
             <table>
               <tr>
@@ -81,8 +82,8 @@
               </tr>
               {% for rep in reps %}
                 <tr>
-                  <td>{{ rep.distance }}</td>
-                  <td>{{ rep.duration }}</td>
+                  <td>{{ rep.distance|format_distance }} {{ rep.units|format_units}}</td>
+                  <td>{{ rep.duration|format_duration }}</td>
                   <td>{{ rep.rest }}</td>
                   <td>{{ rep.goal_pace }}</td>
                 </tr>
@@ -104,11 +105,11 @@
         {% ifequal activity.act_type "NormalRun" %}
           <div class="activity_detail_container">
             <h4> Distance</h4>
-            <p> {{ activity.distance }} {{ activity.units }} </p>
+            <p> {{ activity.distance|format_distance }} {{ activity.units }} </p>
             <h4> Time </h4>
             <p>{{ activity.duration }} </p>
             <h4> Pace </h4>
-            <p> {{ activity.pace }} Min/Mile </p>
+            <p> {{ activity.pace|format_pace }} Min/Mile </p>
           </div>
         {% endifequal %}
 
@@ -117,7 +118,7 @@
               <h4>Sport</h4>
               {{ activity.sport }}
               <h4>Distance</h4>
-              {{ activity.distance }} {{ activity.units }}
+              {{ activity.distance|format_distance }} {{ activity.units }}
               <h4>Time</h4>
               {{ activity.duration }}
           </div>
@@ -126,7 +127,7 @@
         {% ifequal activity.act_type "Event" %}
           <div .class="activity_detail_container">
             <h4> Distance </h4>
-            <p>{{ activity.distance }} {{ activity.units }}</p>
+            <p>{{ activity.distance|format_distance }} {{ activity.units }}</p>
             <h4> Time </h4>
             <p> {{ activity.duration }} </p>
             <h4> Finishing Place </h4>

@@ -20,4 +20,23 @@ def format_pace(duration):
 def format_units(unit):
     if unit == "Miles":
         return " mi"
+    if unit == "Meters":
+        return "m"
     return " k"
+
+@register.filter(name='format_duration')
+def format_duration(duration):
+    text = str(duration)
+    separated = text.split(':')
+    return "{0}:{1}".format(
+        int(separated[1]), round(float(separated[2]), 2),
+    )
+
+@register.filter(name='format_distance')
+def format_distance(d):
+    d = round(d, 2)
+    lst = str(d).split('.')
+    if len(lst) > 1:
+        if lst[-1] == '0':
+            return "{0}".format(lst[0])
+    return d

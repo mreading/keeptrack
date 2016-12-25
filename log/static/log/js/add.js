@@ -38,7 +38,8 @@ $("#id_units").change(set_pace);
 $("#id_duration_0").css({"display": "inline-block", "width": "45px"});
 $("#id_duration_1").css({"display": "inline-block", "width": "45px"});
 $("#id_duration_2").css({"display": "inline-block", "width": "45px"});
-$("<p id=pace style='display:inline-block;padding-left:10px;'></p>").insertAfter( "#id_duration_2" );
+$("#id_duration_3").css({"display": "inline-block", "width": "45px"});
+$("<p id=pace style='display:inline-block;padding-left:10px;'></p>").insertAfter( "#id_duration_3" );
 
 $(".wu_units").css({"display":"inline-block", "width": "100px"});
 $(".cd_units").css({"display":"inline-block", "width": "100px"});
@@ -259,6 +260,7 @@ $(".act_type").change(function() {
                 document.forms[0]['form-'+(formCount).toString()+'-duration_0'].value = document.forms[0]['form-'+(formCount-1)+'-duration_0'].value;
                 document.forms[0]['form-'+(formCount).toString()+'-duration_1'].value = document.forms[0]['form-'+(formCount-1)+'-duration_1'].value;
                 document.forms[0]['form-'+(formCount).toString()+'-duration_2'].value = document.forms[0]['form-'+(formCount-1)+'-duration_2'].value;
+                document.forms[0]['form-'+(formCount).toString()+'-duration_3'].value = document.forms[0]['form-'+(formCount-1)+'-duration_3'].value;
                 document.forms[0]['form-'+(formCount).toString()+'-rep_rest'].value = document.forms[0]['form-'+(formCount-1)+'-rep_rest'].value;
                 document.forms[0]['form-'+(formCount).toString()+'-rep_units'].value = document.forms[0]['form-'+(formCount-1)+'-rep_units'].value;
 
