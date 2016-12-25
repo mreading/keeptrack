@@ -91,7 +91,7 @@ def generate_report(request):
 def process_sms_text(text, from_num):
     athlete_queryset = Athlete.objects.filter(phone_number=from_num[1:])
     # Make sure the athlete exists in the database
-    if len(lst(athlete_queryset)) == 0:
+    if len(list(athlete_queryset)) == 0:
         return "This number is not known by KeepTrack. Change it in settings"
     else:
         athlete = athlete_queryset[0]
