@@ -89,7 +89,12 @@ def generate_report(request):
     return report
 
 def process_sms_text(text, from_num):
-    athlete = Athlete.objects.filter(phone_number=from_num[1:])[0]
+    athlete_queryset = Athlete.objects.filter(phone_number=from_num[1:])
+    # Make sure the athlete exists in the database
+    if len(lst(athlete_queryset)) == 0:
+        return "This number is not known by KeepTrack. Change it in settings"
+    else:
+        athlete = athlete_queryset[0]
 
     # Athlete is trying to save a run
     exp = r'^(r|R)an (?P<distance>[0-9]+(\.[0-9]+)?)\s*in ((?P<hours>[0-9]*):)?(?P<minutes>[0-9]+):(?P<seconds>[0-9]+) (?P<comments>.*)'

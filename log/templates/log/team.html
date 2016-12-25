@@ -155,7 +155,14 @@ CONNECTED FILES:	/log/base.html
                     {% for t in recent_threads %}
                       <div>
                         {% for c in t.comment_set.all %}
-                          {% if forloop.last %} and {% else %} {% if not forloop.first %}, {% endif %}{% endif %}{{ c.poster.first_name }}
+                          {% if forloop.last and not forloop.first %}
+                            and
+                          {% else %}
+                            {% if not forloop.first %}
+                              ,
+                            {% endif %}
+                          {% endif %}
+                          {{ c.poster.first_name }}
                         {% endfor %}
                         commented on {{ t.activity.athlete.user.first_name }}'s log!
                         <a class="clickable-row" data-href="/log/athlete/activity_detail/{{t.activity.id}}">VIEW</a>
