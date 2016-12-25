@@ -6,21 +6,6 @@ from datetime import timedelta
 from datetime import date
 from .utils import *
 
-def get_workout_from_activity(activity):
-    """---------------------------------------------------------
-         Given an activity, return the corrosponding run
-       ---------------------------------------------------------"""
-    if activity.act_type == "NormalRun":
-        return NormalRun.objects.get(activity=activity)
-    if activity.act_type == "IntervalRun":
-        return IntervalRun.objects.get(activity=activity)
-    if activity.act_type == "CrossTrain":
-        return CrossTrain.objects.get(activity=activity)
-    if activity.act_type == "Event":
-        return Event.objects.get(activity=activity)
-    else:
-        print "Unknown type of workout"
-
 class Season(models.Model):
     """ ex: 2017 (athletes participate in seasons)"""
     #team = models.ForeignKey(Team, on_delete=models.CASCADE)
@@ -92,11 +77,7 @@ class Shoe(models.Model):
             act_type__in=['NormalRun', 'Event', 'IntervalRun'],
             shoe=self
         ))
-        runs = []
-        for a in activities:
-            runs.append(get_workout_from_activity(a))
-
-        self.miles = self.starting_mileage + sum([get_miles(r) for r in runs])
+        self.miles = self.starting_mileage + sum([get_miles(a) for a in activities])
 
 class Meet(models.Model):
     location = models.CharField(max_length=100)
@@ -146,102 +127,7 @@ class Activity(models.Model):
     def __str__(self):
         return str(self.date) + ' ' + self.act_type
 
-class Event(models.Model):
-    activity = models.ForeignKey(Activity)
-    meet = models.ForeignKey(Meet)
-    gender = models.CharField(max_length=1)
-    distance = models.FloatField()
-    unit_choices = [
-        ('Miles','Miles'),
-        ('Meters','Meters'),
-        ('Kilometers','Kilometers')
-    ]
-    units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
-    duration = models.DurationField()
-    place = models.PositiveIntegerField()
-    pace = models.DurationField(null=True)
-
-    def __str__(self):
-        return "{0} {1} race at {2}".format(
-            str(self.distance),
-            self.units[:-1],
-            self.meet.location
-        )
-
-    def set_pace(self):
-        num_miles = 0
-        if self.units == 'Miles':
-            num_miles = self.distance
-        elif self.units == 'Kilometers':
-            num_miles = kilometers_to_miles(self.distance)
-        elif self.units == 'Meters':
-            num_miles = kilometers_to_miles(self.distance)
-
-        self.pace = timedelta(seconds=int(self.duration.total_seconds() / num_miles))
-
-class NormalRun(models.Model):
-    activity = models.ForeignKey(Activity)
-    distance = models.FloatField()
-    unit_choices = [
-        ('Miles','Miles'),
-        ('Meters','Meters'),
-        ('Kilometers','Kilometers')
-    ]
-    units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
-    duration = models.DurationField(null=True)
-    pace = models.DurationField(null=True)
-    #shoe
-    #surface
-    #route
-
-    def __str__(self):
-        return str(self.distance) + ' Mile Normal Run'
-
-    def set_pace(self):
-        num_miles = 0
-        if self.units == 'Miles':
-            num_miles = self.distance
-        elif self.units == 'Kilometers':
-            num_miles = kilometers_to_miles(self.distance)
-        elif self.units == 'Meters':
-            num_miles = kilometers_to_miles(self.distance)
-
-        self.pace = timedelta(seconds=int(self.duration.total_seconds() / num_miles))
-
-class CrossTrain(models.Model):
-    activity = models.ForeignKey(Activity)
-    distance = models.FloatField()
-    unit_choices = [
-        ('Miles','Miles'),
-        ('Meters','Meters'),
-        ('Kilometers','Kilometers')
-    ]
-    units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
-    duration = models.DurationField()
-    sport = models.CharField(max_length = 20)
-
-    def __str__(self):
-        return self.sport + ' (Cross training)' + ' for ' + str(self.duration)
-
-class IntervalRun(models.Model):
-    activity = models.ForeignKey(Activity)
-    warmup = models.FloatField()
-    cooldown = models.FloatField()
-    unit_choices = [
-        ('Miles','Miles'),
-        ('Meters','Meters'),
-        ('Kilometers','Kilometers')
-    ]
-    units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
-    wu_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
-    cd_units = models.CharField(choices=unit_choices, default="Miles", max_length=12)
-    distance = models.FloatField(null=True)
-
-    def __str__(self):
-        return str(round(self.distance, 2)) + ' Mile Interval Run'
-
 class Rep(models.Model):
-    interval_run = models.ForeignKey(IntervalRun, null=True)
     activity = models.ForeignKey(Activity)
     distance = models.FloatField()
     unit_choices = [
