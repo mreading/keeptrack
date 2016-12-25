@@ -445,11 +445,13 @@ def settings(request, user_id):
             data = form.cleaned_data
             athlete.log_private = data['log_private']
             athlete.default_location = data['default_location']
+            athlete.phone_number = data['phone_number']
             athlete.save()
             return redirect("/log/athlete/{}/".format(athlete.user.id))
     form = SettingsForm()
     form.fields['log_private'].initial=athlete.log_private
     form.fields['default_location'].initial=athlete.default_location
+    form.fields['phone_number'].initial=athlete.phone_number
     context = {
         'form':form
     }
