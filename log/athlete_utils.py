@@ -158,7 +158,7 @@ def build_graph_data(dates, athlete):
             total += miles
             prep[-1] = "/log/athlete/activity_detail/"+str(a.id)+"/"
         data.append(prep)
-    return data, total
+    return data, round(total, 2)
 
 
 def set_total_distance(activity):

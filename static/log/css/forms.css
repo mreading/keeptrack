@@ -2,6 +2,12 @@ div .controls .form-control {
   width: 500px;
 }
 
+#id_comments {
+  cols:5;
+}
+
 form {
   padding-left: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
