@@ -71,7 +71,7 @@ def get_team_mileage_data(season):
 
             athlete_distance_for_day = 0
             for activity in activities:
-                athlete_distance_for_day += get_miles(get_workout_from_activity(activity))
+                athlete_distance_for_day += get_miles(activity)
 
             distances_for_day.append(athlete_distance_for_day)
 
