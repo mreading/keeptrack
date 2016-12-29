@@ -121,7 +121,6 @@ def team(request):
         viewable_athletes = athletes.filter(
             log_private=False
         )
-
     # ------------------ Get the recent Activity--------------------------------
     workouts_today = Activity.objects.filter(
         athlete__in=viewable_athletes,

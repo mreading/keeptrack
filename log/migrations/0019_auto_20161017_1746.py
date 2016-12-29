@@ -42,6 +42,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='team',
             name='sport',
-            field=models.CharField(choices=[(b'Indoor Track and Field', b'ITF'), (b'Outdoor Track and Field', b'OTF'), (b'Cross Country', b'XC')], default=b'Indoor Track and Field', max_length=3),
+            field=models.CharField(choices=[(b'Indoor Track and Field', b'ITF'), (b'Outdoor Track and Field', b'OTF'), (b'Cross Country', b'XC')], default=b'ITF', max_length=3),
         ),
     ]

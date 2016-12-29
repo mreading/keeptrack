@@ -87,6 +87,10 @@ def edit_activity(request, activity_id):
 	  Given an activity's id, return the edit_run template with
       the correct form for the editing interval runs (and reps)
 	---------------------------------------------------------"""
+    can_view, can_edit = athlete_privacy(request.user, Activity.objects.get(id=activity_id).athlete.user)
+    if not can_edit:
+        return HttpResponse("You are not allowed on this page")
+        
     activity = Activity.objects.get(id=activity_id)
     reps = Rep.objects.filter(activity=activity).order_by('position')
 

@@ -27,7 +27,7 @@ class Team(models.Model):
         ('Cross Country','XC')
     ]
     sport = models.CharField(choices=sport_choices, max_length=3,
-        default = 'Indoor Track and Field')
+        default = 'ITF')
     seasons = models.ManyToManyField(Season)
     calendarId = models.CharField(max_length=200)
 
@@ -112,7 +112,7 @@ class Activity(models.Model):
     act_type = models.CharField(max_length=20, default='NormalRun')
     user_label = models.CharField(max_length=35, default="Normal Run")
     shoe = models.ForeignKey(Shoe, null=True)
-    gender = models.CharField(max_length=1, default="M")
+    gender = models.CharField(max_length=10, default="M")
 
     def set_pace(self):
         num_miles = 0
