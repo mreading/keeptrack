@@ -91,7 +91,7 @@ class AddRepForm(forms.Form):
     """--------------------------------------------------------------------
     Form for individual repeats
     --------------------------------------------------------------------"""
-    rep_distance = forms.FloatField(widget=TextInput(attrs={'size':4}))
+    rep_distance = forms.FloatField(widget=TextInput(attrs={'size':4}), initial=0.0)
     unit_choices = [
         ('Miles','Miles'),
         ('Meters','Meters'),
@@ -100,7 +100,7 @@ class AddRepForm(forms.Form):
     rep_units = forms.ChoiceField(choices=unit_choices, initial='Meters')
     duration = MultiValueDurationField(label="Duration (H:M:S:MS)")
     # goal_pace = forms.DurationField(optional=True)
-    rep_rest =  forms.CharField(max_length=15,widget=TextInput(attrs={'size':4}))
+    rep_rest = forms.CharField(max_length=15,widget=TextInput(attrs={'size':4}), required=True)
 
 class AddActivityForm(forms.Form):
     activity_types = (

@@ -90,7 +90,7 @@ def edit_activity(request, activity_id):
     can_view, can_edit = athlete_privacy(request.user, Activity.objects.get(id=activity_id).athlete.user)
     if not can_edit:
         return HttpResponse("You are not allowed on this page")
-        
+
     activity = Activity.objects.get(id=activity_id)
     reps = Rep.objects.filter(activity=activity).order_by('position')
 
@@ -300,6 +300,8 @@ def add(request):
     """---------------------------------------------------------
 	  Add a run with this view
 	---------------------------------------------------------"""
+    print "adding a run"
+
     # Find the associated athlete
     athlete = Athlete.objects.get(user=request.user)
 
@@ -334,19 +336,27 @@ def add(request):
                 activity.set_pace()
             activity.save()
 
-            if data['act_type'] == "IntervalRun" and rep_formset.is_valid():
-                #create a number of reps for the inverval workout
-                for i in range(len(rep_formset)):
-                    rep = Rep.objects.create(
-                        activity=activity,
-                        distance=round(float(rep_formset[i].cleaned_data.get('rep_distance')), 2),
-                        units=rep_formset[i].cleaned_data.get('rep_units'),
-                        duration=rep_formset[i].cleaned_data.get('duration'),
-                        rest=rep_formset[i].cleaned_data.get('rep_rest'),
-                        position=i+1
-                    )
-                    rep.save()
-                    set_total_distance(activity)
+            if data['act_type'] == "IntervalRun":
+                if rep_formset.is_valid():
+                    #create a number of reps for the inverval workout
+                    for i in range(len(rep_formset)):
+                        rep = Rep.objects.create(
+                            activity=activity,
+                            distance=round(float(rep_formset[i].cleaned_data.get('rep_distance')), 2),
+                            units=rep_formset[i].cleaned_data.get('rep_units'),
+                            duration=rep_formset[i].cleaned_data.get('duration'),
+                            rest=rep_formset[i].cleaned_data.get('rep_rest'),
+                            position=i+1
+                        )
+                        rep.save()
+                        set_total_distance(activity)
+                else:
+                    # formset wasn't valid. Reload the page with errors
+                    context = {
+                        'form':form,
+                        'rep_formset':rep_formset
+                    }
+                    return render(request, "log/add_run.html", context)
 
             # create an associated thread for comments
             thread = Thread.objects.create(activity=activity)
