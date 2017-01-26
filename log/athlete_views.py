@@ -383,7 +383,7 @@ def add(request):
     return render(request, "log/add_run.html", context)
 
 @login_required(login_url='/log/login/')
-def activity_detail(request, activity_id):
+def activity_detail(request, activity_id, full):
     """---------------------------------------------------------
 	This is the view for showing the detail of a specific workout,
     Including comments, and ideally a graph of the intervals if the type
@@ -438,7 +438,10 @@ def activity_detail(request, activity_id):
         'commentform':commentform,
         'comments':comments
     }
-    return render(request, "log/activity_detail.html", context)
+    if not full:
+        return render(request, "log/activity_detail.html", context)
+    else:
+        return render(request, "log/activity_detail_full.html", context)
 
 @login_required(login_url='/log/login/')
 def r2w_import(request):

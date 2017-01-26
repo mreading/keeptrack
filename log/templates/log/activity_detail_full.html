@@ -1,0 +1,160 @@
+{% extends 'log/base.html' %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+{% load tags %}
+
+{% block content %}
+<div class="page">
+
+<div class="container-fluid">
+  <h2>{{activity.date}}</h2>
+  <div class="panel panel-default">
+    <div class="panel-heading">Detail</div>
+      <div class="panel-body">
+        <div class="modalBody">
+            <a class="btn btn-default" style="float:right" role="button" href="/log/athlete/delete_activity/{{ activity.id }}">
+                DELETE
+            </a>
+            <a class="btn btn-default" href="/log/athlete/edit_activity/{{ activity.id }}" role="button" style="float:right; margin-right: 4px">
+                EDIT
+            </a>
+
+
+            {% ifequal activity.act_type "IntervalRun" %}
+              <h2 id='test'> Interval Run </h2>
+              <div class="activity_detail_container">
+                <h4>Warm up</h4>
+                <p> {{ activity.warmup }} {{ activity.wu_units }}</p>
+                <h4>Cool Down</h4>
+                <p> {{ activity.cooldown }} {{ activity.cd_units }}</p>
+                <h4>Total Distance</h4>
+                <p> {{ activity.distance|format_distance }} Miles</p>
+
+                <table>
+                  <tr>
+                    <th>Distance</th>
+                    <th>Time</th>
+                    <th>Rest</th>
+                    <th>Goal Pace</th>
+                  </tr>
+                  {% for rep in reps %}
+                    <tr>
+                      <td>{{ rep.distance|format_distance }} {{ rep.units|format_units}}</td>
+                      <td>{{ rep.duration|format_duration }}</td>
+                      <td>{{ rep.rest }}</td>
+                      <td>{{ rep.goal_pace }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+              </div>
+
+              <!--  Load the ajax api -->
+              <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+              <script type="text/javascript">
+                var interval_graph_data = {{ interval_graph_data|safe }}
+              </script>
+
+              <script type="text/javascript" src="{% static 'log/js/interval_run_detail.js' %}"></script>
+              <div id='interval_graph'>
+              </div>
+            {% endifequal %}
+
+            {% ifequal activity.act_type "NormalRun" %}
+              <div class="activity_detail_container">
+                <h4> Distance</h4>
+                <p> {{ activity.distance|format_distance }} {{ activity.units }} </p>
+                <h4> Time </h4>
+                <p>{{ activity.duration }} </p>
+                <h4> Pace </h4>
+                <p> {{ activity.pace|format_pace }} Min/Mile </p>
+              </div>
+            {% endifequal %}
+
+            {% ifequal activity.act_type "CrossTrain" %}
+              <div .class="activity_detail_container">
+                  <h4>Sport</h4>
+                  {{ activity.sport }}
+                  <h4>Distance</h4>
+                  {{ activity.distance|format_distance }} {{ activity.units }}
+                  <h4>Time</h4>
+                  {{ activity.duration }}
+              </div>
+            {% endifequal %}
+
+            {% ifequal activity.act_type "Event" %}
+              <div .class="activity_detail_container">
+                <h4> Distance </h4>
+                <p>{{ activity.distance|format_distance }} {{ activity.units }}</p>
+                <h4> Time </h4>
+                <p> {{ activity.duration }} </p>
+                <h4> Finishing Place </h4>
+                <p> {{ activity.place }} </p>
+              </div>
+            {% endifequal %}
+
+            <div>
+              <h4>Description</h4>
+              <p> {{ activity.comment|linebreaks }} </p>
+            </div>
+            <div>
+              <h4>Shoe</h4>
+              <p> {{ activity.shoe }} </p>
+            </div>
+        </div>
+
+        <div class="modalFoot">
+              {% if comments %}
+              {% for comment in comments %}
+                <div class='comment_container'>
+                  <h5 style="color:#6b7a8f">{{ comment.poster.first_name }} {{ comment.poster.last_name}}</h5>
+                  <p style="margin-left:10px;">{{ comment.text }} <p>
+                </div>
+              {% endfor %}
+            {% endif %}
+            <form class="inModal" id="commentForm" action="" method="post" autocomplete="off">
+                {% csrf_token %}
+                {{ commentform.media }}
+                {% if commentform.errors %}
+                    <div class="alert alert-error">
+                        <ul>
+                            {% for error in commentform.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% for field in commentform.visible_fields %}
+                    <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+                        <!-- <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label> -->
+                        <div class="controls" id="commentField">
+                            <!-- |add_class is a widget tweak that helps connects the django commentforms to the bootstrap -->
+                            {{ field|add_class:"form-control" }}
+                            {% if field.errors %}<span class="help-inline">{{ field.errors.as_text }}</span>{% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% for field in commentform.hidden_fields %}
+                    {{ field }}
+                {% endfor %}
+
+                {% block formsets %}
+                    {% for formset in inlines %}
+                        {% include "inline_formset.html" with formset=formset %}
+                    {% endfor %}
+                {% endblock formsets %}
+
+                <div class="form-actions">
+                    <input class="btn btn-primary btn-large" type="submit" value="Post Comment"/>
+                    {% block extra_buttons %}
+                    {% endblock extra_buttons %}
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
