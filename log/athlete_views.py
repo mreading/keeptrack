@@ -414,7 +414,7 @@ def activity_detail(request, activity_id, full):
             message = "{0} {1} Commented on your log! View comment here: {2}".format(
                 comment.poster.first_name,
                 comment.poster.last_name,
-                "http://keeptrack.hamilton.edu/log/athlete/activity_detail/"+str(activity.id)
+                "http://keeptrack.hamilton.edu/log/athlete/activity_detail/"+str(activity.id)+"/full"
             )
             notify_these_people = [c.poster.email for c in list(Comment.objects.filter(thread=thread))] + [activity.athlete.user.email]
             # filter out duplicates
