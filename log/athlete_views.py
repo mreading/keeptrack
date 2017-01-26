@@ -300,8 +300,6 @@ def add(request):
     """---------------------------------------------------------
 	  Add a run with this view
 	---------------------------------------------------------"""
-    print "adding a run"
-
     # Find the associated athlete
     athlete = Athlete.objects.get(user=request.user)
 
@@ -334,10 +332,11 @@ def add(request):
             )
             if data['act_type'] != "IntervalRun":
                 activity.set_pace()
-            activity.save()
+                activity.save()
 
             if data['act_type'] == "IntervalRun":
                 if rep_formset.is_valid():
+                    activity.save()
                     #create a number of reps for the inverval workout
                     for i in range(len(rep_formset)):
                         rep = Rep.objects.create(
@@ -352,16 +351,26 @@ def add(request):
                         set_total_distance(activity)
                 else:
                     # formset wasn't valid. Reload the page with errors
+                    activity.delete()
                     context = {
                         'form':form,
                         'rep_formset':rep_formset
                     }
                     return render(request, "log/add_run.html", context)
 
+
             # create an associated thread for comments
             thread = Thread.objects.create(activity=activity)
             thread.save()
             return redirect("/log/athlete/"+str(request.user.id), {})
+
+        else:
+            #Form wasn't valid
+            context = {
+                'form':form,
+                'rep_formset':rep_formset
+            }
+            return render(request, "log/add_run.html", context)
 
     # form has not been filled out yet. get the form and return it to the template
     form = AddActivityForm(user=request.user)
