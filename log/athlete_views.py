@@ -163,7 +163,7 @@ def edit_activity(request, activity_id):
             activity.set_pace()
             activity.save()
             # redirect back to the athlete's home page
-            return redirect("/log/athlete/"+str(request.user.id), {})
+            return redirect("/log/athlete/"+str(activity.athlete.user.id), {})
 
         else:
             # Form was not valid. Try again.
