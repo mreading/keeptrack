@@ -33,15 +33,24 @@ def gear(request):
                 starting_mileage = data['starting_mileage']
             )
             shoe.save()
-    shoes = list(request.user.athlete_set.all()[0].shoe_set.all())
-    for shoe in shoes:
+    active_shoes = list(request.user.athlete_set.all()[0].shoe_set.filter(retired=False))
+    retired_shoes = list(request.user.athlete_set.all()[0].shoe_set.filter(retired=True))
+    for shoe in active_shoes + retired_shoes:
         shoe.update_miles()
     form = ShoeForm()
     athlete = Athlete.objects.get(user=request.user)
     context = wear_help(athlete.default_location)
     context['form'] = form
-    context['shoes'] = shoes
+    context['active_shoes'] = active_shoes
+    context['retired_shoes'] = retired_shoes
     return render(request, 'log/gear.html', context)
+
+@login_required(login_url='/log/login')
+def retire_shoe(request, shoe_id):
+    shoe = Shoe.objects.get(id=shoe_id)
+    shoe.retired = not shoe.retired
+    shoe.save()
+    return redirect("/log/gear/")
 
 @login_required(login_url='/log/login')
 def range_select(request):

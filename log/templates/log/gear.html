@@ -27,18 +27,31 @@
   </div>
     <div class="panel panel-default">
       <div class="panel-heading">
-        Currently Active Shoes
+        Active Shoes
       </div>
       <div class="panel-body">
-        {% for shoe in shoes %}
+        {% for shoe in active_shoes %}
           <h4>{{ shoe }}</h4>
             <p>
               Description: {{ shoe.description }} </br>
               Miles to Date: {{ shoe.miles }}
             </p>
+            <a href="/log/gear/retire_shoe/{{shoe.id}}">RETIRE</a>
         {% endfor %}
       </div>
     </div>
+    {% if retired_shoes %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Retired Shoes
+        </div>
+        <div class="panel-body">
+          {% for shoe in retired_shoes %}
+            <h4>{{ shoe }} ({{shoe.miles}} Miles)</h4><a href="/log/gear/retire_shoe/{{shoe.id}}">UN-RETIRE</a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
 
     <div class="panel panel-default">
       <div class="panel-heading">Add a Shoe</div>

@@ -69,6 +69,7 @@ class Shoe(models.Model):
     athlete = models.ForeignKey(Athlete)
     miles = models.IntegerField(default=0)
     starting_mileage = models.IntegerField(default=0)
+    retired = models.BooleanField(default=False)
     def __str__(self):
         return self.nickname
 
