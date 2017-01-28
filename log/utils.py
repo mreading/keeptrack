@@ -30,15 +30,23 @@ def meters_to_miles(meters):
 def miles_to_meters(miles):
     return kilometers_to_meters(miles_to_kilometers(miles))
 
-def get_miles(activity):
-    if activity.units == 'Miles':
-        return activity.distance
-    elif activity.units == 'Meters':
-        return  meters_to_miles(activity.distance)
-    elif activity.units == 'Kilometers':
-        return  kilometers_to_miles(activity.distance)
+def get_miles_help(distance, units):
+    if units == 'Miles':
+        return distance
+    elif units == 'Meters':
+        return  meters_to_miles(distance)
+    elif units == 'Kilometers':
+        return kilometers_to_miles(distance)
     else:
         print "ERROR IN GET_MILES"
+        return 0
+
+def get_miles(activity):
+    if activity.act_type != "IntervalRun":
+        return (get_miles_help(activity.warmup, activity.wu_units) +
+            get_miles_help(activity.cooldown, activity.cd_units) +
+            get_miles_help(activity.distance, activity.units))
+    return get_miles_help(activity.distance, activity.units)
 
 def get_kilometers(activity):
     if activity.units == 'Miles':
