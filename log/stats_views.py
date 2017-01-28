@@ -79,6 +79,27 @@ def get_team_mileage_data(season):
 
     return data
 
+def get_weekly_mileage(athlete, num_weeks):
+    today = datetime.date.today()
+    start_week = today - datetime.timedelta(today.weekday())
+    athlete_activities = Activity.objects.filter(athlete=athlete)
+
+    data = [athlete.user.first_name]
+    for i in range(num_weeks):
+        activities = athlete_activities.filter(
+            date__lt=start_week - datetime.timedelta(i * 7),
+            date__gte=start_week - datetime.timedelta((i +1) * 7)
+        )
+        data.append(sum([round(get_miles(a), 2) for a in activities]))
+    return data
+
+def get_table_data(season):
+    num_weeks = 10
+    athletes = season.athlete_set.all()
+    data = [[' ']+[str(d)+' weeks ago' for d in range(1, num_weeks+1)]]
+    for a in athletes:
+        data.append(get_weekly_mileage(a, num_weeks))
+    return data
 
 def team_stats(request):
     user = request.user
@@ -94,9 +115,11 @@ def team_stats(request):
                 data = form.cleaned_data
                 season = data['season']
                 mileage_data = get_team_mileage_data(season)
+                table_data = get_table_data(season)
                 context = {
                     'form':form,
-                    'mileage_data': json.dumps(mileage_data)
+                    'mileage_data': json.dumps(mileage_data),
+                    'table_data':table_data
                 }
                 return render(request, "log/team_stats.html", context)
             else:
@@ -107,9 +130,11 @@ def team_stats(request):
         team, season = get_team_season(request.user)
         if season:
             data = get_team_mileage_data(season)
+            table_data = get_table_data(season)
             context = {
                 'form':form,
-                'mileage_data':json.dumps(data)
+                'mileage_data':json.dumps(data),
+                'table_data':table_data,
             }
         else:
             context = {

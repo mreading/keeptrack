@@ -153,7 +153,11 @@ def build_graph_data(dates, athlete):
         )
         prep = [get_label(d,len(dates)), 0, 0, 0, 0,'color:'+colors['OffDay'], 'nolink']
         for a in activities:
-            miles = get_miles(a)
+            # Don't include cross training miles
+            if a.act_type != 'CrossTrain':
+                miles = get_miles(a)
+            else:
+                miles = 0
             prep[indexes[a.act_type]] += miles
             total += miles
             prep[-1] = "/log/athlete/activity_detail/"+str(a.id)+"/"

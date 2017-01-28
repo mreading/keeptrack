@@ -14,9 +14,22 @@
             <div class="panel-heading">Mileage</div>
                 <div class="panel-body">
                   <!--Div that will hold the bar chart-->
-                  <!-- <h2>{{ no_season }}</h2> -->
                   <div id="mileage_graph" class="graph"></div>
+                  <div style="margin:10px;">
+                    <table style="border:1px solid black;">
+                      {% for miles_list in table_data %}
+                        <tr style="border:1px solid black">
+                          <td style="padding:2px;">{{name}}</td>
+                          {% for miles in miles_list %}
+                            <td>{{ miles }}</td>
+                          {% endfor %}
+                        </tr>
+                      {% endfor %}
+                    </table>
+                  </div>
                 </div>
+
+
                 <div class="panel-footer">
                     <form class="form-horizontal" action="/log/team_stats/" method="POST" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
                       {% csrf_token %}
