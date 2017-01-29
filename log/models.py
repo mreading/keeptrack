@@ -117,6 +117,9 @@ class Activity(models.Model):
 
     def set_pace(self):
         num_miles = 0
+        if self.distance == 0:
+            self.pace = timedelta(0)
+            return
         if self.units == 'Miles':
             num_miles = self.distance
         elif self.units == 'Kilometers':

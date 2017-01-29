@@ -420,16 +420,36 @@ def activity_detail(request, activity_id, full):
                 poster=request.user
                 )
             comment.save()
-            message = "{0} {1} Commented on your log! View comment here: {2}".format(
+
+            # Send email to person who owns the log ----------------------------
+            message = "Wahoo! {0} {1} Commented on your log! View comment here: {2}".format(
                 comment.poster.first_name,
                 comment.poster.last_name,
                 "http://keeptrack.hamilton.edu/log/athlete/activity_detail/"+str(activity.id)+"/full"
             )
-            notify_these_people = [c.poster.email for c in list(Comment.objects.filter(thread=thread))] + [activity.athlete.user.email]
+            send_mail(
+                'New Comment!',
+                message,
+                'keeptrack.hamilton@gmail.com',
+                [activity.athlete.user.email],
+                fail_silently=False,
+            )
+
+            # Send email to all other people who posted
+            message = "{0} {1} also commented on {2}'s log! View comment here: {3}".format(
+                comment.poster.first_name,
+                comment.poster.last_name,
+                activity.athlete.user.first_name,
+                "http://keeptrack.hamilton.edu/log/athlete/activity_detail/"+str(activity.id)+"/full"
+            )
+            notify_these_people = [c.poster.email for c in list(Comment.objects.filter(thread=thread))]
             # filter out duplicates
             notify_these_people = set(notify_these_people)
             # filter out current poster
             notify_these_people.remove(request.user.email)
+            # filter out person who owns the log
+            if activity.athlete.user.email in notify_these_people:
+                notify_these_people.remove(activity.athlete.user.email)
 
             send_mail(
                 'New Comment!',
@@ -438,6 +458,7 @@ def activity_detail(request, activity_id, full):
                 notify_these_people,
                 fail_silently=False,
             )
+            #-------------------------------------------------------------------
 
     commentform = CommentForm()
     context = {
