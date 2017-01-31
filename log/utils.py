@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 
+
 def send_announcement(announcement, season):
     athletes = list(season.athlete_set.all())
     emails = [a.user.email for a in athletes]
@@ -41,7 +42,10 @@ def get_miles_help(distance, units):
         print "ERROR IN GET_MILES"
         return 0
 
-def get_miles(activity):
+def get_miles(activity, rep=False):
+    if rep:
+        return get_miles_help(activity.distance, activity.units)
+
     if activity.act_type != "IntervalRun":
         return (get_miles_help(activity.warmup, activity.wu_units) +
             get_miles_help(activity.cooldown, activity.cd_units) +
@@ -66,4 +70,4 @@ def get_meters(activity):
     elif activity.units == 'Kilometers':
         return kilometers_to_meters(activity.distance)
     else:
-        print "ERROR IN GET_MILES"
+        print "ERROR IN GET_METERS"

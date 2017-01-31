@@ -172,7 +172,7 @@ def set_total_distance(activity):
     reps = Rep.objects.filter(activity=activity)
     total = 0
     for r in reps:
-        total += get_miles(r)
+        total += get_miles(r, rep=True)
 
     #Calculate warm up distance
     if activity.wu_units == 'Miles':
