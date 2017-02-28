@@ -99,14 +99,17 @@ def process_sms_text(text, from_num):
 
     # Shoes
     shoes = Shoe.objects.filter(athlete=athlete, retired=False)
-    shoes = {i:shoes[i].nickname for i in range(len(shoes))}
+    shoes = {shoes[i].id:shoes[i].nickname for i in range(len(shoes))}
 
     # Athlete is trying to save a run
     exp = r'^(r|R)an (?P<distance>[0-9]+(\.[0-9]+)?)\s*in ((?P<hours>[0-9]*):)?(?P<minutes>[0-9]+):(?P<seconds>[0-9]+) (?P<comments>.*)'
     match = re.search(exp, text)
     if match:
         save_run(match, athlete)
-        return = "Your run has been saved! To add a shoe, reply with it's number: {}".format(shoes)
+        ret = "Your run has been saved! To add a shoe, reply with it's number\n"
+        for k, v in shoes.iteritems():
+            ret += str(k) + ": " + str(v) + "\n"
+        return ret
 
     # Generate a report for the athlete
     exp = r'(r|R)eport'
@@ -127,7 +130,9 @@ def process_sms_text(text, from_num):
             return "Error. Add manually"
         else:
             activity = activity[0]
-        shoe = shoes[int(text)]
+        shoe = Shoe.objects.get(id=int(text))
+        if shoe.athlete != athlete:
+            return "That is not a valid number"
         activity.shoe = shoe
         activity.save()
         return "It is done."
