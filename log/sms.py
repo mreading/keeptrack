@@ -106,10 +106,7 @@ def process_sms_text(text, from_num):
     match = re.search(exp, text)
     if match:
         save_run(match, athlete)
-        return "Your run has been saved!"
-
-        #------------------------------
-        ret = "Your run has been saved! To add a shoe, reply with it's number: {}".format(shoes)
+        return = "Your run has been saved! To add a shoe, reply with it's number: {}".format(shoes)
 
     # Generate a report for the athlete
     exp = r'(r|R)eport'
