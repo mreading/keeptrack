@@ -53,12 +53,13 @@ def retire_shoe(request, shoe_id):
     return redirect("/log/gear/")
 
 @login_required(login_url='/log/login')
-def range_select(request):
+def range_select(request, athlete_id):
     if request.is_ajax() and request.method == "POST":
         context = {}
         date_range_form = DateRangeForm(request.POST)
         if date_range_form.is_valid():
-            athlete = Athlete.objects.get(user=request.user)
+            #FIXME needs to be the athlete who's log is being viewed
+            athlete = Athlete.objects.get(id=athlete_id)
 
             # get all dates between
             data = date_range_form.cleaned_data
@@ -298,6 +299,7 @@ def athlete(request, user_id):
         'week_graph_data':json.dumps(week_graph_data),
         'week_total':week_total,
         'athlete_user':user,
+        'athlete':athlete
     }
 
     context['form'] = DateRangeForm()

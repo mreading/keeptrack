@@ -34,6 +34,7 @@
 
                 <!--Load the script with the actual mileage graph in it -->
                 <script type="text/javascript">
+                    var athlete_id = {{ athlete.id }};
                     var show_range_graph_first = {{ show_range_first|safe }};
 
                     {% if year_graph_data %}
