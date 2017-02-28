@@ -144,8 +144,8 @@ class AddActivityForm(forms.Form):
     ]
     units = forms.ChoiceField(choices=unit_choices, required=False)
     duration = MultiValueDurationField(label="Duration (Hour/Minute/Second/Millisecond)")
-    comments = forms.CharField(max_length=1500)
-    user_label = forms.CharField(max_length=35, initial="None")
+    comments = forms.CharField(max_length=1500,widget=forms.Textarea)
+    user_label = forms.CharField(max_length=35, initial="Normal Run")
     shoe = forms.ModelChoiceField(queryset=Shoe.objects.all(), required=False)
 
     # Fields for Race (Event)
