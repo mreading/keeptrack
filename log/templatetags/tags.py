@@ -28,9 +28,19 @@ def format_units(unit):
 def format_duration(duration):
     text = str(duration)
     separated = text.split(':')
-    return "{0}:{1}".format(
-        int(separated[1]), round(float(separated[2]), 2),
-    )
+    seconds = separated[2]
+    minutes = separated[1]
+    if '.' in seconds:
+        seconds = round(float(separated[2]), 2)
+    else:
+        seconds = int(seconds)
+    if seconds < 10:
+        seconds = '0'+str(seconds)
+
+    if separated[0] == '0' and minutes < 10:
+        minutes = '0'+str(minutes)
+
+    return "{0}:{1}".format(minutes, seconds)
 
 @register.filter(name='format_distance')
 def format_distance(d):

@@ -23,7 +23,8 @@ def save_run(match, athlete):
         comment=comments,
         distance=float(distance),
         duration=datetime.timedelta(hours=int(hours), minutes=int(minutes), seconds=int(seconds)),
-        act_type="NormalRun"
+        act_type="NormalRun",
+        user_label="Normal Run"
     )
     activity.set_pace()
     activity.save()
@@ -96,6 +97,10 @@ def process_sms_text(text, from_num):
     else:
         athlete = athlete_queryset[0]
 
+    # Shoes
+    shoes = Shoe.objects.filter(athlete=athlete, retired=False)
+    shoes = {i:shoes[i].nickname for i in range(len(shoes))}
+
     # Athlete is trying to save a run
     exp = r'^(r|R)an (?P<distance>[0-9]+(\.[0-9]+)?)\s*in ((?P<hours>[0-9]*):)?(?P<minutes>[0-9]+):(?P<seconds>[0-9]+) (?P<comments>.*)'
     match = re.search(exp, text)
@@ -103,12 +108,32 @@ def process_sms_text(text, from_num):
         save_run(match, athlete)
         return "Your run has been saved!"
 
+        #------------------------------
+        ret = "Your run has been saved! To add a shoe, reply with it's number: {}".format(shoes)
+
+    # Generate a report for the athlete
     exp = r'(r|R)eport'
     match = re.search(exp, text)
     if match:
         return generate_report(athlete)
 
-
+    # Add a shoe to a run
+    exp = r'[0-9]+'
+    match = re.search(exp, text)
+    if match:
+        activity = list(Activity.objects.filter(
+            athlete=athlete,
+            date=datetime.date.today(),
+            shoe=None
+        ))
+        if len(activity) == 0:
+            return "Error. Add manually"
+        else:
+            activity = activity[0]
+        shoe = shoes[int(text)]
+        activity.shoe = shoe
+        activity.save()
+        return "It is done."
 
 @twilio_view
 def inbound(request):
