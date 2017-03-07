@@ -94,7 +94,7 @@ $(document).ready(function() {
        $.ajax({
            type: "POST",
            data: $("#range_form").serialize(),
-           url: "/log/ajax/range_select/",
+           url: "/log/ajax/range_select/".concat(athlete_id).concat("/"),
            success: function(data) {
                range_graph_data = JSON.parse(data);
                graphSelector.setGraph(range_index);
