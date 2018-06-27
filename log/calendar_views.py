@@ -38,6 +38,7 @@ def get_credentials():
 
     store = oauth2client.file.Storage(credential_path)
     credentials = store.get()
+
     if not credentials or credentials.invalid:
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
         flow.user_agent = APPLICATION_NAME
@@ -171,6 +172,9 @@ def convert_start_end_dates(start, finish):
     return start, finish
 
 def range_weeks(start, finish, calendarId):
+    # temporarily disable until google_auth is fully implemented
+    return [None]
+
     # get google calendar information
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())

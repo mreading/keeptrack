@@ -6,7 +6,7 @@ from . import calendar_views
 from . import meet_views
 from . import stats_views
 from . import team_views
-from . import workout_views
+# from . import workout_views
 from . import coach_views
 from . import sms
 
@@ -33,7 +33,7 @@ urlpatterns = [
     url(r'^logout/$', auth_views.logout_view, name='logout'),
     url(r'^signup/$', auth_views.signup, name='signup'),
     url(r'^change_password/(?P<user_id>[0-9]+)/$', auth_views.change_password, name='change_password'),
-    url(r'^workout_templates/$', workout_views.workout_templates, name='workout_templates'),
+    # url(r'^workout_templates/$', workout_views.workout_templates, name='workout_templates'),
     url(r'^athlete/add/$', athlete_views.add, name='add'),
     url(r'^athlete/edit_activity/(?P<activity_id>[0-9]+)/$', athlete_views.edit_activity, name='edit_activity'),
     url(r'^athlete/activity_detail/(?P<activity_id>[0-9]+)/(?P<full>full/)?$', athlete_views.activity_detail, name='activity_detail'),
